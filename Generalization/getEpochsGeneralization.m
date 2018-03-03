@@ -1,0 +1,9 @@
+function ep=getEpochsGeneralization();
+summ='nanmean'; 
+earlyStrides=15;
+lateStrides=-40; 
+vEarlyStrides=1;
+names={'Slow','vShort','Short',...
+    'vEarly B','early B','Base',...
+    'vEarly A','early A','late A',...
+    'vEarly P','early P','late P'};
