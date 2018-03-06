@@ -138,6 +138,6 @@ for i=1:3
 end
 set(gcf,'Position',[0 0 .7 0.2])
 %%
-destdir='Z:\Users\Digna\Papers\Modulation of Muscle Activity in Stroke\Matlab Figures\';
-saveFig(fh,destdir, 'Fig1C',1)
+%destdir='Z:\Users\Digna\Papers\Modulation of Muscle Activity in Stroke\Matlab Figures\';
+saveFig(fh,cd, 'Fig1C',1)
 print('-painters','-dsvg','Fig1C')
