@@ -1,26 +1,17 @@
 %% Assuming that the variables groups() exists (From N19_loadGroupedData)
 
-%% Directory to save figs
-% figDir='../../fig';
-% dirStr=[figDir '/all/kin/'];
-% if ~exist(dirStr,'dir');
-%     mkdir(dirStr);
-% end
+%% read data
+[matDataDir,loadName]=uigetfile('*.mat');
 %%
 matchSpeedFlag=0;
 removeMissing=false;
 matDataDir='Z:\Users\Digna\Projects\Modulation of muscle activity in stroke\EMG reanalysis\Data\';
-loadName=['groupedParams30Hz'];
-loadName=[matDataDir,loadName]; %Never remove missing for this script
-%if (~exist('patients','var') || ~isa('patients','groupAdaptationData')) || (~exist('controls','var') || ~isa('controls','groupAdaptationData'))
-    load(loadName)
-%end
+loadName=[matDataDir,loadName]; 
+
 
 patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
 controlsSlowList=strcat('C00',{'01','02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-patientUphillControlList={'C0001','C0002','C0003','C0004','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'};
-patientUphillList_={'P0001','P0002','P0003','P0004','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'}; %patients that did the uphill
-patientUphillList=strcat(patientUphillList_,'u'); %patients that did the uphill
+
 
 removeP07Flag=1;
 if removeP07Flag
@@ -39,22 +30,8 @@ switch matchSpeedFlag
         patients2=patients2.removeBadStrides;
         controls2=controls2.removeBadStrides;
         patientsUnbiased2=patientsUnbiased2.removeBadStrides;
-        controlsUnbiased2=controlsUnbiased2.removeBadStrides;
-    case 2 %Uphill-matched groups (not all P's did uphill)
-%         if (~exist('patientsUp','var') || ~isa('patientsUp','groupAdaptationData'))
-%             loadName=[loadName '_wUphill']; 
-%             load(loadName)
-%             load([loadName 'Unbiased'])
-%         end
-%         patientsUp.ID{6}='P0010';
-%         patientsUp.ID=strcat(patientsUp.ID,'u');
-%         oldL=patientsUp.adaptData{5}.data.getLabelsThatMatch('SAR');
-%         newL=regexprep(oldL,'SAR','HIP');
-%         patientsUp.adaptData{5}=patientsUp.adaptData{5}.renameParams(oldL,newL);
-%         patients=patients.getSubGroup(patientUphillList_).removeBadStrides;
-%         controls=patientsUp.getSubGroup(patientUphillList).removeBadStrides;
-    error('Unimplemented')
-    %Need to add the unbiased parameters for this option to work
+        controlsUnbiased2=controlsUnbiased2.removeBadStrides; 
+    
 end
 
 
