@@ -31,8 +31,7 @@ switch matchSpeedFlag
         patients2=patients2.removeBadStrides;
         controls2=controls2.removeBadStrides;
         %patientsUnbiased2=patientsUnbiased2.removeBadStrides;
-        %controlsUnbiased2=controlsUnbiased2.removeBadStrides; 
-    
+        %controlsUnbiased2=controlsUnbiased2.removeBadStrides;   
 end
 
 
