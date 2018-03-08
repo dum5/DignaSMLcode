@@ -14,7 +14,7 @@
 clear all
 close all
 
-clear NonEpochoutcome groups timeCourse timeCourseUnbiased
+%clear NonEpochoutcome groups timeCourse timeCourseUnbiased
 % This section calculates the parameters we wanted to compute. First lines
 
 %[file,path]=uigetfile('Z:\Users\Wouter\Generalization Young\Paramfiles Study after ReviewEventGui\*.mat','choose file to load');
