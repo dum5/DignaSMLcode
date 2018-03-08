@@ -10,7 +10,7 @@ controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','
 patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
 controlsSlowList=strcat('C00',{'01','02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
 
-
+%patientFastList=strcat('P00',{'02','05','08','09','10','13','14','15','16'}); %
 load ([matfilespath,'groupedParams30HzPT11Fixed.mat']);
 
 %define groups
@@ -79,10 +79,10 @@ eL=5;
 [reps] = defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmedian');
 
 %get data for la and bse epochs
-dataLAcontrols=getEpochData(groups{1},eps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast'},1);
-dataLAstroke=getEpochData(groups{2},eps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast'},1);
-dataLBcontrols=getEpochData(groups{1},reps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast'},1);
-dataLBstroke=getEpochData(groups{2},reps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast'},1);
+dataLAcontrols=getEpochData(groups{1},eps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast','FZSmax','FZFmax','skneeAngleAtSHS','fkneeAngleAtFHS'},1);
+dataLAstroke=getEpochData(groups{2},eps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast','FZSmax','FZFmax','skneeAngleAtSHS','fkneeAngleAtFHS'},1);
+dataLBcontrols=getEpochData(groups{1},reps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast','FZSmax','FZFmax','skneeAngleAtSHS','fkneeAngleAtFHS'},1);
+dataLBstroke=getEpochData(groups{2},reps,{'alphaSlow','alphaFast','XSlow','XFast','QuadSlow','QuadFast','HamSlow','HamFast','HipFlexSlow','HipFlexFast','FZSmax','FZFmax','skneeAngleAtSHS','fkneeAngleAtFHS'},1);
 dataLA_BaseControls=dataLAcontrols-dataLBcontrols;
 dataLA_BaseStroke=dataLAstroke-dataLBstroke;
 
@@ -98,6 +98,10 @@ T.HamSlow=[squeeze(dataLA_BaseControls(7,1,:));squeeze(dataLA_BaseStroke(7,1,:))
 T.HamFast=[squeeze(dataLA_BaseControls(8,1,:));squeeze(dataLA_BaseStroke(8,1,:))];
 T.HipSlow=[squeeze(dataLA_BaseControls(9,1,:));squeeze(dataLA_BaseStroke(9,1,:))];
 T.HipFast=[squeeze(dataLA_BaseControls(10,1,:));squeeze(dataLA_BaseStroke(10,1,:))];
+T.BrakingSlow=[squeeze(dataLA_BaseControls(11,1,:));squeeze(dataLA_BaseStroke(11,1,:))];
+T.BrakingFast=[squeeze(dataLA_BaseControls(12,1,:));squeeze(dataLA_BaseStroke(12,1,:))];
+T.KneeSlow=[squeeze(dataLA_BaseControls(13,1,:));squeeze(dataLA_BaseStroke(13,1,:))];
+T.KneeFast=[squeeze(dataLA_BaseControls(14,1,:));squeeze(dataLA_BaseStroke(14,1,:))];
 
 % [fi,fb,pc1,ps1,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(fi,fb,pc1,ps1,pd1,eps,reps,newLabelPrefix,groups,0.1,0.05,'nanmedian');
 % 

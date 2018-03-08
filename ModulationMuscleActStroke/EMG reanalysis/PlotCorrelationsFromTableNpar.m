@@ -34,10 +34,10 @@ for a = 1:size(ax,1)
     [r,m,b] = regression(xdata,ydata,'one');
     rfit=b+xdata.*m;
     plot(ax(a,c),xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
-    lsline(ax(a,c));
-    [rho,p]=corr(xdata,ydata);
+    %lsline(ax(a,c));
+    [rho,p]=corr(xdata,ydata,'Type','Spearman');
     xpos=get(ax(a,c),'XLim');ypos=get(ax(a,c),'YLim');
-    text(ax(a,c),mean(xpos),max(ypos),['R = ',num2str(rho),' p = ',num2str(p)],'FontSize',16,'FontWeight','bold');
+    text(ax(a,c),mean(xpos),max(ypos),['RHO = ',num2str(rho),' p = ',num2str(p)],'FontSize',16,'FontWeight','bold');
     set(ax(a,c),'FontSize',14)
     clear xdata r m b rfit ydata
     end
