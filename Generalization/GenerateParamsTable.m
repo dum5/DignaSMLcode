@@ -6,7 +6,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-N19_ExtractAllDat%a
+N19_ExtractAllData
 
 
 groupOrder={'AbruptNoFeedback','FullAbrupt','Catch'};
