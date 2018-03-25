@@ -30,12 +30,12 @@ switch matchSpeedFlag
     case 0 %Full groups
         patients2=patients2.removeBadStrides;
         controls2=controls2.removeBadStrides;
-        patientsUnbiased2=patients2.removeBadStrides.removeBias;
-        controlsUnbiased2=controls2.removeBadStrides.removeBias;   
+        %patientsUnbiased2=patients2.removeBadStrides.removeBias;
+        %controlsUnbiased2=controls2.removeBadStrides.removeBias;   
 end
 
-groups{1}=controlsUnbiased2;
-groups{2}=patientsUnbiased2;
+groups{1}=controls2;
+groups{2}=patients2;
 
 eF=1;
 eL=5;
@@ -45,4 +45,4 @@ labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContribu
 
 
 %[fh,ph,allData]=plotGroupedTimeAndEpochBars(adaptDataGroups,labels,epochs,binwidth,trialMarkerFlag,indivFlag,indivSubs,colorOrder,biofeedback,groupNames,medianFlag);
-[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,5,0,0,0,[0 1 0;1 0 0],0,{'control','stroke'},0);
+[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,10,0,0,0,[0 1 0;1 0 0],0,{'control','stroke'},1,1,0);

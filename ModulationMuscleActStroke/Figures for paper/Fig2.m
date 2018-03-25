@@ -68,6 +68,13 @@ patientData=getEpochData(patients2,meps,paramList,true);
 controlData=getEpochData(controls2,meps,paramList,true);
 varPatientData=getEpochData(patients2,seps,paramList,true);
 varControlData=getEpochData(controls2,seps,paramList,true);
+[~,Idx]=sort(patientData(4,1,:));Idx=squeeze(Idx);%sort patients according to ascending net
+%patientData(1:4,1,:)=patientData(1:4,1,Idx);
+%varPatientData(1:4,1,:)=varPatientData(1:4,1,Idx);
+%FM=FM(Idx);
+
+upperbound = nanmean(controlData,3) + 2*std(squeeze(controlData)')';
+lowerbound = nanmean(controlData,3) - 2*std(squeeze(controlData)')';
 
 %EMG
 %Renaming normalized parameters, for convenience:
@@ -85,13 +92,14 @@ for p=1:length(paramList)
     xval(:,p)=xData+(p-1)';
     
 end
-paramList2={'Step Position','Step Time','Step Velocity','Step Length'};
+xval(end,:)=xval(end,:)+2;
+paramList2={'StepPosition','StepTime','StepVelocity','StepAsym'};
 
 %generate xlabels
 for pt=1:length(patients2.adaptData)
     xlab{pt}=['P ',num2str(pt)];
 end
-xlab{pt+1}='C';
+xlab{pt+1}='CONTROL';
 
 
 f1=figure;
@@ -114,11 +122,18 @@ for p=1:length(paramList)
     bar(ax1,xval(:,p),[squeeze(patientData(p,1,:));nanmean(controlData(p,1,:))],'FaceColor',ccd(p,:),'BarWidth',0.15)
     errorbar(ax1,xval(:,p),[squeeze(patientData(p,1,:));nanmean(controlData(p,1,:))],...
         [squeeze(varPatientData(p,1,:))./sqrt(abs(nstrides));nanstd(controlData(p,1,:))./sqrt(length(controls2.adaptData))],'LineWidth',2,'LineStyle','none','Color','k')
+    %add significance
+    for pt=1:length(patients2.adaptData)
+        if patientData(p,1,pt) > upperbound(p,1) || patientData(p,1,pt) < lowerbound(p,1)
+            plot(ax1,xval(pt,p),-0.25,'*k','Color',ccd(p,:),'MarkerSize',8)
+        end
+    end
+    
 end
 set(ax1,'XTick',mean(xval,2),'XTickLabel',xlab,'XLim',[0 max(max(xval))+min(min(xval))],'YLim',[-0.3 0.6],'YTick',[-0.3 0 0.3 0.6])
 h=ylabel(ax1,'ASYMMETRY');set(h,'FontSize',16)
 ll=findobj(ax1,'Type','Bar');
-h=legend(ll(fliplr(1:length(ll))),paramList2);
+h=legend(ll(fliplr(1:length(ll))),paramList2);set(h,'Position',[0.0873    0.9104    0.6389    0.0304])
 set(h,'Box','off','FontSize',14,'Orientation','horizontal')
 h=title(ax1,'INDIVIDUAL SUBJECT KINEMATIC BEHAVIOR');set(h,'FontSize',16)
 
