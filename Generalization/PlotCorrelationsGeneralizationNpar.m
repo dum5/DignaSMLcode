@@ -37,7 +37,7 @@ for a = 1:size(ax,1)
     %lsline(ax);
     [rho,p]=corr(xdata,ydata,'Type','Spearman');
     xpos=get(ax(a,c),'XLim');ypos=get(ax(a,c),'YLim');
-    text(ax(a,c),mean(xpos),max(ypos),['R = ',num2str(rho),' p = ',num2str(p)],'FontSize',16,'FontWeight','bold');
+    text(ax(a,c),mean(xpos),max(ypos),['RHO = ',num2str(rho),' p = ',num2str(p)],'FontSize',16,'FontWeight','bold');
     set(ax(a,c),'FontSize',14)
     clear xdata r m b rfit ydata
     end

@@ -78,9 +78,10 @@ summethods=({'nanmedian','nanmedian','nanmean','nanmean','nanmean','nanmean','na
 
 %extract data for epochs and subtract reference condition and remove
 %appropriate bias
-params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2','FyPSmax'};
-correctTMbase=1:4;%indices of parameters that need to be corrected for TM base
-correctTMslow=5;%indices of parameters that need to be corrected for TM slow
+params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2',...
+    'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm','FyPSmax'};
+correctTMbase=1:8;%indices of parameters that need to be corrected for TM base
+correctTMslow=9;%indices of parameters that need to be corrected for TM slow
 
 OGind=[3,4];%epoch associated with OGpost
 TMind=[5:10];%epoch associated with treadmill trials, except the reference trial
@@ -108,9 +109,9 @@ ERA=strfind(names,'EarlyReadapt');ERA=find(not(cellfun('isempty', ERA)));
 
 %extract data for epochs and subtract reference condition and remove
 %appropriate bias
-params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2','FyPSmax'};
-correctTMbase=1:4;%indices of parameters that need to be corrected for TM base
-correctTMslow=5;%indices of parameters that need to be corrected for TM slow
+% params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2','FyPSmax'};
+% correctTMbase=1:4;%indices of parameters that need to be corrected for TM base
+% correctTMslow=5;%indices of parameters that need to be corrected for TM slow
 
 %extract data and remove bias, also compute params based on more than one epoch
 nEp=length(names);%number of epochs
@@ -172,7 +173,7 @@ TMind=find(condtypes==2);
  end
 
 %Add additional parameters not computed in epochs and store that in separate variable
-params2={'maxError','meanError','strideMonIncrease','ErrorFromMonIncrese','maxErrorReadapt'};
+params2={'maxError','meanError','strideMonIncrease','ErrorFromMonIncrese','maxErrorReadapt','meanErrorReadapt'};
 
 %find index for gradual adaptation
 cInd=NaN(2,1);
@@ -188,6 +189,7 @@ for i=1:length(groups)
     NonEpochoutcome{i}.par{3}=NaN(length(groups{i}.adaptData),1);    
     NonEpochoutcome{i}.par{4}=NaN(length(groups{i}.adaptData),1);
     NonEpochoutcome{i}.par{5}=NaN(length(groups{i}.adaptData),1);
+    NonEpochoutcome{i}.par{6}=NaN(length(groups{i}.adaptData),1);
     
     %first get gradualAdaptation and readaptation
     tempdata=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(1,1)));%gradual adaptation
@@ -206,7 +208,11 @@ for i=1:length(groups)
         dt3=dt(startsplit(i)+1:(find(~isnan(dt),1,'last')));
         dt3=dt3(1:end-10);
         NonEpochoutcome{i}.par{2}(sj,1)=nanmean(dt3);
-         
+        
+        %Mean error re-adaptation
+        dt5=dt4(1:end-10);
+        NonEpochoutcome{i}.par{6}(sj,1)=nanmean(dt5);
+        
          %Index start monotonic increase
          dt2 = medfilt1(dt(fullsplit(i)+1:end),5);
          tempout=find_strides_to_ignore(dt2,5,1,0);%look for first 5 strides of monotonic increase starting from full split

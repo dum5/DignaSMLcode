@@ -8,7 +8,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%GenerateParamsTable
+GenerateParamsTable
 
 
 varnames=T.Properties.VariableNames';
