@@ -50,7 +50,13 @@ for i=1:length(groups)
         fullsplit(i)=190;
     elseif strcmp(groupsnames{i},'Catch')
         startsplit(i)=150;
-        fullsplit(i)=190;        
+        fullsplit(i)=190; 
+    elseif strcmp(groupsnames{i},'TMFullAbrupt')
+        startsplit(i)=0;
+        fullsplit(i)=0;
+    elseif strcmp(groupsnames{i},'TMAbruptNoFeedback')
+        startsplit(i)=150;
+        fullsplit(i)=190;
     end   
 end
 
@@ -87,10 +93,11 @@ OGind=[3,4];%epoch associated with OGpost
 TMind=[5:10];%epoch associated with treadmill trials, except the reference trial
 
 for i=1:length(groups)
+     nsub=length(groups{i}.adaptData);
     exemptFirst=[eFbase eFbase eF 0 eF 0 0 startsplit(i) fullsplit(i) 0 eFSlowbase];
     [epsData{i}] = defineEpochs(names,conds,strideNo, exemptFirst,exemptLast,summethods);%this will be used to compute the baseline bias manually, since predefined function performs poorly for OG trials
     
-    groupOutcomes{i}=NaN(length(params),length(names)+2,10);
+    groupOutcomes{i}=NaN(length(params),length(names)+2,nsub);
     
 end
 
@@ -116,7 +123,8 @@ ERA=strfind(names,'EarlyReadapt');ERA=find(not(cellfun('isempty', ERA)));
 %extract data and remove bias, also compute params based on more than one epoch
 nEp=length(names);%number of epochs
 for i=1:length(groups)
-    groupOutcomes{i}(1:length(params),1:length(names),1:10)=groups{i}.getEpochData(epsData{i},params);% nLabels x nEpochs x nSubjects
+    nsub=length(groups{i}.adaptData);
+    groupOutcomes{i}(1:length(params),1:length(names),1:nsub)=groups{i}.getEpochData(epsData{i},params);% nLabels x nEpochs x nSubjects
     
     %correct for bias
     for ind=TMind

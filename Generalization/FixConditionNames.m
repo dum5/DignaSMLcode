@@ -26,7 +26,7 @@ studyData.Catch=studyData.Catch.renameConditions({'TM basemed'},{'TM base'});
 %then swap slow and fast baseline names
 %this needs to be done for old and reprocessed data files
 groupsnames=fieldnames(studyData);
-for i=1:length(groupsnames)
+for i=1:5
    dt=eval(['studyData.',groupsnames{i}]);
    
    dt=dt.renameConditions({'TM fast'},{'temp'});
