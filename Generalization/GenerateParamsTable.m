@@ -9,7 +9,7 @@
 %N19_ExtractAllData
 
 
-groupOrder={'TMFullAbrupt','TMAbruptNoFeedback'};
+groupOrder={'FullAbrupt','TMFullAbrupt','AbruptNoFeedback','TMAbruptNoFeedback'};
 %groupOrder={'Catch'};
 colcodes=[0.6 0 0.6;0.8 0 0;0.2 0.2 1;0.6 0.6 0.6;0.9 0.9 1;0.3 0.3 0.3;0 1 1];%DO NOT TOUCH!!
 
@@ -19,21 +19,18 @@ colcodes=[0.6 0 0.6;0.8 0 0;0.2 0.2 1;0.6 0.6 0.6;0.9 0.9 1;0.3 0.3 0.3;0 1 1];%
 groupInd=NaN(1,length(groupOrder));
 
 for i=1:length(groupOrder)
-    tempInd = strfind(groupsnames,groupOrder{i});groupInd(i) = find(not(cellfun('isempty', tempInd))); 
+    tempInd = regexp(groupsnames,['^',groupOrder{i}]);groupInd(i) = find(not(cellfun('isempty', tempInd))); 
     nsub=length(groups{groupInd(i)}.adaptData);
-    if i==i
-        subcodes=repmat(groupsnames{groupInd(i)},nsub,1);
+    if i==1
+        subcodes=cellstr(repmat(groupsnames{groupInd(i)},nsub,1));
     else
-    subcodes=[subcodes;repmat(groupsnames{groupInd(i)},nsub,1)];
+    subcodes=[subcodes;cellstr(repmat(groupsnames{groupInd(i)},nsub,1))];
     end
 end
 
 %generate table
 T=table;
-
-dt=repmat(groupOrder,nsub,1);
-T.group=nominal(dt(:));clear dt
-
+T.group=nominal(subcodes);
 
 for e=1:length(names)
     for p=1:length(params)
