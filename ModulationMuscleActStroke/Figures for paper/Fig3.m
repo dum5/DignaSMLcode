@@ -45,4 +45,4 @@ labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContribu
 
 
 %[fh,ph,allData]=plotGroupedTimeAndEpochBars(adaptDataGroups,labels,epochs,binwidth,trialMarkerFlag,indivFlag,indivSubs,colorOrder,biofeedback,groupNames,medianFlag);
-[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,10,0,0,0,[0.4 0.7 0.7;0.9 0.5 0.9],0,{'control','stroke'},1,1,0);
+[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,10,0,0,0,[0.4 0.7 0.7;0.9 0.5 0.9],0,{'control','stroke'},0,1,0,0.05,0,0,0,1);
