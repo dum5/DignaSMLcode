@@ -7,15 +7,15 @@ Revents={'RHS','LTO','LHS','RTO'};
 Levents={'LHS','RTO','RHS','LTO'};
 alignmentLengths=[16,64,16,64];
 
-LGdata=NaN(302,32);
-MGdata=NaN(302,32);
-TAdata=NaN(302,32);
-AnkData=NaN(302,32);
-KneeData=NaN(302,32);
-HipData=NaN(302,32);
+LGdata=NaN(160,32);
+MGdata=NaN(160,32);
+TAdata=NaN(160,32);
+AnkData=NaN(160,32);
+KneeData=NaN(160,32);
+HipData=NaN(160,32);
 
 col=1;
-for c=1%:length(controlsNames)
+for c=1:length(controlsNames)
     disp(['loading', controlsNames{c}]);
     load([controlPath,controlsNames{c},'.mat']);
     
@@ -31,11 +31,11 @@ for c=1%:length(controlsNames)
     tempRank=expData.getAlignedField('angleData','TM base',Revents,alignmentLengths).getPartialDataAsATS({'Rank'});
     tempLank=expData.getAlignedField('angleData','TM base',Levents,alignmentLengths).getPartialDataAsATS({'Lank'});
     
-    tempRknee=expData.getAlignedField('angleData','TM base',Revents,alignmentLengths).getPartialDataAsATS({'Rank'});
-    tempLknee=expData.getAlignedField('angleData','TM base',Levents,alignmentLengths).getPartialDataAsATS({'Lank'});
+    tempRknee=expData.getAlignedField('angleData','TM base',Revents,alignmentLengths).getPartialDataAsATS({'Rknee'});
+    tempLknee=expData.getAlignedField('angleData','TM base',Levents,alignmentLengths).getPartialDataAsATS({'Lknee'});
     
-    tempRhip=expData.getAlignedField('angleData','TM base',Revents,alignmentLengths).getPartialDataAsATS({'Rank'});
-    tempLhip=expData.getAlignedField('angleData','TM base',Levents,alignmentLengths).getPartialDataAsATS({'Lank'});
+    tempRhip=expData.getAlignedField('angleData','TM base',Revents,alignmentLengths).getPartialDataAsATS({'Rhip'});
+    tempLhip=expData.getAlignedField('angleData','TM base',Levents,alignmentLengths).getPartialDataAsATS({'Lhip'});
     
     LGdata(:,col)=nanmean(squeeze(tempRLG.Data),2);
     MGdata(:,col)=nanmean(squeeze(tempRMG.Data),2);
@@ -46,6 +46,7 @@ for c=1%:length(controlsNames)
     HipData(:,col)=nanmean(squeeze(tempRhip.Data),2);
     
     col=col+1;
+    
     LGdata(:,col)=nanmean(squeeze(tempLLG.Data),2);
     MGdata(:,col)=nanmean(squeeze(tempLMG.Data),2);
     TAdata(:,col)=nanmean(squeeze(tempLTA.Data),2);
@@ -54,9 +55,10 @@ for c=1%:length(controlsNames)
     KneeData(:,col)=nanmean(squeeze(tempLknee.Data),2);
     HipData(:,col)=nanmean(squeeze(tempLhip.Data),2);
     
+    col=col+1;
     
     
-    clear tempRLG tempLLG tempRMG tempLMG tempRTA tempLTA tempRank tempLank tempRknee tempLknee tempRhip tempRhip
+    clear tempRLG tempLLG tempRMG tempLMG tempRTA tempLTA tempRank tempLank tempRknee tempLknee tempRhip tempLhip
     
 end
 

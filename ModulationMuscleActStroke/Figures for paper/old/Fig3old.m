@@ -112,72 +112,44 @@ pos=get(ph(1,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(1,1),'Position',pos);
 pos=get(ph(2,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(2,1),'Position',pos);
 pos=get(ph(3,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(3,1),'Position',pos);
 pos=get(ph(4,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(4,1),'Position',pos);
-xl=get(ph(1,1),'XLim');
-set(ph(:,1),'XLim',[100 xl(2)-200])
 
-pos=get(ph(1,2),'Position');pos(1)=0.51;set(ph(1,2),'Position',pos);%pos(1)=0.76;ph(1,3)=axes('Position',pos);
-pos=get(ph(2,2),'Position');pos(1)=0.51;set(ph(2,2),'Position',pos);%pos(1)=0.76;ph(2,3)=axes('Position',pos);
-pos=get(ph(3,2),'Position');pos(1)=0.51;set(ph(3,2),'Position',pos);%pos(1)=0.76;ph(3,3)=axes('Position',pos);
-pos=get(ph(4,2),'Position');pos(1)=0.51;set(ph(4,2),'Position',pos);%pos(1)=0.76;ph(4,3)=axes('Position',pos);
+pos=get(ph(1,2),'Position');pos(1)=0.51;set(ph(1,2),'Position',pos);pos(1)=0.76;ph(1,3)=axes('Position',pos);
+pos=get(ph(2,2),'Position');pos(1)=0.51;set(ph(2,2),'Position',pos);pos(1)=0.76;ph(2,3)=axes('Position',pos);
+pos=get(ph(3,2),'Position');pos(1)=0.51;set(ph(3,2),'Position',pos);pos(1)=0.76;ph(3,3)=axes('Position',pos);
+pos=get(ph(4,2),'Position');pos(1)=0.51;set(ph(4,2),'Position',pos);pos(1)=0.76;ph(4,3)=axes('Position',pos);
 
-legend(ph(4,1),'off')
-
-cla(ph(1,2));cla(ph(2,2));cla(ph(3,2));cla(ph(4,2));
-
-set(ph(:,:),'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
+set(ph,'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
 
 
 %generate plots for between epoch measures
 xval=[1 2;4 5;7 8;10 11];
 nc=size(spatialDataControls,1);
 ns=size(spatialDataStroke,1);
-%hold(ph(1,2));
-bar(ph(1,2),xval(:,1),nanmean(spatialDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
-errorbar(ph(1,2),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
-errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-ll=findobj(ph(1,2),'Type','Bar');
-legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
+hold(ph(1,3));
+bar(ph(1,3),xval(:,1),nanmean(spatialDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
+errorbar(ph(1,3),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(1,3),xval(:,2),nanmean(spatialDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
+errorbar(ph(1,3),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+
+hold(ph(2,3));
+bar(ph(2,3),xval(:,1),nanmean(temporalDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
+errorbar(ph(2,3),xval(:,1),nanmean(temporalDataControls),nanstd(temporalDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(2,3),xval(:,2),nanmean(temporalDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
+errorbar(ph(2,3),xval(:,2),nanmean(temporalDataStroke),nanstd(temporalDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+
+hold(ph(3,3));
+bar(ph(3,3),xval(:,1),nanmean(velocityDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
+errorbar(ph(3,3),xval(:,1),nanmean(velocityDataControls),nanstd(velocityDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(3,3),xval(:,2),nanmean(velocityDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
+errorbar(ph(3,3),xval(:,2),nanmean(velocityDataStroke),nanstd(velocityDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+
+hold(ph(4,3));
+bar(ph(4,3),xval(:,1),nanmean(netDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
+errorbar(ph(4,3),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(4,3),xval(:,2),nanmean(netDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
+errorbar(ph(4,3),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+
+set(ph(:,3),'XTick',nanmean(xval,2),'XTickLabel',{''})
+set(ph(4,3),'XTickLabel',contrastnames)
 
 
-%hold(ph(2,2));
-bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
-errorbar(ph(2,2),xval(:,1),nanmean(temporalDataControls),nanstd(temporalDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
-errorbar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),nanstd(temporalDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-
-%hold(ph(3,2));
-bar(ph(3,2),xval(:,1),nanmean(velocityDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
-errorbar(ph(3,2),xval(:,1),nanmean(velocityDataControls),nanstd(velocityDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
-errorbar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),nanstd(velocityDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-
-%hold(ph(4,2));
-bar(ph(4,2),xval(:,1),nanmean(netDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
-errorbar(ph(4,2),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(4,2),xval(:,2),nanmean(netDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
-errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-
-%set titles and labels
-set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5],'YTickLabel',{''})
-set(ph(4,2),'XTickLabel',{'eA_B_A_S_E','lA_B_A_S_E','lA_e_A','eP_B_A_S_E'})
-set(ph(:,1),'XTick',[115 362 625])
-set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
-
-set(ph(1,:),'YLim',[-0.1 0.2],'YTick',[-0.1 0 0.1 0.2])
-set(ph(2,:),'YLim',[-0.05 0.2],'YTick',[0 0.1 0.2])
-set(ph(3,:),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
-set(ph(4,:),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
-
-title(ph(1,1),'StepPosition')
-title(ph(2,1),'StepTime')
-title(ph(3,1),'StepVelocity')
-title(ph(4,1),'StepAsym')
-title(ph(1,2),'StepPosition')
-title(ph(2,2),'StepTime')
-title(ph(3,2),'StepVelocity')
-title(ph(4,2),'StepAsym')
-
-
-
-%set(fh,'Position',[0 0 250 250])

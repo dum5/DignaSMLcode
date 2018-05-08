@@ -109,6 +109,7 @@ slowref=strfind(names,'TM_slowref');slowref=find(not(cellfun('isempty', slowref)
 
 %find epochs needed to compute multiple epoch params
 OGpE=strfind(names,'OG_P');OGpE=find(not(cellfun('isempty', OGpE)));
+TMpE=strfind(names,'TM_P');TMpE=find(not(cellfun('isempty', TMpE)));
 OGpL=strfind(names,'OG_LP');OGpL=find(not(cellfun('isempty', OGpL)));
 LA=strfind(names,'lateAdapt');LA=find(not(cellfun('isempty', LA)));
 ERA=strfind(names,'EarlyReadapt');ERA=find(not(cellfun('isempty', ERA)));
@@ -138,11 +139,12 @@ for i=1:length(groups)
     %compute multiple epoch params
     groupOutcomes{i}(:,nEp+1,:) = groupOutcomes{i}(:,OGpE,:) - groupOutcomes{i}(:,OGpL,:);%delta OG post
     groupOutcomes{i}(:,nEp+2,:) = groupOutcomes{i}(:,LA,:) - groupOutcomes{i}(:,ERA,:);% LA-ERA
-    groupOutcomes{i}(:,nEp+3,:) = groupOutcomes{i}(:,OGpL,:) - groupOutcomes{i}(:,ERA,:);% LA-ERA
+    groupOutcomes{i}(:,nEp+3,:) = groupOutcomes{i}(:,OGpL,:) - groupOutcomes{i}(:,ERA,:);% OGlp-ERA
+    groupOutcomes{i}(:,nEp+4,:) = (groupOutcomes{i}(:,OGpE,:)./groupOutcomes{i}(:,TMpE,:)).*100;;% OGlp-ERA
     
 end
 
-names={names{1:end},'deltaOG','LA_ERA','lOG_ERA'};
+names={names{1:end},'deltaOG','LA_ERA','lOG_ERA','pctLearning'};
 %extract timecourses
 allconds=studyData.Gradual.getCommonConditions;
 [timeCourse]=getGroupedTimeCourses(groups,allconds,params);
@@ -198,6 +200,7 @@ for i=1:length(groups)
     NonEpochoutcome{i}.par{4}=NaN(length(groups{i}.adaptData),1);
     NonEpochoutcome{i}.par{5}=NaN(length(groups{i}.adaptData),1);
     NonEpochoutcome{i}.par{6}=NaN(length(groups{i}.adaptData),1);
+    
     
     %first get gradualAdaptation and readaptation
     tempdata=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(1,1)));%gradual adaptation

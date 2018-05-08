@@ -3,9 +3,12 @@ close all
 
 cd('Z:\SubjectData\E04 Generalization Young');
 list=dir('*.mat');
-
-for i=1:length(list)
+ h = waitbar(0,'Please wait...');
+nsubs=length(list);
+for i=1:nsubs
     name=list(i).name;
+    close(h)
+    h = waitbar(i/nsubs,['loading ',name]);
     load(name)
     expData=expData.flushAndRecomputeParameters;
     adaptData=expData.makeDataObj;
