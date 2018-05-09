@@ -26,7 +26,7 @@ sInds=find(num(:,2)==1);
                 sub=['CM0',num2str(num(i,1))];
             end
             day=['Day',num2str(num(i,3))];
-            Path=['S:\Shared\Yashar\EffortStudy\',sub,'\',day];
+            Path=['Z:\Users\Yashar\EffortStudy\',sub,'\',day];
              disp(['loading ',sub,' ',day]);
             file=[sub,'_fastparams.mat'];
             
@@ -82,7 +82,7 @@ for l=1:length(sInds)
                 sub=['PM0',num2str(num(i,1))];
             end
             day=['Day',num2str(num(i,3))];
-            Path=['S:\Shared\Yashar\EffortStudy\',sub,'\',day];
+            Path=['Z:\Users\Yashar\EffortStudy\',sub,'\',day];
             disp(['loading ',sub,' ',day]);
             file=[sub,'_',day,'params.mat'];
             load([Path,'\',file]);  
@@ -140,7 +140,7 @@ svar=NaN(length(stroke.subdata),length(condS));
 for c=1:length(stroke.subdata)
     if nanmean(stroke.subdata{c}.condition{1}.parameter{1})>0%if their initial symmetry is negative, all numbers will be flipped to be able to compare groups
         s=1;
-    else s=1;%s=-1;
+    else s=-1;
     end
     
     for con=1:length(condS)
