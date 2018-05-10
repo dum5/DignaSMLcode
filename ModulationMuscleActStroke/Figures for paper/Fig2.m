@@ -44,14 +44,14 @@ ccd=[0.6 0.3 0.5;0.95 0.7 0.13;0.5 0.8 0.2;0.3 0.75 0.93];
 
 %% Parameters and conditions to plot
 eE=1;
-eL=5;
+eL=1;
 nstrides=-40;
-[reps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmedian');
+[reps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmean');
 [meps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmean');
 [seps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanstd');
 
 paramList={'spatialContribution','stepTimeContribution','velocityContribution','netContribution'};
-suffix='Norm2';
+suffix='PNorm';
 paramList=strcat(paramList,suffix);
 
 %Define parameters we care about:
@@ -69,9 +69,9 @@ controlData=getEpochData(controls2,meps,paramList,true);
 varPatientData=getEpochData(patients2,seps,paramList,true);
 varControlData=getEpochData(controls2,seps,paramList,true);
 [~,Idx]=sort(patientData(4,1,:));Idx=squeeze(Idx);%sort patients according to ascending net
-%patientData(1:4,1,:)=patientData(1:4,1,Idx);
-%varPatientData(1:4,1,:)=varPatientData(1:4,1,Idx);
-%FM=FM(Idx);
+patientData(1:4,1,:)=patientData(1:4,1,Idx);
+varPatientData(1:4,1,:)=varPatientData(1:4,1,Idx);
+FM=FM(Idx);
 
 upperbound = nanmean(controlData,3) + 2*std(squeeze(controlData)')';
 lowerbound = nanmean(controlData,3) - 2*std(squeeze(controlData)')';
@@ -222,6 +222,6 @@ h=title(ax4,'STEP TIME ASYMMETRY');set(h,'FontSize',16)
 set(ax4,'XTick',[20 25 30 35],'XLim',[20 35],'YTick',[-0.2 -0.1 0 0.1])
 
 %% Save Figure
-saveFig(f1,cd, 'Fig2',1)
-print('Fig2','-painters','-dsvg')
-print('Fig2','-dtiff')
+% saveFig(f1,cd, 'Fig2',1)
+% print('Fig2','-painters','-dsvg')
+% print('Fig2','-dtiff')

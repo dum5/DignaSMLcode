@@ -58,7 +58,7 @@ eL=1;
 
 eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 15 -40 15],...
     [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
-labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
+labels={'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm'};
 %labels={'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm'};
 
 
@@ -72,11 +72,11 @@ for i=1:length(groups)
     for p=1:length(labels) 
         contrasts{i}.(['eA_B_',labels{p}])=squeeze(groups{i}.getEpochData(eps(2,:),labels{p})-groups{i}.getEpochData(eps(1,:),labels{p}));
         contrasts{i}.(['lA_B_',labels{p}])=squeeze(groups{i}.getEpochData(eps(3,:),labels{p})-groups{i}.getEpochData(eps(1,:),labels{p}));
-        contrasts{i}.(['lA_eA_',labels{p}])=squeeze(groups{i}.getEpochData(eps(3,:),labels{p})-groups{i}.getEpochData(eps(2,:),labels{p}));
+        contrasts{i}.(['eP_lA_',labels{p}])=squeeze(groups{i}.getEpochData(eps(4,:),labels{p})-groups{i}.getEpochData(eps(3,:),labels{p}));
         contrasts{i}.(['eP_B_',labels{p}])=squeeze(groups{i}.getEpochData(eps(4,:),labels{p})-groups{i}.getEpochData(eps(1,:),labels{p}));
     end    
 end
-contrastnames={'eA_B','lA_B','lA_eA','eP_B'};
+contrastnames={'eA_B','lA_B','eP_lA','eP_B'};
 
 spatialDataControls=NaN(15,4);
 spatialDataStroke=NaN(15,4);
@@ -88,14 +88,14 @@ netDataControls=NaN(15,4);
 netDataStroke=NaN(15,4);
 
 for c=1:length(contrastnames)
-    spatialDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','spatialContributionNorm2']);
-    spatialDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','spatialContributionNorm2']);
-    temporalDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','stepTimeContributionNorm2']);
-    temporalDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','stepTimeContributionNorm2']);
-    velocityDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','velocityContributionNorm2']);
-    velocityDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','velocityContributionNorm2']);
-    netDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','netContributionNorm2']);
-    netDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','netContributionNorm2']);
+    spatialDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','spatialContributionPNorm']);
+    spatialDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','spatialContributionPNorm']);
+    temporalDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','stepTimeContributionPNorm']);
+    temporalDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','stepTimeContributionPNorm']);
+    velocityDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','velocityContributionPNorm']);
+    velocityDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','velocityContributionPNorm']);
+    netDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','netContributionPNorm']);
+    netDataStroke(:,c)=contrasts{2}.([contrastnames{c},'_','netContributionPNorm']);
     
 end
 
@@ -150,7 +150,8 @@ bar(ph(1,2),xval(:,1),nanmean(spatialDataControls),'FaceColor',colors(1,:),'BarW
 errorbar(ph(1,2),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-plot(ph(1,2),nanmean(xval([2:4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
+plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
+%plot(ph(1,2),nanmean(xval([2:4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 ll=findobj(ph(1,2),'Type','Bar');
 legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
 
@@ -160,31 +161,37 @@ bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',colors(1,:),'Bar
 errorbar(ph(2,2),xval(:,1),nanmean(temporalDataControls),nanstd(temporalDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),nanstd(temporalDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-plot(ph(2,2),nanmean(xval([1,2,4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
+%plot(ph(2,2),nanmean(xval([1,2,4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 
 %hold(ph(3,2));
 bar(ph(3,2),xval(:,1),nanmean(velocityDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
 errorbar(ph(3,2),xval(:,1),nanmean(velocityDataControls),nanstd(velocityDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),nanstd(velocityDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-plot(ph(3,2),nanmean(xval([1:3],:),2),[-0.35 -0.35 0.1],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
+%plot(ph(3,2),nanmean(xval([1:3],:),2),[-0.35 -0.35 0.1],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 
 %hold(ph(4,2));
 bar(ph(4,2),xval(:,1),nanmean(netDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
 errorbar(ph(4,2),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(4,2),xval(:,2),nanmean(netDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-plot(ph(4,2),nanmean(xval([1:4],:),2),[-0.35 -0.35 0.18 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
+plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
+%plot(ph(4,2),nanmean(xval([1:4],:),2),[-0.35 -0.35 0.18 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 %set titles and labels
-set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5],'YTickLabel',{''})
-set(ph(4,2),'XTickLabel',{'eA_B_A_S_E','lA_B_A_S_E','lA_e_A','eP_B_A_S_E'})
+set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
+set(ph(4,2),'XTickLabel',{'eA_B_A_S_E','lA_B_A_S_E','eP_l_A','eP_B_A_S_E'})
 set(ph(:,1),'XTick',[115 362 625])
 set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
 
-set(ph(1,:),'YLim',[-0.1 0.2],'YTick',[-0.1 0 0.1 0.2])
-set(ph(2,:),'YLim',[-0.05 0.2],'YTick',[0 0.1 0.2])
-set(ph(3,:),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
-set(ph(4,:),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
+set(ph(1,1),'YLim',[-0.1 0.2],'YTick',[-0.1 0 0.1 0.2])
+set(ph(2,1),'YLim',[-0.05 0.2],'YTick',[0 0.1 0.2])
+set(ph(3,1),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
+set(ph(4,1),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
+
+set(ph(1,2),'YLim',[-0.2 0.2],'YTick',[-0.2 0 0.2])
+set(ph(2,2),'YLim',[-0.2 0.2],'YTick',[-0.2 0 0.2])
+set(ph(3,2),'YLim',[-0.4 0.4],'YTick',[-0.4 -0.2 0 0.2 0.4])
+set(ph(4,2),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
 
 title(ph(1,1),'StepPosition')
 title(ph(2,1),'StepTime')
