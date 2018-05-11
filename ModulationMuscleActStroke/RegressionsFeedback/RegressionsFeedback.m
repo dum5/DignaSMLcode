@@ -108,26 +108,60 @@ for i=1:size(eA_S,2)
     aux=uncenteredRsquared(SmodelFitAll1a{i});
     Sr2All1a(i)=aux.uncentered;    
 end
-save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','ClearnAll1a','SlearnAll1a');
+
+load([matDataDir,'bioData'])
+clear ageC ageS;
+for c=1:length(groups{1}.adaptData)
+    ageC(c,1)=groups{1}.adaptData{c}.getSubjectAgeAtExperimentDate;
+    ageS(c,1)=groups{2}.adaptData{c}.getSubjectAgeAtExperimentDate;
+    genderC{c}=groups{1}.adaptData{c}.subData.sex;
+    genderS{c}=groups{2}.adaptData{c}.subData.sex;
+    affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
+end
 
 
-figure
-set(gcf,'Color',[1 1 1])
-x=[1,2];
-subplot(2,3,1)
-hold on
-bar(x,[Clearn1a Slearn1a],'FaceColor',[0.5 0.5 0.5])
-errorbar(x,[Clearn1a Slearn1a],[diff(Clearn1aCI)/2 diff(Slearn1aCI)/2],'Color','k','LineWidth',2,'LineStyle','none')
-set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{''},'FontSize',16)
-ylabel('\beta_M group regression')
-title('ADAPTATION OF FEEDBACK RESPONSES')
+FMselect=FM([1:6,8:16]);
+velSselect=velsS([1:6,8:16]);
+velCselect=velsC([1:6,8:16]);
 
-subplot(2,3,4)
-hold on
-bar(x,nanmean([ClearnAll1a SlearnAll1a]),'FaceColor',[0.5 0.5 0.5])
-errorbar(x,nanmean([ClearnAll1a SlearnAll1a]),nanstd([ClearnAll1a SlearnAll1a])./sqrt(15),'Color','k','LineWidth',2,'LineStyle','none')
-set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},'FontSize',16)
-ylabel('\beta_M individual regressions')
+tALL=table;
+tALL.group=cell(30,1);tALL.aff=cell(30,1);tALL.sens=NaN(30,1);
+tALL.group(1:15,1)={'control'};
+tALL.group(16:30,1)={'stroke'};
+tALL.group=nominal(tALL.group);
+tALL.gender=[genderC';genderS'];
+tALL.age=[ageC; ageS];
+tALL.aff(16:30)=affSide';
+tALL.vel=[velCselect';velSselect'];
+tALL.FM=[repmat(34,15,1);FMselect'];
+tALL.BM=[ClearnAll1a;SlearnAll1a];
+tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
+
+
+
+save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
+
+
+% 
+% figure
+% set(gcf,'Color',[1 1 1])
+% x=[1,2];
+% subplot(2,3,1)
+% hold on
+% bar(x,[Clearn1a Slearn1a],'FaceColor',[0.5 0.5 0.5])
+% errorbar(x,[Clearn1a Slearn1a],[diff(Clearn1aCI)/2 diff(Slearn1aCI)/2],'Color','k','LineWidth',2,'LineStyle','none')
+% set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{''},'FontSize',16)
+% ylabel('\beta_M group regression')
+% title('ADAPTATION OF FEEDBACK RESPONSES')
+% 
+% subplot(2,3,4)
+% hold on
+% bar(x,nanmean([ClearnAll1a SlearnAll1a]),'FaceColor',[0.5 0.5 0.5])
+% errorbar(x,nanmean([ClearnAll1a SlearnAll1a]),nanstd([ClearnAll1a SlearnAll1a])./sqrt(15),'Color','k','LineWidth',2,'LineStyle','none')
+% set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},'FontSize',16)
+% ylabel('\beta_M individual regressions')
+
+
 
 
 

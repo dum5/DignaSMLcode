@@ -152,7 +152,7 @@ bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',colors(2,:),'BarWid
 errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
 plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
 %plot(ph(1,2),nanmean(xval([2:4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
-ll=findobj(ph(1,2),'Type','Bar');
+% ll=findobj(ph(1,2),'Type','Bar');
 legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
 
 
