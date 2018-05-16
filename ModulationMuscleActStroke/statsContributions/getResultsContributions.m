@@ -38,7 +38,7 @@ groups{1}=controls2;
 groups{2}=patients2;
 
 eF=1;
-eL=5;
+eL=1;
 % eps=defineEpochs({'Base','eA','lA','eP','lP'},{'TM base','Adaptation','Adaptation','Washout','Washout'},[-40 15 -40 15 -40],...
 %     [eF,eF,eF,eF,eF],[eL,eL,eL,eL,eL],'nanmean');
 
@@ -46,15 +46,15 @@ eps=defineEpochs({'Base','eA','lA','eP',},{'TM base','Adaptation','Adaptation','
     [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
 
 [SPmodel,SPbtab,SPwtab,SPmaineff,SPposthocGroup,SPposthocEpoch,SPposthocEpochByGroup,SPposthocGroupByEpoch]=...
-    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'spatialContributionNorm2',eps,0.05);
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'spatialContributionPNorm',eps,0.05);
 
 [STmodel,STbtab,STwtab,STmaineff,STposthocGroup,STposthocEpoch,STposthocEpochByGroup,STposthocGroupByEpoch]=...
-    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'stepTimeContributionNorm2',eps,0.05);
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'stepTimeContributionPNorm',eps,0.05);
 
 [SVmodel,SVbtab,SVwtab,SVmaineff,SVposthocGroup,SVposthocEpoch,SVposthocEpochByGroup,SVposthocGroupByEpoch]=...
-    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'velocityContributionNorm2',eps,0.05);
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'velocityContributionPNorm',eps,0.05);
 
 [NETmodel,NETbtab,NETwtab,NETmaineff,NETposthocGroup,NETposthocEpoch,NETposthocEpochByGroup,NETposthocGroupByEpoch]=...
-    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'netContributionNorm2',eps,0.05);
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'netContributionPNorm',eps,0.05);
 
 
