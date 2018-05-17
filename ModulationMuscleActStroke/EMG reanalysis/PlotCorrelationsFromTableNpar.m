@@ -7,8 +7,9 @@
 % - Output: Correlation matrix                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
+nominal(t.group);
+T=t(t.group=='stroke',:);
+T=t;
 
 
 varnames=T.Properties.VariableNames';
@@ -18,7 +19,7 @@ xval=[];for l=1:length(xvar);xval(:,l)=T.(xvarnames{l});end
 yval=[];for l=1:length(yvar);yval(:,l)=T.(yvarnames{l});end
 [h,ax,bigax]=gplotmatrix(xval,yval,T.group,'k','o',12,[],[],xvarnames,yvarnames);
 
-colcodes2=flipud([0 1 0;1 0 0]);
+colcodes2=flipud([0.4 0.7 0.7;0.9 0.5 0.9]);
 for a = 1:size(ax,1)
     for c = 1:size(ax,2)
     hold(ax(a,c))

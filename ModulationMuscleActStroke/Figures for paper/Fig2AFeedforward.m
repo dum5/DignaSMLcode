@@ -34,10 +34,10 @@ end
 newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 
 f1=figure('Name','Feedforward responses');
-set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 6.5*1.5 6.5*1.5]);
+set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 6 6]);
 
-ax2 = axes('Position',[0.4650    0.1763    0.2237    0.3999],'FontSize',12);%create axis for control checkerboard
-ax3 = axes('Position',[0.6974    0.1784    0.2237    0.3978],'FontSize',12);%create axis for patient checkerboard
+ax2 = axes('Position',[0.15   0.2   0.35 0.35*1.81],'FontSize',12);%create axis for control checkerboard
+ax3 = axes('Position',[0.15+0.37    0.2    0.35   0.35*1.81],'FontSize',12);%create axis for patient checkerboard
 
 fb=figure;
 pd1=subplot(1,1,1);
