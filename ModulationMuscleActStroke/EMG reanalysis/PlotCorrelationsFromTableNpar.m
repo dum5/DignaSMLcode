@@ -9,7 +9,7 @@
 
 nominal(t.group);
 T=t(t.group=='stroke',:);
-T=t;
+%T=t;
 
 
 varnames=T.Properties.VariableNames';
