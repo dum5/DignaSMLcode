@@ -16,8 +16,8 @@ load(loadName)
 
 patients2=patients.removeSubs({'P0007'});
 controls2=controls.removeSubs({'C0007'});
-patients2=patients2.removeBadStrides;
-controls2=controls2.removeBadStrides;
+%patients2=patients2.removeBadStrides;
+%controls2=controls2.removeBadStrides;
 
 eF=1;
 eL=1;

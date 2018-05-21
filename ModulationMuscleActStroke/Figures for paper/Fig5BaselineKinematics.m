@@ -28,8 +28,8 @@ switch matchSpeedFlag
         %patientsUnbiased2=patientsUnbiased2.getSubGroup(patientFastList).removeBadStrides;
         %controlsUnbiased2=controlsUnbiased2.getSubGroup(controlsSlowList).removeBadStrides;
     case 0 %Full groups
-        patients2=patients2.removeBadStrides;
-        controls2=controls2.removeBadStrides;
+        %patients2=patients2.removeBadStrides;
+        %controls2=controls2.removeBadStrides;
         %patientsUnbiased2=patientsUnbiased2.removeBadStrides;
         %controlsUnbiased2=controlsUnbiased2.removeBadStrides;   
 end

@@ -36,13 +36,15 @@ if removeP07Flag
 end
 switch matchSpeedFlag
     case 1 %Speed matched groups
-        patients2=patients2.getSubGroup(patientFastList).removeBadStrides;
-        controls2=controls2.getSubGroup(controlsSlowList).removeBadStrides;
+%         patients2=patients2.getSubGroup(patientFastList).removeBadStrides;
+%         controls2=controls2.getSubGroup(controlsSlowList).removeBadStrides;
+        patients2=patients2.getSubGroup(patientFastList);
+        controls2=controls2.getSubGroup(controlsSlowList);
         %patientsUnbiased2=patientsUnbiased2.getSubGroup(patientFastList).removeBadStrides;
         %controlsUnbiased2=controlsUnbiased2.getSubGroup(controlsSlowList).removeBadStrides;
     case 0 %Full groups
-        patients2=patients2.removeBadStrides;
-        controls2=controls2.removeBadStrides;
+       % patients2=patients2.removeBadStrides;
+       % controls2=controls2.removeBadStrides;
         %patientsUnbiased2=patients2.removeBadStrides.removeBias;
         %controlsUnbiased2=controls2.removeBadStrides.removeBias;   
 end
