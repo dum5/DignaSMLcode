@@ -8,7 +8,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 nominal(t.group);
-T=t(t.group=='stroke',:);
+%T=t(t.group=='stroke',:);
 %T=t;
 
 

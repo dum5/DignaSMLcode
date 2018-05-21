@@ -109,6 +109,21 @@ for i=1:size(eA_S,2)
     Sr2All1a(i)=aux.uncentered;    
 end
 
+%Magnitude analysis
+eAMagnC=NaN(15,1);
+ePMagnC=NaN(15,1);
+eAMagnC=NaN(15,1);
+ePMagnC=NaN(15,1);
+
+for i=1:size(eA_C,2)
+    eAMagnC(i,1)=norm(eA_C(:,i));
+    ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
+end
+for i=1:size(eA_S,2)
+    eAMagnS(i,1)=norm(eA_S(:,i));
+    ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
+end
+
 load([matDataDir,'bioData'])
 clear ageC ageS;
 for c=1:length(groups{1}.adaptData)
@@ -136,7 +151,8 @@ tALL.vel=[velCselect';velSselect'];
 tALL.FM=[repmat(34,15,1);FMselect'];
 tALL.BM=[ClearnAll1a;SlearnAll1a];
 tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
-
+tALL.eAMagn=[eAMagnC;eAMagnS];
+tALL.ePMagn=[ePMagnC;ePMagnS];
 
 
 save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
@@ -160,7 +176,7 @@ save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Sl
 % errorbar(x,nanmean([ClearnAll1a SlearnAll1a]),nanstd([ClearnAll1a SlearnAll1a])./sqrt(15),'Color','k','LineWidth',2,'LineStyle','none')
 % set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},'FontSize',16)
 % ylabel('\beta_M individual regressions')
-
+% 
 
 
 

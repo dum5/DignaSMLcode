@@ -4,7 +4,8 @@ close all
 %%Kinematic outcomes
 
 %% read data
-matDataDir='C:\Users\did35\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\'
+%matDataDir='C:\Users\did35\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\'
+matDataDir='D:\Documents\OnedrivePitt\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\'
 fileName='groupedParamsForKinAnalysis';
 %%
 matchSpeedFlag=0;
