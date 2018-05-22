@@ -12,13 +12,14 @@ t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
 TControl=t(t.group=='Control',:);
 
-[h,p]=ttest2(TStroke.BM,TControl.BM);
-p=round(p,3);
-if p==0
-    p='<0.01';
-else
-    p=['=',num2str(p)];
-end
+[p1,h1]=ranksum(TStroke.BM,TControl.BM);p1=round(p1,3);
+if p1==0; p1='<0.01'; else; p1=['=',num2str(p1)]; end
+
+[p2,h2]=ranksum(TStroke.eAMagn,TControl.eAMagn);p2=round(p2,3);
+if p2==0; p2='<0.01'; else; p2=['=',num2str(p2)]; end
+
+[p3,h3]=ranksum(TStroke.ePMagn,TControl.ePMagn);p3=round(p3,3);
+if p3==0; p3='<0.01'; else; p3=['=',num2str(p3)]; end
 
 f1=figure('Name','Feedforward responses');
 set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 3 10]);
@@ -43,7 +44,17 @@ txt2=text(ax2,0.7,1.3,'eP_l_A = \betaM . eA_B','FontSize',14,'FontWeight','bold'
 
 hold(ax3)
 bar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7])
-
+errorbar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],[nanstd(TControl.eAMagn) nanstd(TControl.ePMagn)]./sqrt(15),...
+    'LineStyle','none','LineWidth',2,'Color','k')
+bar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9])
+errorbar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],[nanstd(TStroke.eAMagn) nanstd(TStroke.ePMagn)]./sqrt(15),...
+    'LineStyle','none','LineWidth',2,'Color','k')
+set(ax3,'XLim',[0.5 5.5],'XTick',[1.5 4.5],'XTickLabel',{'eA_B','eP_l_A'},...
+    'YLim',[0 15],'YTick',[0 5 10 15],'FontSize',14,'FontWeight','Bold');
+ylabel(ax3,'Response magnitude')
+ll=findobj(ax3,'Type','Bar');
+h=legend(ax3,flipud(ll),{'CONTROL','STROKE'});
+set(h,'EdgeColor','none');
 % plot(ax3,TStroke.FM,TStroke.BM,'ok','MarkerFaceColor',[0.9 0.5 0.9])
 % xdata=[TStroke.FM];
 % ydata=[TStroke.BM];

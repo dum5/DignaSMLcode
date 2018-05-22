@@ -13,7 +13,8 @@ t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
 TControl=t(t.group=='Control',:);
 
-[h,p]=ttest2(TStroke.FF_skneeAngleAtSHS,TControl.FF_skneeAngleAtSHS);
+%[h,p]=ttest(TStroke.FF_skneeAngleAtSHS,TControl.FF_skneeAngleAtSHS);
+[p,h]=ranksum(TStroke.FF_skneeAngleAtSHS,TControl.FF_skneeAngleAtSHS);
 p=round(p,3);
 if p==0
     p='<0.01';
@@ -45,12 +46,13 @@ plot(ax3,TStroke.FF_Quad,TStroke.FF_skneeAngleAtSHS,'ok','MarkerFaceColor',[0.9 
 ll=findobj(ax3,'Type','Line');
 xdata=[TControl.FF_Quad;TStroke.FF_Quad];
 ydata=[TControl.FF_skneeAngleAtSHS;TStroke.FF_skneeAngleAtSHS];
-[r,m,b] = regression(xdata,ydata,'one');
-r=num2str(round(r,2));
-rfit=b+xdata.*m;
-plot(ax3,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
+[rho,pval]=corr([xdata ydata],'type', 'Spearman');
+% [r,m,b] = regression(xdata,ydata,'one');
+% r=num2str(round(r,2));
+% rfit=b+xdata.*m;
+% plot(ax3,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
 legend(ax3,ll(end:-1:1),{'CONTROL','STROKE'},'box','off', 'Position',[0.6 0.45 0.35 0.08])
 set(ax3,'XLim',[-0.3 0.8],'YLim',[-10 20],'YTick',[-10 0 20],'FontSize',14,'FontWeight','Bold');
 ylabel(ax3,'\Delta\theta sKnee lA-B')
 xlabel(ax3,'Quad Activity lA-B')
-tx=text(ax3,-0.3, 18,['r=',r,',p<0.01']);set(tx,'FontSize',14)
+tx=text(ax3,-0.3, 18,['rho=',num2str(round(rho(2),2)),',p<0.01']);set(tx,'FontSize',14)
