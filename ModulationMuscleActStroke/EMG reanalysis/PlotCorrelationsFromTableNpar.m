@@ -7,8 +7,8 @@
 % - Output: Correlation matrix                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-nominal(t.group);
-%T=t(t.group=='stroke',:);
+t.group=nominal(t.group);
+T=t(t.group=='Stroke',:);
 %T=t;
 
 
