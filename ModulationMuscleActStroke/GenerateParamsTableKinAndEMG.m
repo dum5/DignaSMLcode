@@ -34,6 +34,10 @@ t.group=cell(30,1);
 t.group(1:15,1)={'Control'};
 t.group(16:30,1)={'Stroke'};
 
+cSpeedmatch=[1 1 0 1 1 1 0 1 1 0 1 0 0 0 1]';
+sSpeedmatch=[1 1 0 0 1 0 1 1 1 0 0 1 1 1 0]';
+t.SpeedMatch=[cSpeedmatch;sSpeedmatch];
+
 %get the data for specific epochs in the Table
 for p=1:length(labels) 
         for e=1:length(eps)
