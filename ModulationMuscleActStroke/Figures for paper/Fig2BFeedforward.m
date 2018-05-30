@@ -30,9 +30,9 @@ ax3 = axes('Position',[0.2    0.15    0.35*1.5   0.35],'FontSize',12,'Clipping',
 
 hold(ax2)
 bar(ax2,1,nanmean(TControl.FF_skneeAngleAtSHS),'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7]);
-errorbar(ax2,1,nanmean(TControl.FF_skneeAngleAtSHS),nanstd(TControl.FF_skneeAngleAtSHS)./sqrt(15),'LineWidth',2,'Color','k')
+errorbar(ax2,1,nanmean(TControl.FF_skneeAngleAtSHS),nanstd(TControl.FF_skneeAngleAtSHS)./sqrt(size(TControl,1)),'LineWidth',2,'Color','k')
 bar(ax2,2,nanmean(TStroke.FF_skneeAngleAtSHS),'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
-errorbar(ax2,2,nanmean(TStroke.FF_skneeAngleAtSHS),nanstd(TStroke.FF_skneeAngleAtSHS)./sqrt(15),'LineWidth',2,'Color','k')
+errorbar(ax2,2,nanmean(TStroke.FF_skneeAngleAtSHS),nanstd(TStroke.FF_skneeAngleAtSHS)./sqrt(size(TStroke,1)),'LineWidth',2,'Color','k')
 set(ax2,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},...
     'YLim',[-1 11],'YTick',[0 5 10],'FontSize',14,'FontWeight','Bold');
 ylabel(ax2,'\Delta\theta sKnee lA-B')

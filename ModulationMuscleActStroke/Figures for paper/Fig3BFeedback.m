@@ -30,9 +30,9 @@ ax3 = axes('Position',[0.22   0.1   0.7 0.33],'FontSize',12);%Correlation with F
 
 hold(ax2)
 bar(ax2,1,nanmean(TControl.BM),'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7]);
-errorbar(ax2,1,nanmean(TControl.BM),nanstd(TControl.BM)./sqrt(15),'LineWidth',2,'Color','k')
+errorbar(ax2,1,nanmean(TControl.BM),nanstd(TControl.BM)./sqrt(size(TControl,1)),'LineWidth',2,'Color','k')
 bar(ax2,2,nanmean(TStroke.BM),'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
-errorbar(ax2,2,nanmean(TStroke.BM),nanstd(TStroke.BM)./sqrt(15),'LineWidth',2,'Color','k')
+errorbar(ax2,2,nanmean(TStroke.BM),nanstd(TStroke.BM)./sqrt(size(TStroke,1)),'LineWidth',2,'Color','k')
 %plot(ax2,0.95,TControl.BM,'.k','MarkerSize',7)
 %plot(ax2,1.95,TStroke.BM,'.k','MarkerSize',7)
 set(ax2,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},...
@@ -44,10 +44,10 @@ txt2=text(ax2,0.7,1.3,'eP_l_A = \betaM . eA_B','FontSize',14,'FontWeight','bold'
 
 hold(ax3)
 bar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7])
-errorbar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],[nanstd(TControl.eAMagn) nanstd(TControl.ePMagn)]./sqrt(15),...
+errorbar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],[nanstd(TControl.eAMagn) nanstd(TControl.ePMagn)]./sqrt(size(TControl,1)),...
     'LineStyle','none','LineWidth',2,'Color','k')
 bar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9])
-errorbar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],[nanstd(TStroke.eAMagn) nanstd(TStroke.ePMagn)]./sqrt(15),...
+errorbar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],[nanstd(TStroke.eAMagn) nanstd(TStroke.ePMagn)]./sqrt(size(TStroke,1)),...
     'LineStyle','none','LineWidth',2,'Color','k')
 set(ax3,'XLim',[0.5 5.5],'XTick',[1.5 4.5],'XTickLabel',{'eA_B','eP_l_A'},...
     'YLim',[0 15],'YTick',[0 5 10 15],'FontSize',14,'FontWeight','Bold');
