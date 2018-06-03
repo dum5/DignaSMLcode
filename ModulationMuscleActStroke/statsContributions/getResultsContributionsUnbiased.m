@@ -64,4 +64,19 @@ groups{2}=patients2;
 [NETmodel,NETbtab,NETwtab,NETmaineff,NETposthocGroup,NETposthocEpoch,NETposthocEpochByGroup,NETposthocGroupByEpoch]=...
     groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'netContributionPNorm',eps,0.05);
 
+[AFmodel,AFbtab,AFwtab,AFmaineff,AFposthocGroup,AFposthocEpoch,AFposthocEpochByGroup,AFposthocGroupByEpoch]=...
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'alphaFast',eps,0.05);
+
+[ASmodel,ASbtab,ASwtab,ASmaineff,ASposthocGroup,ASposthocEpoch,ASposthocEpochByGroup,ASposthocGroupByEpoch]=...
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'alphaSlow',eps,0.05);
+
+[XFmodel,XFbtab,XFwtab,XFmaineff,XFposthocGroup,XFposthocEpoch,XFposthocEpochByGroup,XFposthocGroupByEpoch]=...
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'XFast',eps,0.05);
+
+[XSmodel,XSbtab,XSwtab,XSmaineff,XSposthocGroup,XSposthocEpoch,XSposthocEpochByGroup,XSposthocGroupByEpoch]=...
+    groupAdaptationData.AnovaEpochs(groups,{'controls','stroke'},'XSlow',eps,0.05);
+
+
+
+
 
