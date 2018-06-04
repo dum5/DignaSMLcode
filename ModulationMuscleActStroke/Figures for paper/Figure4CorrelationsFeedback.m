@@ -9,6 +9,7 @@ t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
 TControls=t(t.group=='Control',:);
 
+
 x1=0.0906;x2=0.4005;x3=0.7104;
 y1=0.7104;y2=0.4146;y3=0.1188;
 

@@ -47,10 +47,10 @@ ll=findobj(ax3,'Type','Line');
 xdata=[TControl.FF_Quad;TStroke.FF_Quad];
 ydata=[TControl.FF_skneeAngleAtSHS;TStroke.FF_skneeAngleAtSHS];
 [rho,pval]=corr([xdata ydata],'type', 'Spearman');
-% [r,m,b] = regression(xdata,ydata,'one');
-% r=num2str(round(r,2));
-% rfit=b+xdata.*m;
-% plot(ax3,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
+[r,m,b] = regression(xdata,ydata,'one');
+r=num2str(round(r,2));
+rfit=b+xdata.*m;
+plot(ax3,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
 legend(ax3,ll(end:-1:1),{'CONTROL','STROKE'},'box','off', 'Position',[0.6 0.45 0.35 0.08])
 set(ax3,'XLim',[-0.3 0.8],'YLim',[-10 20],'YTick',[-10 0 20],'FontSize',14,'FontWeight','Bold');
 ylabel(ax3,'\Delta\theta sKnee lA-B')
