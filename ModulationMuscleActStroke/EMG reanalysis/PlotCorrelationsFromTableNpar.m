@@ -9,7 +9,7 @@
 
 t.group=nominal(t.group);
 %T=t(t.group=='Control',:);
-T=t;
+%T=t;
 colcodes2=flipud([0.4 0.7 0.7;0.9 0.5 0.9]);
 %colcodes2=[0.4 0.78 0.7];
 

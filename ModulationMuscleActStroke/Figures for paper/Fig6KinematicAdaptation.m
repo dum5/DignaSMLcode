@@ -4,7 +4,7 @@ close all
 %% read data
 [loadName,matDataDir]=uigetfile('*.mat');
 %%
-matchSpeedFlag=1;
+matchSpeedFlag=0;
 removeMissing=false;
 
 loadName=[matDataDir,loadName]; 
@@ -205,6 +205,6 @@ title(ph(2,2),'StepTime')
 title(ph(3,2),'StepVelocity')
 title(ph(4,2),'StepAsym')
 
-
+set(gcf,'Renderer','painters');
 
 %set(fh,'Position',[0 0 250 250])

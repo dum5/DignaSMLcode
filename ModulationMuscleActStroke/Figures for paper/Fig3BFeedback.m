@@ -7,6 +7,11 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
+% cSpeedmatch=[1 1 0 1 1 1 0 1 1 0 1 0 0 0 1]';
+% sSpeedmatch=[1 1 0 0 1 0 1 1 1 0 0 1 1 1 0]';
+% t.SpeedMatch=[cSpeedmatch;sSpeedmatch];
+% t=t(t.SpeedMatch==1,:);
+
 
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
