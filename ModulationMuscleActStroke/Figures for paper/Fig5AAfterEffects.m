@@ -40,6 +40,10 @@ set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 6 6]);
 
 ax2 = axes('Position',[0.15   0.2   0.35 0.35*1.81],'FontSize',12);%create axis for control checkerboard
 ax3 = axes('Position',[0.15+0.37    0.2    0.35   0.35*1.81],'FontSize',12);%create axis for patient checkerboard
+% 
+% ax2 = axes('Position',[0.1   0.2   0.2 0.35*1.81],'FontSize',12);%create axis for control checkerboard
+% ax3 = axes('Position',[0.1+0.22    0.2    0.2   0.35*1.81],'FontSize',12);%create axis for patient checkerboard
+
 
 fb=figure;
 pd1=subplot(1,1,1);

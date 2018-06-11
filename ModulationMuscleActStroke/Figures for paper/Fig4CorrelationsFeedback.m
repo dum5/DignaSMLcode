@@ -6,8 +6,15 @@ close all
 loadName=[matDataDir,loadName]; 
 load(loadName)
 t.group=nominal(t.group);
+
+
+Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
+%t=t(t.SpeedMatch==1,:);
+%Idx=[1:2 4:9];
+
 TStroke=t(t.group=='Stroke',:);
 TControls=t(t.group=='Control',:);
+
 
 
 x1=0.0906;x2=0.4005;x3=0.7104;
@@ -30,9 +37,9 @@ ax9 = axes('Position',[x3 y3 0.2365 0.2365],'FontSize',14,'FontWeight','Bold','B
 
 hold(ax1)
 plot(ax1,(TControls.age)./12,TControls.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
-plot(ax1,(TStroke.age)./12,TStroke.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
+plot(ax1,(TStroke.age(Idx))./12,TStroke.BM(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 [rhoc,pc]=corr([(TControls.age)./12,TControls.BM],'Type','Spearman');
-[rhos,ps]=corr([(TStroke.age)./12,TStroke.BM],'Type','Spearman');
+[rhos,ps]=corr([(TStroke.age(Idx))./12,TStroke.BM(Idx)],'Type','Spearman');
 tc=text(ax1,60,1,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
 ts=text(ax1,60,0.9,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 ylabel(ax1,'\beta_M');title(ax1,'Age');
@@ -45,7 +52,7 @@ if pc(2)<0.05
     clear r slope intercept x pred
 end
 if ps(2)<0.05
-    [r,slope,intercept] = regression(TStroke.age/12,TStroke.BM,'one');
+    [r,slope,intercept] = regression(TStroke.age(Idx)/12,TStroke.BM(Idx),'one');
     x=get(ax1,'XLim');
     pred=intercept+slope.*x;
     plot(ax1,x,pred,'LineWidth',2','Color',[0.9 0.5 0.9])
@@ -56,9 +63,9 @@ clear rhoc pc rhos ps tc ts
 
 hold(ax2)
 plot(ax2,(TControls.vel),TControls.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
-plot(ax2,(TStroke.vel),TStroke.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
+plot(ax2,(TStroke.vel(Idx)),TStroke.BM(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 [rhoc,pc]=corr([(TControls.vel),TControls.BM],'Type','Spearman');
-[rhos,ps]=corr([(TStroke.vel),TStroke.BM],'Type','Spearman');
+[rhos,ps]=corr([(TStroke.vel(Idx)),TStroke.BM(Idx)],'Type','Spearman');
 tc=text(ax2,0,1,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
 ts=text(ax2,0,0.9,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 title(ax2,'Velocity');
@@ -70,7 +77,7 @@ if pc(2)<0.05
     clear r slope intercept x pred
 end
 if ps(2)<0.05
-    [r,slope,intercept] = regression(TStroke.vel,TStroke.BM,'one');
+    [r,slope,intercept] = regression(TStroke.vel(Idx),TStroke.BM(Idx),'one');
     x=get(ax2,'XLim');
     pred=intercept+slope.*x;
     plot(ax2,x,pred,'LineWidth',2','Color',[0.9 0.5 0.9])
@@ -81,14 +88,14 @@ clear rhoc pc rhos ps tc ts
 
 hold(ax3)
 %plot(ax3,(TControls.FM),TControls.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
-plot(ax3,(TStroke.FM),TStroke.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
+plot(ax3,(TStroke.FM(Idx)),TStroke.BM(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 %[rhoc,pc]=corr([(TControls.FM),TControls.BM],'Type','Spearman');
-[rhos,ps]=corr([(TStroke.FM),TStroke.BM],'Type','Spearman');
+[rhos,ps]=corr([(TStroke.FM(Idx)),TStroke.BM(Idx)],'Type','Spearman');
 %tc=text(ax3,0,1,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
 ts=text(ax3,20,0.9,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 title(ax3,'Fugl-Meyer');
 if ps(2)<0.05
-    [r,slope,intercept] = regression(TStroke.FM,TStroke.BM,'one');
+    [r,slope,intercept] = regression(TStroke.FM(Idx),TStroke.BM(Idx),'one');
     x=get(ax3,'XLim');
     pred=intercept+slope.*x;
     plot(ax3,x,pred,'LineWidth',2','Color',[0.9 0.5 0.9])
@@ -169,9 +176,9 @@ clear rhoc pc rhos ps tc ts
 
 hold(ax7)
 plot(ax7,(TControls.age)./12,TControls.ePMagn,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
-plot(ax7,(TStroke.age)./12,TStroke.ePMagn,'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
+plot(ax7,(TStroke.age(Idx))./12,TStroke.ePMagn(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 [rhoc,pc]=corr([(TControls.age)./12,TControls.ePMagn],'Type','Spearman');
-[rhos,ps]=corr([(TStroke.age)./12,TStroke.ePMagn],'Type','Spearman');
+[rhos,ps]=corr([(TStroke.age(Idx))./12,TStroke.ePMagn(Idx)],'Type','Spearman');
 tc=text(ax7,60,30,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
 ts=text(ax7,60,27.75,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 if pc(2)<0.05
@@ -182,7 +189,7 @@ if pc(2)<0.05
     clear r slope intercept x pred
 end
 if ps(2)<0.05
-    [r,slope,intercept] = regression(TStroke.age/12,TStroke.ePMagn,'one');
+    [r,slope,intercept] = regression(TStroke.age(Idx)/12,TStroke.ePMagn(Idx),'one');
     x=get(ax7,'XLim');
     pred=intercept+slope.*x;
     plot(ax7,x,pred,'LineWidth',2','Color',[0.9 0.5 0.9])
@@ -194,9 +201,9 @@ clear rhoc pc rhos ps tc ts
 
 hold(ax8)
 plot(ax8,(TControls.vel),TControls.ePMagn,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
-plot(ax8,(TStroke.vel),TStroke.ePMagn,'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
+plot(ax8,(TStroke.vel(Idx)),TStroke.ePMagn(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 [rhoc,pc]=corr([(TControls.vel),TControls.ePMagn],'Type','Spearman');
-[rhos,ps]=corr([(TStroke.vel),TStroke.ePMagn],'Type','Spearman');
+[rhos,ps]=corr([(TStroke.vel(Idx)),TStroke.ePMagn(Idx)],'Type','Spearman');
 tc=text(ax8,0,30,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
 ts=text(ax8,0,27.75,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 if pc(2)<0.05
@@ -207,7 +214,7 @@ if pc(2)<0.05
     clear r slope intercept x pred
 end
 if ps(2)<0.05
-    [r,slope,intercept] = regression(TStroke.vel,TStroke.ePMagn,'one');
+    [r,slope,intercept] = regression(TStroke.vel(Idx),TStroke.ePMagn(Idx),'one');
     x=get(ax8,'XLim');
     pred=intercept+slope.*x;
     plot(ax8,x,pred,'LineWidth',2','Color',[0.9 0.5 0.9])
@@ -218,13 +225,13 @@ clear rhoc pc rhos ps tc ts
 
 hold(ax9)
 %plot(ax9,(TControls.FM),TControls.ePMagn,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
-plot(ax9,(TStroke.FM),TStroke.ePMagn,'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
+plot(ax9,(TStroke.FM(Idx)),TStroke.ePMagn(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 %[rhoc,pc]=corr([(TControls.FM),TControls.ePMagn],'Type','Spearman');
-[rhos,ps]=corr([(TStroke.FM),TStroke.ePMagn],'Type','Spearman');
+[rhos,ps]=corr([(TStroke.FM(Idx)),TStroke.ePMagn(Idx)],'Type','Spearman');
 %tc=text(ax9,0,1,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
 ts=text(ax9,20,27.75,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 if ps(2)<0.05
-    [r,slope,intercept] = regression(TStroke.FM,TStroke.ePMagn,'one');
+    [r,slope,intercept] = regression(TStroke.FM(Idx),TStroke.ePMagn(Idx),'one');
     x=get(ax9,'XLim');
     pred=intercept+slope.*x;
     plot(ax9,x,pred,'LineWidth',2','Color',[0.9 0.5 0.9])

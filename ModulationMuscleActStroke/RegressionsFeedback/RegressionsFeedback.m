@@ -112,16 +112,20 @@ end
 %Magnitude analysis
 eAMagnC=NaN(15,1);
 ePMagnC=NaN(15,1);
-eAMagnC=NaN(15,1);
-ePMagnC=NaN(15,1);
+eAMagnS=NaN(15,1);
+ePMagnS=NaN(15,1);
+ePBMagnC=NaN(15,1);
+ePBMagnS=NaN(15,1);
 
 for i=1:size(eA_C,2)
     eAMagnC(i,1)=norm(eA_C(:,i));
     ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
+    ePBMagnC(i,1)=norm(eP_C(:,i));
 end
 for i=1:size(eA_S,2)
     eAMagnS(i,1)=norm(eA_S(:,i));
     ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
+    ePBMagnS(i,1)=norm(eP_S(:,i));
 end
 
 load([matDataDir,'bioData'])
@@ -153,6 +157,7 @@ tALL.BM=[ClearnAll1a;SlearnAll1a];
 tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
 tALL.eAMagn=[eAMagnC;eAMagnS];
 tALL.ePMagn=[ePMagnC;ePMagnS];
+tALL.ePBMagn=[ePBMagnC;ePBMagnS];
 
 
 save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');

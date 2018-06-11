@@ -7,23 +7,21 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-% cSpeedmatch=[1 1 0 1 1 1 0 1 1 0 1 0 0 0 1]';
-% sSpeedmatch=[1 1 0 0 1 0 1 1 1 0 0 1 1 1 0]';
-% t.SpeedMatch=[cSpeedmatch;sSpeedmatch];
+%Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
 % t=t(t.SpeedMatch==1,:);
-
+% Idx=[1:2 4:9];
 
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
 TControl=t(t.group=='Control',:);
 
-[p1,h1]=ranksum(TStroke.BM,TControl.BM);p1=round(p1,3);
+[p1,h1]=ranksum(TStroke.BM(Idx),TControl.BM);p1=round(p1,3);
 if p1==0; p1='<0.01'; else; p1=['=',num2str(p1)]; end
 
 [p2,h2]=ranksum(TStroke.eAMagn,TControl.eAMagn);p2=round(p2,3);
 if p2==0; p2='<0.01'; else; p2=['=',num2str(p2)]; end
 
-[p3,h3]=ranksum(TStroke.ePMagn,TControl.ePMagn);p3=round(p3,3);
+[p3,h3]=ranksum(TStroke.ePMagn(Idx),TControl.ePMagn);p3=round(p3,3);
 if p3==0; p3='<0.01'; else; p3=['=',num2str(p3)]; end
 
 f1=figure('Name','Feedforward responses');
@@ -36,8 +34,8 @@ ax3 = axes('Position',[0.22   0.1   0.7 0.33],'FontSize',12);%Correlation with F
 hold(ax2)
 bar(ax2,1,nanmean(TControl.BM),'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7]);
 errorbar(ax2,1,nanmean(TControl.BM),nanstd(TControl.BM)./sqrt(size(TControl,1)),'LineWidth',2,'Color','k')
-bar(ax2,2,nanmean(TStroke.BM),'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
-errorbar(ax2,2,nanmean(TStroke.BM),nanstd(TStroke.BM)./sqrt(size(TStroke,1)),'LineWidth',2,'Color','k')
+bar(ax2,2,nanmean(TStroke.BM(Idx)),'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
+errorbar(ax2,2,nanmean(TStroke.BM(Idx)),nanstd(TStroke.BM(Idx))./sqrt(size(Idx,1)),'LineWidth',2,'Color','k')
 %plot(ax2,0.95,TControl.BM,'.k','MarkerSize',7)
 %plot(ax2,1.95,TStroke.BM,'.k','MarkerSize',7)
 set(ax2,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},...
@@ -51,8 +49,8 @@ hold(ax3)
 bar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7])
 errorbar(ax3,[1,4],[nanmean(TControl.eAMagn) nanmean(TControl.ePMagn)],[nanstd(TControl.eAMagn) nanstd(TControl.ePMagn)]./sqrt(size(TControl,1)),...
     'LineStyle','none','LineWidth',2,'Color','k')
-bar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9])
-errorbar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn)],[nanstd(TStroke.eAMagn) nanstd(TStroke.ePMagn)]./sqrt(size(TStroke,1)),...
+bar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn(Idx))],'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9])
+errorbar(ax3,[2,5],[nanmean(TStroke.eAMagn) nanmean(TStroke.ePMagn(Idx))],[nanstd(TStroke.eAMagn)./sqrt(size(TStroke,1)) nanstd(TStroke.ePMagn(Idx))./sqrt(size(Idx,1))],...
     'LineStyle','none','LineWidth',2,'Color','k')
 set(ax3,'XLim',[0.5 5.5],'XTick',[1.5 4.5],'XTickLabel',{'eA_B','eP_l_A'},...
     'YLim',[0 15],'YTick',[0 5 10 15],'FontSize',14,'FontWeight','Bold');
