@@ -64,6 +64,8 @@ ylabel(ax8,'Magnitude eP_B')
 xlabel(ax8,'Velocity (m/s)')
 set(ax8,'FontSize',14,'FontWeight','Bold','XLim',[0 1.2],'YLim',[0 40]);
 clear rhoc pc rhos ps tc ts
+ll=findobj(ax8,'Type','Line');
+legend(ax8,ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
 
 
 % plot(ax3,TStroke.FM,TStroke.BM,'ok','MarkerFaceColor',[0.9 0.5 0.9])

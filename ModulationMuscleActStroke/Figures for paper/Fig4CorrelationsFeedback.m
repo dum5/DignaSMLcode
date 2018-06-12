@@ -61,6 +61,9 @@ end
 set(ax1,'XTickLabel',{''});
 clear rhoc pc rhos ps tc ts
 
+ll=findobj(ax1,'Type','Line');
+legend(ax1,ll(end:-1:1),{'CONTROL','STROKE'},'box','off','Position',[0.8642    0.9450    0.1396    0.0484])
+
 hold(ax2)
 plot(ax2,(TControls.vel),TControls.BM,'ok','MarkerSize',8,'MarkerFaceColor',[0.4 0.7 0.7])
 plot(ax2,(TStroke.vel(Idx)),TStroke.BM(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
@@ -104,6 +107,7 @@ end
 
 set(ax3,'XTickLabel',{''},'YTickLabel',{''});
 clear rhoc pc rhos ps tc ts
+uistack(ax3,'bottom')
 
 
 hold(ax4)

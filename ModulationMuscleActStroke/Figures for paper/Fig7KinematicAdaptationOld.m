@@ -6,13 +6,26 @@ close all
 %%
 matchSpeedFlag=0;
 removeMissing=false;
-binWidth=10;
 
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
 patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
 controlsSlowList=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+
+%replace Norm2 for pt 11 with Pnorm;
+% patients.adaptData{11}=patients.adaptData{11}.renameParams({'netContributionNorm2','spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2'},...
+%     {'netContributionOLD','spatialContributionOLD','stepTimeContributionOLD','velocityContributionOLD'});
+% patients.adaptData{11}=patients.adaptData{11}.addNewParameter('netContributionNorm2',@(x)x*1,{'netContributionPNorm'},'use Pnorm, since hip marker was missing');
+% patients.adaptData{11}=patients.adaptData{11}.addNewParameter('spatialContributionNorm2',@(x)x*1,{'spatialContributionPNorm'},'use Pnorm, since hip marker was missing');
+% patients.adaptData{11}=patients.adaptData{11}.addNewParameter('stepTimeContributionNorm2',@(x)x*1,{'stepTimeContributionPNorm'},'use Pnorm, since hip marker was missing');
+% patients.adaptData{11}=patients.adaptData{11}.addNewParameter('velocityContributionNorm2',@(x)x*1,{'velocityContributionPNorm'},'use Pnorm, since hip marker was missing');
+
+% controls=controls.renameConditions({'washout'},{'oldWash'});
+% for i=1:length(patients.ID)
+%     patients.adaptData{i}.metaData=this.adaptData{i}.metaData.replaceConditionNames({'washout'},{'oldWash'});
+% end
+
 
 removeP07Flag=1;
 if removeP07Flag
@@ -38,8 +51,6 @@ end
 
 groups{1}=controls2;
 groups{2}=patients2;
-
-
 colors=[0.4 0.7 0.7;0.9 0.5 0.9];
 
 eF=1;
@@ -47,91 +58,15 @@ eL=1;
 % eps=defineEpochs({'Base','eA','lA','eP','lP'},{'TM base','Adaptation','Adaptation','Washout','Washout'},[-40 15 -40 15 -40],...
 %     [eF,eF,eF,eF,eF],[eL,eL,eL,eL,eL],'nanmean');
 
-%strides for group epoch bars
 eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 15 -40 15],...
-    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
-%strides for time courses
-eps2=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 500 -40 200],...
     [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
 labels={'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm'};
 %labels={'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm'};
 
-groupsUnbiased{1}=groups{1}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
-groupsUnbiased{2}=groups{2}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
-
 
 %[fh,ph,allData]=plotGroupedTimeAndEpochBars(adaptDataGroups,labels,epochs,binwidth,trialMarkerFlag,indivFlag,indivSubs,colorOrder,biofeedback,groupNames,medianFlag);
-%[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,10,0,0,0,colors,0,{'control','stroke'},0,1,0,0.05,0,0,1,0);
-fh=figure;
+[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,10,0,0,0,colors,0,{'control','stroke'},0,1,0,0.05,0,0,1,0);
 fullscreen
-xpos=[0.03 0.51];
-ypos=[0.7722 0.5370 0.3017 0.0665];
-w=[0.45 0.2310];
-h=0.1820;
-
-M=length(labels);
-for i=1:M
-    ph(i,1)=subplot(M,3,[1:2]+3*(i-1));
-    set(ph(i,1),'Position',[xpos(1),ypos(i),w(1),h])
-    ph(i,2)=subplot(M,3,[3]+3*(i-1));
-    set(ph(i,2),'Position',[xpos(2),ypos(i),w(2),h])
-end
-
-
-%plot time courses
-for i=1:M
-    hold(ph(i,1))
-    for g=1:length(groupsUnbiased);
-        Inds=0;
-        meanData=[];
-        minData=[];
-        maxData=[];
-        for E=1:length(eps2)
-            if eps2.EarlyOrLate(E)==0;
-                numberOfStrides=eps2.Stride_No(E)*-1;
-            else numberOfStrides=eps2.Stride_No(E);
-            end
-            
-            %get data
-            dt=getGroupedData(groupsUnbiased{g},labels{i},eps2.Condition{E},0,numberOfStrides,eps2.ExemptFirst(E),eps2.ExemptLast(E),1);
-            dt=squeeze(dt{1});
-            %smoothing
-            start=1:size(dt,1)-(binWidth-1);
-            stop=start+binWidth-1;
-            nbins=length(start);
-            
-            dt2=NaN(length(start),size(dt,2));
-            %running average for each subject
-            for s=1:size(dt,2)
-                for binNum=1:length(start)
-                    dt2(binNum,s)=nanmean(dt(start(binNum):stop(binNum),s));
-                end
-            end
-            if isempty(Inds)
-                Inds=1:size(dt2,1);
-            else
-                Inds=Inds(end)+21:Inds(end)+size(dt2,1);
-            end
-           %plot here directly, ohterwise patches mess up
-            plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',5,'MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors(g,:)-0.3)
-            patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none');
-            
-%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
-%             minData=[minData;nan(20,1);nanmean(dt2,2)-nanstd(dt2')'./sqrt(size(dt2,2))];%mean-SEM
-%             maxData=[maxData;nan(20,1);nanmean(dt2,2)+nanstd(dt2')'./sqrt(size(dt2,2))];%mean+SEM
-            
-        end
-%         meanData=meanData(21:end,1);
-%         minData=minData(21:end,1);
-%         maxData=maxData(21:end,1);
-        
-        %plot Data
-       
-        
-        
-        
-    end
-end
 
 %get epoch data and generate data for plot
 for i=1:length(groups)
@@ -186,6 +121,26 @@ for l=1:length(labels)
     end
 end
 
+
+%Make figure pretty and add between epoch bars
+
+%Move to the right
+pos=get(ph(1,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(1,1),'Position',pos);
+pos=get(ph(2,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(2,1),'Position',pos);
+pos=get(ph(3,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(3,1),'Position',pos);
+pos=get(ph(4,1),'Position');pos(1)=0.03;pos(3)=0.45;set(ph(4,1),'Position',pos);
+xl=get(ph(1,1),'XLim');
+set(ph(:,1),'XLim',[100 xl(2)-200])
+
+pos=get(ph(1,2),'Position');pos(1)=0.51;set(ph(1,2),'Position',pos);%pos(1)=0.76;ph(1,3)=axes('Position',pos);
+pos=get(ph(2,2),'Position');pos(1)=0.51;set(ph(2,2),'Position',pos);%pos(1)=0.76;ph(2,3)=axes('Position',pos);
+pos=get(ph(3,2),'Position');pos(1)=0.51;set(ph(3,2),'Position',pos);%pos(1)=0.76;ph(3,3)=axes('Position',pos);
+pos=get(ph(4,2),'Position');pos(1)=0.51;set(ph(4,2),'Position',pos);%pos(1)=0.76;ph(4,3)=axes('Position',pos);
+
+legend(ph(4,1),'off')
+
+cla(ph(1,2));cla(ph(2,2));cla(ph(3,2));cla(ph(4,2));
+
 set(ph(:,:),'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
 
 
@@ -193,35 +148,38 @@ set(ph(:,:),'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
 xval=[1 2;4 5;7 8;10 11];
 nc=size(spatialDataControls,1);
 ns=size(spatialDataStroke,1);
-hold(ph(1,2));
+%hold(ph(1,2));
 bar(ph(1,2),xval(:,1),nanmean(spatialDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
 errorbar(ph(1,2),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
 plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
-ll=findobj(ph(1,2),'Type','Bar');
+%plot(ph(1,2),nanmean(xval([2:4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
+ ll=findobj(ph(1,2),'Type','Bar');
 legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
 
 
-hold(ph(2,2));
+%hold(ph(2,2));
 bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
 errorbar(ph(2,2),xval(:,1),nanmean(temporalDataControls),nanstd(temporalDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),nanstd(temporalDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+%plot(ph(2,2),nanmean(xval([1,2,4],:),2),[0.15 0.15 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 
-hold(ph(3,2));
+%hold(ph(3,2));
 bar(ph(3,2),xval(:,1),nanmean(velocityDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
 errorbar(ph(3,2),xval(:,1),nanmean(velocityDataControls),nanstd(velocityDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),nanstd(velocityDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+%plot(ph(3,2),nanmean(xval([1:3],:),2),[-0.35 -0.35 0.1],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 
-hold(ph(4,2));
+%hold(ph(4,2));
 bar(ph(4,2),xval(:,1),nanmean(netDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
 errorbar(ph(4,2),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(4,2),xval(:,2),nanmean(netDataStroke),'FaceColor',colors(2,:),'BarWidth',0.2)
 errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
 plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
-
+%plot(ph(4,2),nanmean(xval([1:4],:),2),[-0.35 -0.35 0.18 0.15],'LineStyle','none','LineWidth',2,'Marker','*','Color','k','MarkerSize',10)
 %set titles and labels
 set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
 set(ph(4,2),'XTickLabel',{'eA_B_A_S_E','lA_B_A_S_E','eP_l_A','eP_B_A_S_E'})
