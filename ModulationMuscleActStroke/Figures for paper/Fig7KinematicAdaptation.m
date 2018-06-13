@@ -4,7 +4,7 @@ close all
 %% read data
 [loadName,matDataDir]=uigetfile('*.mat');
 %%
-matchSpeedFlag=0;
+matchSpeedFlag=1;
 removeMissing=false;
 binWidth=10;
 
@@ -64,6 +64,7 @@ groupsUnbiased{2}=groups{2}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
 %[fh,ph,allData]=adaptationData.plotGroupedTimeAndEpochBars(groups,labels,eps,10,0,0,0,colors,0,{'control','stroke'},0,1,0,0.05,0,0,1,0);
 fh=figure;
 fullscreen
+set(fh,'Color',[1 1 1])
 xpos=[0.03 0.51];
 ypos=[0.7722 0.5370 0.3017 0.0665];
 w=[0.45 0.2310];
@@ -107,20 +108,32 @@ for i=1:M
                     dt2(binNum,s)=nanmean(dt(start(binNum):stop(binNum),s));
                 end
             end
-            if isempty(Inds)
+            if Inds(1)==0
                 Inds=1:size(dt2,1);
             else
-                Inds=Inds(end)+21:Inds(end)+size(dt2,1);
+                Inds=Inds(end)+21:Inds(end)+size(dt2,1)+20;
             end
            %plot here directly, ohterwise patches mess up
             plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',5,'MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors(g,:)-0.3)
-            patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none');
+            patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],colors(g,:),'FaceAlpha',0.25,'EdgeColor',colors(g,:));
             
+%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
+%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
+%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
 %             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
 %             minData=[minData;nan(20,1);nanmean(dt2,2)-nanstd(dt2')'./sqrt(size(dt2,2))];%mean-SEM
 %             maxData=[maxData;nan(20,1);nanmean(dt2,2)+nanstd(dt2')'./sqrt(size(dt2,2))];%mean+SEM
             
         end
+        pa=findobj(ph(i,1),'Type','Patch');
+        for n=1:length(pa)
+            uistack(pa(n),'bottom')            
+        end
+        pt=patch(ph(i,1),[1:31 fliplr(1:31)],[-1*ones(1,31) ones(1,31)],[0.7 0.7 0.7],'FaceAlpha',1,'EdgeColor','none');uistack(pt,'bottom') 
+        pt=patch(ph(i,1),[52:66 fliplr(52:66)],[-1*ones(1,15) ones(1,15)],[0.7 0.7 0.7],'FaceAlpha',1,'EdgeColor','none');uistack(pt,'bottom') 
+        pt=patch(ph(i,1),[563:593 fliplr(563:593)],[-1*ones(1,31) ones(1,31)],[0.7 0.7 0.7],'FaceAlpha',1,'EdgeColor','none');uistack(pt,'bottom') 
+        pt=patch(ph(i,1),[614:628 fliplr(614:628)],[-1*ones(1,15) ones(1,15)],[0.7 0.7 0.7],'FaceAlpha',1,'EdgeColor','none');uistack(pt,'bottom') 
+        
 %         meanData=meanData(21:end,1);
 %         minData=minData(21:end,1);
 %         maxData=maxData(21:end,1);
@@ -132,6 +145,8 @@ for i=1:M
         
     end
 end
+
+
 
 %get epoch data and generate data for plot
 for i=1:length(groups)
@@ -200,8 +215,7 @@ bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',colors(2,:),'BarWid
 errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
 plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
 ll=findobj(ph(1,2),'Type','Bar');
-legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
-
+legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off','Position',[0.6800 0.9135 0.0762 0.0569]);
 
 hold(ph(2,2));
 bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',colors(1,:),'BarWidth',0.2)
@@ -224,8 +238,8 @@ plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
 
 %set titles and labels
 set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
-set(ph(4,2),'XTickLabel',{'eA_B_A_S_E','lA_B_A_S_E','eP_l_A','eP_B_A_S_E'})
-set(ph(:,1),'XTick',[115 362 625])
+set(ph(4,2),'XTickLabel',{'eA_B','lA_B','eP_l_A','eP_B'})
+set(ph(:,1),'XTick',[20 365 700],'XTickLabel',{''},'XLim',[1 804])
 set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
 
 set(ph(1,1),'YLim',[-0.1 0.2],'YTick',[-0.1 0 0.1 0.2])
