@@ -8,8 +8,8 @@ loadName=[matDataDir,loadName];
 load(loadName)
 
 Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
-% t=t(t.SpeedMatch==1,:);
-% Idx=[1:2 4:9];
+%t=t(t.SpeedMatch==1,:);
+%Idx=[1:2 4:9];
 
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);

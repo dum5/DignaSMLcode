@@ -24,7 +24,7 @@ h=zeros(size(data1,2),size(data1,1));
 %perform actual test
 for i=1:size(p,1)
     for k=1:size(p,2)
-        [TABLE,CHI2,p(i,k)] = crosstab([squeeze(abs(data1(k,i,:)));squeeze(abs(data2(k,i,:)))],[zeros(size(data1,3),1);ones(size(data1,3),1)]);
+        [TABLE,CHI2,p(i,k)] = crosstab([squeeze(abs(data1(k,i,:)));squeeze(abs(data2(k,i,:)))],[zeros(size(data1,3),1);ones(size(data2,3),1)]);
         %[TABLE,CHI2,p(i,k)] = crosstab([squeeze(abs(data1(k,i,:)));squeeze(abs(data2(k,i,:)))],[zeros(size(data1,3),1);ones(size(data1,3),1)]);
     end   
 end

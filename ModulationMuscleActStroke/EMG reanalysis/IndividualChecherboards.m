@@ -17,36 +17,43 @@ groups{2}=patients.getSubGroup(strokesNames);
 %% Get normalized parameters:
 %Define parameters we care about:
 mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
-%mOrder={'TA','SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF'};
+
+eE=1;
+eL=1;
+ep=defineEpochs({'BASE','eA','lA','eP','lP'},{'TM Base','Adaptation','Adaptation','Washout','Washout'},[-40 15 -40 15 -40],[eE eE eE eE eE],[eL eL eL eL eL],'nanmean');
+%refEp=defineEpochs({'Base'},{'TM Base'}',[15],[eE],[eL],'nanmean');
+refEp=defineEpochs({'lP'},{'Washout'}',[-40],[eE],[eL],'nanmean');
+
 nMusc=length(mOrder);
 type='s';
 labelPrefix=fliplr([strcat('f',mOrder) strcat('s',mOrder)]); %To display
 labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
 
-%Renaming normalized parameters, for convenience:
-for k=1:length(groups)
-    ll=groups{k}.adaptData{1}.data.getLabelsThatMatch('^Norm');
-    l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
-    groups{k}=groups{k}.renameParams(ll,l2);
-end
-newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 
-eE=1;
-eL=1;
-
-
-ep=defineEpochs({'BASE','eA','lA','eP'},{'TM mid','Adaptation','Adaptation','Washout'},[-40 15 -40 15],[eE eE eE eE],[eL eL eL eL],'nanmean');
-refEp=defineEpochs({'Base'},{'TM mid'}',[-40],[eE],[eL],'nanmean');
 
 for i = 3%1:n_subjects
     adaptDataSubject = groups{2}.adaptData{1, i}; 
+    
+    %Alt Normalization
+    ll=adaptDataSubject.data.getLabelsThatMatch('^Norm');
+    l2=regexprep(regexprep(ll,'^Norm',''),'_s','m');
+    adaptDataSubject=adaptDataSubject.renameParams(ll,l2);%replace old normalized parameters with random name to avoid collision of names
+    clear ll l2
+    adaptDataSubject=normalizeToBaselineEpoch(adaptDataSubject,labelPrefixLong,refEp,0);%normalize to alt baseline
+    ll=adaptDataSubject.data.getLabelsThatMatch('^Norm');
+    l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
+    adaptDataSubject=adaptDataSubject.renameParams(ll,l2);
+    newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
+    
 
     fh=figure('Units','Normalized','OuterPosition',[0 0 1 1]);
-    ph=tight_subplot(1,length(ep)+1,[.03 .005],.04,.04);
+    %ph=tight_subplot(2,length(ep)+1,[.03 .005],.04,.04);
+    ph=tight_subplot(2,length(ep),[.03 .005],.04,.04);
+    
     flip=true;
 
-    adaptDataSubject.plotCheckerboards(newLabelPrefix,refEp,fh,ph(1,1),[],flip); %First, plot reference epoch:   
-    [~,~,labels,dataE{1},dataRef{1}]=adaptDataSubject.plotCheckerboards(newLabelPrefix,ep,fh,ph(1,2:end),refEp,flip);%Second, the rest:
+    adaptDataSubject.plotCheckerboards(newLabelPrefix,ep,fh,ph(1,:),[],flip); %First, plot reference epoch:   
+    [~,~,labels,dataE{1},dataRef{1}]=adaptDataSubject.plotCheckerboards(newLabelPrefix,ep,fh,ph(2,:),refEp,flip);%Second, the rest:
 
     set(ph(:,1),'CLim',[-1 1]);
     set(ph(:,2:end),'YTickLabels',{},'CLim',[-1 1].*.5);
