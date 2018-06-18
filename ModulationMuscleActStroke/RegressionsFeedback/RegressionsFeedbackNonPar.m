@@ -74,7 +74,7 @@ eAT_C=fftshift(eA_C,1);
 eAT_S=fftshift(eA_S,1);
 
 %% Do group analysis:
-rob='off';
+rob='on';
 
 ttC=table(-median(eA_C,2), median(eAT_C,2), -median(lA_C,2), median(eP_C,2)-median(lA_C,2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 ttS=table(-median(eA_S,2), median(eAT_S,2), -median(lA_S,2), median(eP_S,2)-median(lA_S,2),'VariableNames',{'eA','eAT','lA','eP_lA'});

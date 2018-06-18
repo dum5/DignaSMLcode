@@ -7,16 +7,35 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-%Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
-t=t(t.SpeedMatch==1,:);
-Idx=[1:2 4:9];
+speedmatch=1;
+
+if speedmatch==0
+    Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
+    
+    BMControl=0.7259;
+    BMStroke=0.7031;%patient 5 excluded, patient 3 included
+    CIControl=[0.6670 7848];
+    CIStroke=[0.6296 0.7766];%patient 5 excluded, patient 3 included
+    
+elseif speedmatch==1
+    t=t(t.SpeedMatch==1,:);
+    Idx=[1:2 4:9];
+    
+    BMControl=0.7202;
+    BMStroke=0.5549;    
+    CIControl=[0.6456 0.7947];
+    CIStroke=[0.4695 0.6405];
+end
 
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
 TControl=t(t.group=='Control',:);
 
-[p1,h1]=ranksum(TStroke.BM(Idx),TControl.BM);p1=round(p1,3);
-if p1==0; p1='<0.01'; else; p1=['=',num2str(p1)]; end
+
+
+
+% [p1,h1]=ranksum(TStroke.BM(Idx),TControl.BM);p1=round(p1,3);
+% if p1==0; p1='<0.01'; else; p1=['=',num2str(p1)]; end
 
 [p2,h2]=ranksum(TStroke.eAMagn,TControl.eAMagn);p2=round(p2,3);
 if p2==0; p2='<0.01'; else; p2=['=',num2str(p2)]; end
@@ -32,12 +51,14 @@ ax3 = axes('Position',[0.22   0.1   0.7 0.33],'FontSize',12);%Correlation with F
 
 
 hold(ax2)
-bar(ax2,1,nanmean(TControl.BM),'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7]);
-errorbar(ax2,1,nanmean(TControl.BM),nanstd(TControl.BM)./sqrt(size(TControl,1)),'LineWidth',2,'Color','k')
-bar(ax2,2,nanmean(TStroke.BM(Idx)),'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
-errorbar(ax2,2,nanmean(TStroke.BM(Idx)),nanstd(TStroke.BM(Idx))./sqrt(size(Idx,1)),'LineWidth',2,'Color','k')
-%plot(ax2,0.95,TControl.BM,'.k','MarkerSize',7)
-%plot(ax2,1.95,TStroke.BM,'.k','MarkerSize',7)
+bar(ax2,1,BMControl,'BarWidth',0.3,'FaceColor',[0.4 0.7 0.7]);
+bar(ax2,2,BMStroke,'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
+errorbar(ax2,[1 2],[BMControl,BMStroke],[diff(CIControl)/2 diff(CIStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
+%plot(ax2,[1 1],CIControl,'LineWidth',2,'Color','k')
+%plot(ax2,[2 2],CIStroke,'LineWidth',2,'Color','k')
+if speedmatch==1
+    plot(ax2,[1,2],[0.9 0.9],'k','LineWidth',2)
+end
 set(ax2,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},...
     'YLim',[0 1],'YTick',[0 .5 1],'FontSize',14,'FontWeight','Bold');
 ylabel(ax2,'\betaM')

@@ -10,7 +10,7 @@ load(loadName)
 AddCombinedParamsToTable;
 Idx=[1:19 21:30]';
 
-rob='on';
+rob='off';
 
 t.group=nominal(t.group);
 t2=t(Idx,:);
