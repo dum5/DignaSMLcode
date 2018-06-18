@@ -7,9 +7,17 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-%Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
-t=t(t.SpeedMatch==1,:);
-Idx=[1:2 4:9];
+speedmatch=0
+if speedmatch==0;
+    Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
+    minvel=0.25;
+    maxmag=40;
+elseif speedmatch==1
+    t=t(t.SpeedMatch==1,:);
+    Idx=[1:2 4:9];
+    minvel=0.75;
+    maxmag=25;
+end
 
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
@@ -34,9 +42,9 @@ errorbar(ax2,2,nanmean(TStroke.ePBMagn(Idx)),nanstd(TStroke.ePBMagn(Idx))./sqrt(
 %plot(ax2,0.95,TControl.BM,'.k','MarkerSize',7)
 %plot(ax2,1.95,TStroke.BM,'.k','MarkerSize',7)
 set(ax2,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},...
-    'YLim',[0 17.5],'YTick',[0 5 10 15],'FontSize',14,'FontWeight','Bold');
+    'YLim',[0 11],'YTick',[0 5 10],'FontSize',14,'FontWeight','Bold');
 ylabel(ax2,'Magnitude eP_B')
-txt1=text(ax2,0.5,18,'After effect magnitude','FontSize',14,'FontWeight','bold','Clipping','off');
+txt1=text(ax2,0.5,12,'After effect magnitude','FontSize',14,'FontWeight','bold','Clipping','off');
 
 
 hold(ax8)
@@ -44,8 +52,8 @@ plot(ax8,(TControl.vel),TControl.ePBMagn,'ok','MarkerSize',8,'MarkerFaceColor',[
 plot(ax8,(TStroke.vel(Idx)),TStroke.ePBMagn(Idx),'ok','MarkerSize',8,'MarkerFaceColor',[0.9 0.5 0.9])
 [rhoc,pc]=corr([(TControl.vel),TControl.ePBMagn],'Type','Spearman');
 [rhos,ps]=corr([(TStroke.vel(Idx)),TStroke.ePBMagn(Idx)],'Type','Spearman');
-tc=text(ax8,0,40,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
-ts=text(ax8,0,37.5,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
+tc=text(ax8,minvel,maxmag,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),2))]);set(tc,'Color',[0.4 0.7 0.7],'FontSize',12,'FontWeight','bold')
+ts=text(ax8,minvel,maxmag*0.9375,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),2))]);set(ts,'Color',[0.9 0.5 0.9],'FontSize',12,'FontWeight','bold')
 if pc(2)<0.05
     [r,slope,intercept] = regression(TControl.vel,TControl.ePBMagn,'one');
     x=get(ax8,'XLim');
@@ -62,7 +70,7 @@ if ps(2)<0.05
 end
 ylabel(ax8,'Magnitude eP_B')
 xlabel(ax8,'Velocity (m/s)')
-set(ax8,'FontSize',14,'FontWeight','Bold','XLim',[0 1.2],'YLim',[0 40]);
+set(ax8,'FontSize',14,'FontWeight','Bold','XLim',[minvel 1.2],'YLim',[0 maxmag]);
 clear rhoc pc rhos ps tc ts
 ll=findobj(ax8,'Type','Line');
 legend(ax8,ll(end:-1:1),{'CONTROL','STROKE'},'box','off')
