@@ -14,7 +14,7 @@ if speedmatch==0
     
     BMControl=0.7259;
     BMStroke=0.7031;%patient 5 excluded, patient 3 included
-    CIControl=[0.6670 7848];
+    CIControl=[0.6670 0.7848];
     CIStroke=[0.6296 0.7766];%patient 5 excluded, patient 3 included
     
 elseif speedmatch==1
@@ -46,8 +46,8 @@ if p3==0; p3='<0.01'; else; p3=['=',num2str(p3)]; end
 f1=figure('Name','Feedforward responses');
 set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 3 10]);
 
-ax2 = axes('Position',[0.22   0.5   0.7 0.33],'FontSize',12);%Between group comparison
-ax3 = axes('Position',[0.22   0.1   0.7 0.33],'FontSize',12);%Correlation with FM
+ax2 = axes('Position',[0.22   0.1   0.7 0.33],'FontSize',12);%Between group comparison
+ax3 = axes('Position',[0.22   0.625   0.7 0.33],'FontSize',12);%Correlation with FM
 
 
 hold(ax2)
@@ -56,9 +56,9 @@ bar(ax2,2,BMStroke,'BarWidth',0.3,'FaceColor',[0.9 0.5 0.9]);
 errorbar(ax2,[1 2],[BMControl,BMStroke],[diff(CIControl)/2 diff(CIStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
 %plot(ax2,[1 1],CIControl,'LineWidth',2,'Color','k')
 %plot(ax2,[2 2],CIStroke,'LineWidth',2,'Color','k')
-if speedmatch==1
-    plot(ax2,[1,2],[0.9 0.9],'k','LineWidth',2)
-end
+% if speedmatch==1
+%     plot(ax2,[1,2],[0.9 0.9],'k','LineWidth',2)
+% end
 set(ax2,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},...
     'YLim',[0 1],'YTick',[0 .5 1],'FontSize',14,'FontWeight','Bold');
 ylabel(ax2,'\betaM')

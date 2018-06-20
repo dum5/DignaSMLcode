@@ -4,14 +4,14 @@ close all
 %% read data
 [loadName,matDataDir]=uigetfile('*.mat');
 %%
-matchSpeedFlag=0;
+matchSpeedFlag=1;
 removeMissing=false;
 
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-%patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-%controlsSlowList=strcat('C00',{'01','02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+controlsSlowList=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
 
 eF=1;
 eL=1;
@@ -29,8 +29,8 @@ if removeP07Flag
 end
 switch matchSpeedFlag
     case 1 %Speed matched groups
-        patients2=patients2.getSubGroup(patientFastList).removeBadStrides;
-        controls2=controls2.getSubGroup(controlsSlowList).removeBadStrides;
+        patients2=patients2.getSubGroup(patientFastList).removeBaselineEpoch(rep,[]);
+        controls2=controls2.getSubGroup(controlsSlowList).removeBaselineEpoch(rep,[]);
         %patientsUnbiased2=patientsUnbiased2.getSubGroup(patientFastList).removeBadStrides;
         %controlsUnbiased2=controlsUnbiased2.getSubGroup(controlsSlowList).removeBadStrides;
     case 0 %Full groups

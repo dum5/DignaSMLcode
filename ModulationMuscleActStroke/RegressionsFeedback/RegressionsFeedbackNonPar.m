@@ -7,12 +7,12 @@ loadName=[matDataDir,loadName];
 load(loadName)
 
 %strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
-%controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-%strokesNames={'P0001','P0002','P0003','P0004','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
+controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+strokesNames={'P0001','P0002','P0003','P0004','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
 
 
-strokesNames=strcat('P00',{'01','02','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+%strokesNames=strcat('P00',{'01','02','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+%controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
 
 
 %define groups
@@ -74,7 +74,7 @@ eAT_C=fftshift(eA_C,1);
 eAT_S=fftshift(eA_S,1);
 
 %% Do group analysis:
-rob='on';
+rob='off';
 
 ttC=table(-median(eA_C,2), median(eAT_C,2), -median(lA_C,2), median(eP_C,2)-median(lA_C,2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 ttS=table(-median(eA_S,2), median(eAT_S,2), -median(lA_S,2), median(eP_S,2)-median(lA_S,2),'VariableNames',{'eA','eAT','lA','eP_lA'});

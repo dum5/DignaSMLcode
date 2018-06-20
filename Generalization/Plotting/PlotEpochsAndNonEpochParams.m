@@ -23,7 +23,7 @@ for r=1:nrows
     hold(ha(r,c))
     for i = 1:length(groupOrder)
         bar(ha(r,c),xval(i),nanmean(subgroupTables{i}.(labels{r}{c})),'FaceColor',colcodes(groupInd(i),:));
-        errorbar(ha(r,c),xval(i),nanmean(subgroupTables{i}.(labels{r}{c})),nanstd(subgroupTables{i}.(labels{r}{c}))./length(subgroupTables{i}.(labels{r}{c})),'LineWidth',2,'Color','k');
+        errorbar(ha(r,c),xval(i),nanmean(subgroupTables{i}.(labels{r}{c})),nanstd(subgroupTables{i}.(labels{r}{c}))./sqrt(length(subgroupTables{i}.(labels{r}{c}))),'LineWidth',2,'Color','k');
         plot(ha(r,c),xval(i),subgroupTables{i}.(labels{r}{c}),'ok','MarkerSize',8)
     end
     %ylabel(ha(r,c),labels{r}{c})

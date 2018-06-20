@@ -18,7 +18,7 @@ close all
 % This section calculates the parameters we wanted to compute. First lines
 
 %[file,path]=uigetfile('Z:\Users\Wouter\Generalization Young\Paramfiles Study after ReviewEventGui\*.mat','choose file to load');
-[file,path]=uigetfile('Z:\SubjectData\E04 Generalization Young\*.mat','choose file to load');
+[file,path]=uigetfile('*.mat','choose file to load');
 
 
 load([path,file]);
@@ -40,8 +40,10 @@ for i=1:length(groups)
         startsplit(i)=150;
         fullsplit(i)=750;
     elseif strcmp(groupsnames{i},'FullAbrupt')
-        startsplit(i)=0;
-        fullsplit(i)=0;
+        %startsplit(i)=0;
+        %fullsplit(i)=0;
+        startsplit(i)=1;
+        fullsplit(i)=1;
     elseif strcmp(groupsnames{i},'AbruptNoFeedback')
         startsplit(i)=150;
         fullsplit(i)=190;
@@ -52,8 +54,8 @@ for i=1:length(groups)
         startsplit(i)=150;
         fullsplit(i)=190; 
     elseif strcmp(groupsnames{i},'TMFullAbrupt')
-        startsplit(i)=0;
-        fullsplit(i)=0;
+        startsplit(i)=1;
+        fullsplit(i)=1;
     elseif strcmp(groupsnames{i},'TMAbruptNoFeedback')
         startsplit(i)=150;
         fullsplit(i)=190;
@@ -62,24 +64,29 @@ end
 
 %define epochs
 eF=1;%this is used for adaptation
-eFbase=0;% this is used for base only to get similar values as before, since we take the median it does not matter if first one is an outlier
-eLBase=1;
-eLAdap=10;%strides exempt for late adaptation
-eLOGP=1;
-nEA=5;%number of strides to characterize early adaptation
-nLateAdap=-50;%number of strides for late adaptation
-nLateOGp=-20;
-nbase=90;%number of strides for TM base and OG base
+eL=5;
+%eFbase=0;% this is used for base only to get similar values as before, since we take the median it does not matter if first one is an outlier
+%eLBase=1;
+%eLAdap=10;%strides exempt for late adaptation
+%eLOGP=1;
+%nEA=5;%number of strides to characterize early adaptation
+%nLateAdap=-40;%number of strides for late adaptation; This was 50, but 40 is more consistent with what we did before
+nLate=-40;
+nEarly=5;
+nCatch=nEarly;
+%nLateOGp=-20;
+%nbase=90;%number of strides for TM base and OG base
 nafter=5;%number of strides for after effects
-nslow=50;%number of strides for slow baseline
-eFSlowbase=0;%consider changing strides for ref base (-40), since that is more consistent with code procedures
+%nslow=50;%number of strides for slow baseline
+%eFSlowbase=0;%consider changing strides for ref base (-40), since that is more consistent with code procedures
 
 
 names={'OG_B','TM_B','OG_P','OG_LP','TM_P','lateAdapt','lateReadapt','earlyAdapt','FullSplit','EarlyReadapt','TM_slowref'};
-
 conds={'OG base','TM base', 'OG post','OG post', 'TM post', 'gradual adaptation', 'readaptation', 'gradual adaptation','gradual adaptation','readaptation','TM slow'};
-strideNo=[nbase nbase nafter nLateOGp nafter nLateAdap nLateAdap nEA nEA nEA nslow];
-exemptLast=[eLBase eLBase 0 eLOGP 0 eLAdap eLAdap 0 0 0 0];
+strideNo=[nLate,nLate,nEarly,nLate,nEarly,nLate,nLate,nEarly,nEarly,nEarly,nLate];
+%strideNo=[nbase nbase nafter nLateOGp nafter nLateAdap nLateAdap nEA nEA nEA nslow];
+exemptLast=[eL, eL,0,eL,0,eL,eL,0,0,0,eL];
+%exemptLast=[eLBase eLBase 0 eLOGP 0 eLAdap eLAdap 0 0 0 0];
 summethods=({'nanmedian','nanmedian','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean'});
 
 %extract data for epochs and subtract reference condition and remove
@@ -94,10 +101,11 @@ TMind=[5:10];%epoch associated with treadmill trials, except the reference trial
 
 for i=1:length(groups)
      nsub=length(groups{i}.adaptData);
-    exemptFirst=[eFbase eFbase eF 0 eF 0 0 startsplit(i) fullsplit(i) 0 eFSlowbase];
+    %exemptFirst=[eFbase eFbase eF 0 eF 0 0 startsplit(i) fullsplit(i) 0 eFSlowbase];
+    exemptFirst=[0 0 eF 0 eF 0 0 startsplit(i), fullsplit(i), eF, 0]; 
     [epsData{i}] = defineEpochs(names,conds,strideNo, exemptFirst,exemptLast,summethods);%this will be used to compute the baseline bias manually, since predefined function performs poorly for OG trials
     
-    groupOutcomes{i}=NaN(length(params),length(names)+2,nsub);
+    groupOutcomes{i}=NaN(length(params),length(names)+20,nsub);
     
 end
 
@@ -213,15 +221,18 @@ for i=1:length(groups)
                 
         % Maximum error        
          NonEpochoutcome{i}.par{1}(sj,1)=-1*(findmaxAV(dt.*-1,fullsplit(i)+1,fullsplit(i)+15,5));%in time window 15 strides of full ramp    
-         NonEpochoutcome{i}.par{5}(sj,1)=-1*(findmaxAV(dt4.*-1,1,15,5));% in re-adaptation
+         %NonEpochoutcome{i}.par{5}(sj,1)=-1*(findmaxAV(dt4.*-1,1,15,5));% in re-adaptation
+         NonEpochoutcome{i}.par{5}(sj,1)=-1*(findmaxAV(dt4.*-1,2,15,5));% in re-adaptation, starting stride removed
          
         % Mean error adaptation
         dt3=dt(startsplit(i)+1:(find(~isnan(dt),1,'last')));
-        dt3=dt3(1:end-10);
+        %dt3=dt3(1:end-10);
+        dt3=dt3(1:end-eL);%this is more consistent with the other analyses
         NonEpochoutcome{i}.par{2}(sj,1)=nanmean(dt3);
         
         %Mean error re-adaptation
-        dt5=dt4(1:end-10);
+        %dt5=dt4(1:end-10);
+        dt5=dt4(2:end-eL);%this is more consistent with the other analyses
         NonEpochoutcome{i}.par{6}(sj,1)=nanmean(dt5);
         
          %Index start monotonic increase
@@ -245,7 +256,7 @@ clear tcInd tpInd cInd ParInd
 %create extra params for the Catch group
 names(length(names)+1:length(names)+3)={'beforeCatch','catch','resumeSplit'};
 nEp=length(names);%number of epochs
-CatchEp=defineEpochs({'Catch'},{'Catch'},-5,1,0,'nanmean');
+CatchEp=defineEpochs({'Catch'},{'Catch'},nCatch,eF,eL,'nanmean');
 ind=length(names)-2:length(names);
 for i=1:length(groups)
     if strcmp(groupsnames{i},'Catch')
@@ -255,11 +266,11 @@ for i=1:length(groups)
             ctr=getTrialsInCond(dt,'Catch');
             adaptr=getTrialsInCond(dt,'gradual adaptation');
             aftercatchTr=adaptr(end);
-            beforecatchTr=adaptr(find(adaptr<ctr));
+            beforecatchTr=adaptr(find(adaptr<ctr));%assuming that the adaptation trial before catch is only one trial
             allAftercatch=dt.getParamInTrial(params,aftercatchTr);
             allBeforecatch=dt.getParamInTrial(params,beforecatchTr);
-            groupOutcomes{i}(1:length(params),length(names),sj)=nanmean(allAftercatch(1:5,:));
-            groupOutcomes{i}(1:length(params),length(names)-2,sj)=nanmean(allBeforecatch(end-20:end-10,:));
+            groupOutcomes{i}(1:length(params),length(names),sj)=nanmean(allAftercatch(eF+1:5,:));%excempt first to be consistent
+            groupOutcomes{i}(1:length(params),length(names)-2,sj)=nanmean(allBeforecatch(end-(eL+nLate):end-eL,:));
         end           
         
     else

@@ -9,7 +9,7 @@
 N19_ExtractAllData
 
 
-groupOrder={'Gradual','AbruptFeedback','AbruptNoFeedback'};
+groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual'};
 %groupOrder={'Catch'};
 colcodes=[0.6 0 0.6;0.8 0 0;0.2 0.2 1;0.6 0.6 0.6;0.9 0.9 1;0.3 0.3 0.3;0 1 1];%DO NOT TOUCH!!
 

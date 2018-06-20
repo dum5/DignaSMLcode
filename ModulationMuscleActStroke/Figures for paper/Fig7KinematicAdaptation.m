@@ -4,7 +4,7 @@ close all
 %% read data
 [loadName,matDataDir]=uigetfile('*.mat');
 %%
-matchSpeedFlag=1;
+matchSpeedFlag=0;
 removeMissing=false;
 binWidth=10;
 
