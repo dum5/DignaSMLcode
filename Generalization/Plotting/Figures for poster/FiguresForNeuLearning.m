@@ -151,9 +151,9 @@ ll=flipud(findobj(ax2,'Type','Bar'));
 legend(ax2,ll,{'Control','Abrupt Perturbation'},'Position',[0.75 0.80 0.17 0.16],'box','off')
 
 %initialize figure
-lower=0.075;
+lower=0.07;
 height=0.09;
-width=0.65;
+width=0.95;
 delta=height*1.45;
 tied=1.125*ones(1,150);
 washout=1.125*ones(1,100);
@@ -173,18 +173,18 @@ ymax=1250;
 
 f4=figure('Name','Adaptation Protocols');
 set(f4,'Color',[1 1 1]','Units','inches','Position',[0 0 4 10])
-ax1 = axes('Position',[0.05 lower+6*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
-ax2 = axes('Position',[0.05  lower+5*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
-ax3 = axes('Position',[0.05  lower+4*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
-ax4 = axes('Position',[0.05  lower+3*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
-ax5 = axes('Position',[0.05  lower+2*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
-ax6 = axes('Position',[0.05  lower+delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
-ax7 = axes('Position',[0.05  lower width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax1 = axes('Position',[0.025 lower+6*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax2 = axes('Position',[0.025  lower+5*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax3 = axes('Position',[0.025 lower+4*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax4 = axes('Position',[0.025  lower+3*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax5 = axes('Position',[0.025  lower+2*delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax6 = axes('Position',[0.025  lower+delta width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
+ax7 = axes('Position',[0.025 lower width height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100]);
 
 %gradual group
 hold(ax1)
 patch(ax1,[[x2 x3],fliplr([x2 x3])],[0.5*ones(1,length([x2 x3])) 1.75*ones(1,length([x2 x3]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax1,[x3(end)-300:x3(end-286) fliplr(x3(end)-300:x3(end-286))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax1,[x3(end)-300:x3(end-286) fliplr(x3(end)-300:x3(end-286))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax1,[x2 x3],[tied gradPert1],'Color',[0.6 0 0.6],'LineWidth',3)
 plot(ax1,[x2 x3],[tied gradPert2],'Color',[0.6 0 0.6],'LineWidth',3)
 %plot(ax1,x4,washout,'Color',[0.6 0 0.6],'LineWidth',2)
@@ -198,7 +198,7 @@ text(ax1,150, 0.75,'Small Implicit','FontSize',12,'FontWeight','bold','Color',[0
 %feedback group
 hold(ax2)
 patch(ax2,[[x2 x3],fliplr([x2 x3])],[0.5*ones(1,length([x2 x3])) 1.75*ones(1,length([x2 x3]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax2,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax2,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax2,[x2 x3],[tied rampPert1],'Color',[0.6 0.6 0.6],'LineWidth',3)
 plot(ax2,[x2 x3],[tied rampPert2],'Color',[0.6 0.6 0.6],'LineWidth',3)
 %plot(ax2,x3,washout,'Color',[0.6 0.6 0.6],'LineWidth',2)
@@ -210,7 +210,7 @@ text(ax2,320, 1,'Small Explicit','FontSize',12,'FontWeight','bold','Color',[0.6 
 %control group
 hold(ax3)
 patch(ax3,[[x2 x3],fliplr([x2 x3])],[0.5*ones(1,length([x2 x3])) 1.75*ones(1,length([x2 x3]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax3,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax3,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax3,[x2 x3],[tied rampPert1],'Color',[0.2 0.2 1],'LineWidth',3)
 plot(ax3,[x2 x3],[tied rampPert2],'Color',[0.2 0.2 1],'LineWidth',3)
 %plot(ax3,x3,washout,'Color',[0.2 0.2 1],'LineWidth',2)
@@ -221,7 +221,7 @@ text(ax3,320, 1,'Control','FontSize',12,'FontWeight','bold','Color',[0.2 0.2 1])
 %full abrupt
 hold(ax4)
 patch(ax4,[[x2 x3],fliplr([x2 x3])],[0.5*ones(1,length([x2 x3])) 1.75*ones(1,length([x2 x3]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax4,[x3(2):x3(16) fliplr(x3(2):x3(16))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax4,[x3(2):x3(16) fliplr(x3(2):x3(16))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax4,[x2],[tied],'Color',[0.8 0 0],'LineWidth',2)
 plot(ax4,[x3],[abruptPert1],'Color',[0.8 0 0],'LineWidth',3)
 plot(ax4,[x3],[abruptPert2],'Color',[0.8 0 0],'LineWidth',3)
@@ -234,34 +234,34 @@ text(ax4,320, 1,'Abrupt Perturbation','FontSize',12,'FontWeight','bold','Color',
 %catch group
 hold(ax5)
 patch(ax5,[[x2 x3],fliplr([x2 x3])],[0.5*ones(1,length([x2 x3])) 1.75*ones(1,length([x2 x3]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax5,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax5,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax5,[x2 x3],[tied catchPert1],'Color',[0.67 0.85 0.30],'LineWidth',3)
 plot(ax5,[x2 x3],[tied catchPert2],'Color',[0.67 0.85 0.30],'LineWidth',3)
 %plot(ax5,x3,washout,'Color',[0.67 0.85 0.30],'LineWidth',2)
-text(ax5,300, 1,'Catch','FontSize',12,'FontWeight','bold','Color',[0.67 0.85 0.30])
+text(ax5,320, 1,'Catch','FontSize',12,'FontWeight','bold','Color',[0.67 0.85 0.30])
 %plot(ax5,[x3],0.5*ones(1,150),'Color',[0 0 0],'LineWidth',4)
 %plot(ax5,[x1 x2],0.5*ones(1,950),'Color',[0.5 0.5 0.5],'LineWidth',4)
 
 %control group treadmill
 hold(ax6)
 patch(ax6,[[x2 x3 x4],fliplr([x2 x3 x4])],[0.5*ones(1,length([x2 x3 x4])) 1.75*ones(1,length([x2 x3 x4]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax6,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax6,[x3(end)-860:x3(end-846) fliplr(x3(end)-860:x3(end-846))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax6,[x2 x3],[tied rampPert1],'Color',[0.2 0.2 1],'LineWidth',3)
 plot(ax6,[x2 x3],[tied rampPert2],'Color',[0.2 0.2 1],'LineWidth',3)
 plot(ax6,x4,washout,'Color',[0.2 0.2 1],'LineWidth',3)
-text(ax6,300, 1,'Control','FontSize',12,'FontWeight','bold','Color',[0.2 0.2 1])
+text(ax6,320, 1,'Control','FontSize',12,'FontWeight','bold','Color',[0.2 0.2 1])
 %plot(ax6,[x3],0.5*ones(1,150),'Color',[0.5 0.5 0.5],'LineWidth',4)
 %plot(ax6,[x1 x2],0.5*ones(1,950),'Color',[0.5 0.5 0.5],'LineWidth',4)
 
 %full abrupt treadmill
 hold(ax7)
 patch(ax7,[[x2 x3 x4],fliplr([x2 x3 x4])],[0.5*ones(1,length([x2 x3 x4])) 1.75*ones(1,length([x2 x3 x4]))],[0.9 0.9 0.9],'FaceAlpha',0.5,'LineStyle','none')
-patch(ax7,[x3(2):x3(16) fliplr(x3(2):x3(16))],[0.5*ones(1,15) 1.75*(ones(1,15))],[1 1 1],'EdgeColor',[0 0 0]) 
+patch(ax7,[x3(2):x3(16) fliplr(x3(2):x3(16))],[0.5*ones(1,15) 1.75*(ones(1,15))],[0.9 0.9 0.9],'EdgeColor',[0 0 0]) 
 plot(ax7,[x2],[tied],'Color',[0.8 0 0],'LineWidth',2)
 plot(ax7,[x3],[abruptPert1],'Color',[0.8 0 0],'LineWidth',3)
 plot(ax7,[x3],[abruptPert2],'Color',[0.8 0 0],'LineWidth',3)
 plot(ax7,x4,washout,'Color',[0.8 0 0],'LineWidth',3)
-text(ax7,300, 1,'Abrupt Perturbation','FontSize',12,'FontWeight','bold','Color',[0.8 0 0])
+text(ax7,320, 1,'Abrupt Perturbation','FontSize',12,'FontWeight','bold','Color',[0.8 0 0])
 %plot(ax7,[x3],0.5*ones(1,150),'Color',[0.5 0.5 0.5],'LineWidth',4)
 %plot(ax7,[x1 x2],0.5*ones(1,950),'Color',[0.5 0.5 0.5],'LineWidth',4)
 %text(ax7,1800,2,'EXP3','FontSize',12,'FontWeight','bold','Color',[0 0 0])
@@ -280,9 +280,9 @@ text(ax7,300, 1,'Abrupt Perturbation','FontSize',12,'FontWeight','bold','Color',
 %     'Color',[0.5 0.5 0.5],'LineWidth',2,'LineStyle','--','FitBoxToText','off','EdgeColor',[0.65 0.65 0.65]);
 % annotation(f4,'textbox',[0.03225 0.0780214176440559 0.804555555555555 0.252422233554312],...
 %     'Color',[0.5 0.5 0.5],'LineWidth',2,'LineStyle','-.','FitBoxToText','off','EdgeColor',[0.65 0.65 0.65]);
-annotation(f4,'arrow',[0.322337962962963 0.346643518518519],[0.446710861805201 0.409994900560938]);
-annotation(f4,'arrow',[0.403935185185185 0.355324074074074],[0.442121366649668 0.432942376338603]);
-annotation(f4,'textbox',[0.266782407407407 0.441631310555839 0.0925925925925926 0.0407955124936257],...
-    'String',{'catch'},'LineStyle','none');
-annotation(f4,'textbox',[0.402199074074074 0.43092248852626 0.145833333333334 0.0407955124936256],...
+annotation(f4,'arrow',[0.545138888888889 0.588541666666667],[0.437041815400306 0.391636919938807]);
+annotation(f4,'arrow',[0.745659722222222 0.619791666666667],[0.438041815400306 0.409994900560938]);
+annotation(f4,'textbox',[0.4317    0.4330    0.0926    0.0408],...
+    'String',{'catch (tied)'},'LineStyle','none');
+annotation(f4,'textbox',[0.7286    0.4330    0.1458    0.0408],...
     'String','after catch','LineStyle','none','FitBoxToText','off');
