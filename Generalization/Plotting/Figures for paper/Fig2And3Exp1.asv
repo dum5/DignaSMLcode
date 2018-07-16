@@ -10,7 +10,6 @@ close all
 %GenerateParamsTable;
 colors=[0.2 0.2 1;0.6 0.6 0.6;0.6 0 0.6];
 colors2=[0.1 0.1 0.5;0.3 0.3 0.3;0.2 0 0.2];
-
 %Create separate table for each group
 T.ExtAdapt=T.netContributionNorm2_lateAdapt-T.velocityContributionNorm2_lateAdapt;
 T.ExtReadapt=T.netContributionNorm2_lateReadapt-T.velocityContributionNorm2_lateReadapt;
@@ -53,9 +52,9 @@ yaxmin=-0.35;
 %timeCourse Adaptation
 ax1 = axes('Position',[left  lower+3*delta+0.07 width4 height],'XTickLabel',{''},'Clipping','off','XLim',[0 930],'YLim',[-0.2 0.05],'YTick',[-0.2 0 0.2],'XTick',[0 100 200 300 400 500 600 700 800 900],'FontSize',12,'FontName','Arial');
 %Errors
-ax2a = axes('Position',[left  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'FontSize',12,'FontName','Arial');
-ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
-ax2c = axes('Position',[left+2*(width2+0.04)  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2a = axes('Position',[left  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[-0.2 0],'YLim',[-0.2 0],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 0.15],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+ax2c = axes('Position',[left+2*(width2+0.04)  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 0.15],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
 
 %timeCourse OG post
 ax3a = axes('Position',[left  lower+delta width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[-0.05 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
@@ -68,15 +67,26 @@ ax4b = axes('Position',[left+width2+0.04  lower width2 height],'XTickLabel',{''}
 ax4c = axes('Position',[left+2*(width2+0.04)  lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.05 0.15],'YTick',[0 0.1],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 
 
+% 
+% ax3a = axes('Position',[left  lower+delta width2 height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+% ax3b = axes('Position',[left+width2*1.1  lower+delta width2 height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+% ax4a = axes('Position',[left  lower width2 height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+% ax4b = axes('Position',[left+width2*1.1  lower width2 height],'XTickLabel',{''},'YTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+
+
+
+
 hold(ax1)%control and small errors
 l=get(ax1,'YLim');
-plot(ax1,[50 50],[l(1) l(2)],'--k','Color',[0.6 0.6 0.6],'LineWidth',2)
-patch(ax1,[91 105 105 91],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
-patch(ax1,[651 665 665 651],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
+patch(ax1,[1 50 50 1],[l(1) l(1) l(2) l(2)],'k','FaceAlpha',1,'EdgeColor','none');
+patch(ax1,[51 930 930 51],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','none');
+patch(ax1,[91 105 105 91],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','k');
+patch(ax1,[651 665 665 651],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','k');
 text(ax1,-100,l(2)+0.03,'A','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax1,200,l(2)+0.03,'Adaptation Errors','FontSize',14,'FontName','Arial')
 for g=1:3
     ns=size(TC{g}.prepertNet,1);
+    %plot last 50 strides pre-perturbation
     dt=TC{g}.prepertNet(:,end-49:end);
     dt2=TC{g}.adaptNet(:,1:880);
     patch(ax1,[1:50 fliplr(1:50)],[nanmean(dt)+(nanstd(dt)./sqrt(ns)) fliplr(nanmean(dt)-(nanstd(dt)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
@@ -104,6 +114,8 @@ errorbar(ax2a,3,nanmean(TGradual.maxError),nanstd(TGradual.maxError)./sqrt(lengt
     'Color','k','LineWidth',2)
 plot(ax2a,[1 2],[-0.175 -0.175],'Color','k','LineWidth',2)
 plot(ax2a,[1 3],[-0.1825 -0.1825],'Color','k','LineWidth',2)
+set(ax2a,'XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0])
+%ylabel(ax2a,'Error','FontWeight','Bold','FontSize',12,'FontName','Arial')
 text(ax2a,0.5,0.025,'Max Error','FontSize',12,'FontName','Arial');
 
 hold(ax2b)%control and small errors
@@ -118,6 +130,8 @@ errorbar(ax2b,3,nanmean(TGradual.meanError),nanstd(TGradual.meanError)./sqrt(len
     'Color','k','LineWidth',2)
 plot(ax2b,[1 1.9],[-0.08 -0.08],'Color','k','LineWidth',2)
 plot(ax2b,[2.1 3],[-0.08 -0.08],'Color','k','LineWidth',2)
+set(ax2b,'XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''})
+%ylabel(ax2b,'Error','FontWeight','Bold','FontSize',12,'FontName','Arial')
 text(ax2b,0.5,0.025,'Mean Error','FontSize',12,'FontName','Arial');
 
 
@@ -131,7 +145,10 @@ errorbar(ax2c,2,nanmean(TFeedback.netContributionNorm2_lateAdapt),nanstd(TFeedba
 bar(ax2c,3,nanmean(TGradual.netContributionNorm2_lateAdapt),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
 errorbar(ax2c,3,nanmean(TGradual.netContributionNorm2_lateAdapt),nanstd(TGradual.netContributionNorm2_lateAdapt)./sqrt(length(TGradual.netContributionNorm2_lateAdapt)),...
     'Color','k','LineWidth',2)
+%plot(ax2c,[1 1.9],[-0.08 -0.08],'Color','k','LineWidth',2)
 plot(ax2c,[2.1 3],[-0.08 -0.08],'Color','k','LineWidth',2)
+set(ax2c,'XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''})
+%ylabel(ax2c,'Error','FontWeight','Bold','FontSize',12,'FontName','Arial')
 text(ax2c,0.5,0.025,'Late Error','FontSize',12,'FontName','Arial');
 
 
@@ -147,6 +164,10 @@ for g=1:3
     plot(ax3a,1:20,nanmean(dt1),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
     plot(ax3b,1:20,nanmean(dt2),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
     plot(ax3c,1:20,nanmean(dt3),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
+%     patch(ax1,[51:930 fliplr(51:930)],[nanmean(dt2)+(nanstd(dt2)./sqrt(ns)) fliplr(nanmean(dt2)-(nanstd(dt2)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
+%     plot(ax1,1:50,nanmean(dt),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
+%     plot(ax1,51:930,nanmean(dt2),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
+%     clear ns dt dt2
 end
 text(ax3a,-9,0.22,'B','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax3a,7.5,0.22,'Overground Aftereffects','FontSize',14,'FontName','Arial')
@@ -196,7 +217,7 @@ errorbar(ax4c,2,nanmean(TFeedback.stepTimeContributionNorm2_OG_P),nanstd(TFeedba
 bar(ax4c,3,nanmean(TGradual.stepTimeContributionNorm2_OG_P),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
 errorbar(ax4c,3,nanmean(TGradual.stepTimeContributionNorm2_OG_P),nanstd(TGradual.stepTimeContributionNorm2_OG_P)./sqrt(length(TGradual.stepTimeContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-text(ax4c,0.7,0.16,'stepTime','FontSize',12,'FontName','Arial');
+text(ax4c,0.7,0.16,'stepAsym','FontSize',12,'FontName','Arial');
 
 
 
@@ -206,9 +227,9 @@ set(f3,'Color',[1 1 1]','Units','inches','Position',[0 0 3.5 6])
 %timeCourse re-Adaptation
 ax1 = axes('Position',[left  lower+3*delta+0.07 width4 height],'XTickLabel',{''},'Clipping','off','XLim',[0 280],'YLim',[-0.2 0.05],'YTick',[-0.2 0 0.2],'XTick',[0 100 200],'FontSize',12,'FontName','Arial');
 %Errors
-ax2a = axes('Position',[left  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'FontSize',12,'FontName','Arial');
-ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
-ax2c = axes('Position',[left+2*(width2+0.04)  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2a = axes('Position',[left  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
+ax2c = axes('Position',[left+2*(width2+0.04)  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 ymax],'YLim',[0.5 1.75],'YTick',[0 100],'FontSize',12,'FontName','Arial');
 
 %timeCourse TM post
 ax3a = axes('Position',[left  lower+delta width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'FontSize',12,'FontName','Arial');
@@ -223,9 +244,15 @@ ax4c = axes('Position',[left+2*(width2+0.04)  lower width2 height],'XTickLabel',
 
 
 hold(ax1)%control and small errors
+%l=get(ax1,'YLim');
+% patch(ax1,[1 50 50 1],[l(1) l(1) l(2) l(2)],'k','FaceAlpha',1,'EdgeColor','none');
+% patch(ax1,[51 930 930 51],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','none');
+% patch(ax1,[91 105 105 91],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','k');
+% patch(ax1,[651 665 665 651],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','k');
 text(ax1,-30,l(2)+0.03,'A','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax1,50,l(2)+0.03,'Re-adaptation Errors','FontSize',14,'FontName','Arial')
-patch(ax1,[1 15 15 1],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
+patch(ax1,[1 15 15 1],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','k');
+patch(ax1,[1 280 280 1],[l(1) l(1) l(2) l(2)],[0.9 0.9 0.9],'FaceAlpha',0.5,'EdgeColor','none');
 for g=1:3
     ns=size(TC{g}.prepertNet,1);
     dt=TC{g}.readaptNet(:,1:280);
@@ -252,6 +279,7 @@ errorbar(ax2a,3,nanmean(TGradual.maxErrorReadapt),nanstd(TGradual.maxErrorReadap
     'Color','k','LineWidth',2)
 plot(ax2a,[2 3],[-0.175 -0.175],'Color','k','LineWidth',2)
 plot(ax2a,[1 3],[-0.1825 -0.1825],'Color','k','LineWidth',2)
+set(ax2a,'XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0])
 text(ax2a,0.5,0.025,'Max Error','FontSize',12,'FontName','Arial');
 
 hold(ax2b)%control and small errors
@@ -264,6 +292,8 @@ errorbar(ax2b,2,nanmean(TFeedback.meanErrorReadapt),nanstd(TFeedback.meanErrorRe
 bar(ax2b,3,nanmean(TGradual.meanErrorReadapt),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
 errorbar(ax2b,3,nanmean(TGradual.meanErrorReadapt),nanstd(TGradual.meanErrorReadapt)./sqrt(length(TGradual.meanErrorReadapt)),...
     'Color','k','LineWidth',2)
+set(ax2b,'XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''})
+%ylabel(ax2b,'Error','FontWeight','Bold','FontSize',12,'FontName','Arial')
 text(ax2b,0.5,0.025,'Mean Error','FontSize',12,'FontName','Arial');
 
 
@@ -277,11 +307,16 @@ errorbar(ax2c,2,nanmean(TFeedback.netContributionNorm2_lateReadapt),nanstd(TFeed
 bar(ax2c,3,nanmean(TGradual.netContributionNorm2_lateReadapt),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
 errorbar(ax2c,3,nanmean(TGradual.netContributionNorm2_lateReadapt),nanstd(TGradual.netContributionNorm2_lateReadapt)./sqrt(length(TGradual.netContributionNorm2_lateReadapt)),...
     'Color','k','LineWidth',2)
+%plot(ax2c,[1 1.9],[-0.08 -0.08],'Color','k','LineWidth',2)
+set(ax2c,'XLim',[0.5 3.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''})
+%ylabel(ax2c,'Error','FontWeight','Bold','FontSize',12,'FontName','Arial')
 text(ax2c,0.5,0.025,'Late Error','FontSize',12,'FontName','Arial');
 
 
 hold(ax3a);hold(ax3b);hold(ax3c)
-
+patch(ax3a,[0 20 20 0],[0 0 0.25 0.25],[0 0 0],'FaceAlpha',1,'EdgeColor','none');
+patch(ax3b,[0 20 20 0],[0 0 0.25 0.25],[0 0 0],'FaceAlpha',1,'EdgeColor','none');
+patch(ax3c,[0 20 20 0],[0 0 0.25 0.25],[0 0 0],'FaceAlpha',1,'EdgeColor','none');
 for g=1:3
     ns=size(TC{g}.prepertNet,1);
     dt1=TC{g}.TMpNet(:,1:20);
@@ -293,6 +328,10 @@ for g=1:3
     plot(ax3a,1:20,nanmean(dt1),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
     plot(ax3b,1:20,nanmean(dt2),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
     plot(ax3c,1:20,nanmean(dt3),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
+%     patch(ax1,[51:930 fliplr(51:930)],[nanmean(dt2)+(nanstd(dt2)./sqrt(ns)) fliplr(nanmean(dt2)-(nanstd(dt2)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
+%     plot(ax1,1:50,nanmean(dt),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
+%     plot(ax1,51:930,nanmean(dt2),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
+%     clear ns dt dt2
 end
 text(ax3a,-9,0.34,'B','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax3a,7.5,0.34,'Treadmill Aftereffects','FontSize',14,'FontName','Arial')
@@ -338,4 +377,4 @@ errorbar(ax4c,2,nanmean(TFeedback.stepTimeContributionNorm2_TM_P),nanstd(TFeedba
 bar(ax4c,3,nanmean(TGradual.stepTimeContributionNorm2_TM_P),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
 errorbar(ax4c,3,nanmean(TGradual.stepTimeContributionNorm2_TM_P),nanstd(TGradual.stepTimeContributionNorm2_TM_P)./sqrt(length(TGradual.stepTimeContributionNorm2_TM_P)),...
     'Color','k','LineWidth',2)
-text(ax4c,0.7,0.26,'stepTime','FontSize',12,'FontName','Arial');
+text(ax4c,0.7,0.26,'stepAsym','FontSize',12,'FontName','Arial');
