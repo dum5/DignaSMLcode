@@ -6,7 +6,7 @@ smoothedData=NaN(nbins,size(data,2));
 
 for n=1:size(data,2)
     for binNum=1:length(start)
-        smoothedData(binNum,n)=nanmedian(data(start(binNum):stop(binNum),n));
+        smoothedData(binNum,n)=nanmean(data(start(binNum):stop(binNum),n));
     end
         
 end

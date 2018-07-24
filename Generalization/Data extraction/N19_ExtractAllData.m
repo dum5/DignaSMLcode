@@ -148,11 +148,11 @@ for i=1:length(groups)
     groupOutcomes{i}(:,nEp+1,:) = groupOutcomes{i}(:,OGpE,:) - groupOutcomes{i}(:,OGpL,:);%delta OG post
     groupOutcomes{i}(:,nEp+2,:) = groupOutcomes{i}(:,LA,:) - groupOutcomes{i}(:,ERA,:);% LA-ERA
     groupOutcomes{i}(:,nEp+3,:) = groupOutcomes{i}(:,OGpL,:) - groupOutcomes{i}(:,ERA,:);% OGlp-ERA
-    groupOutcomes{i}(:,nEp+4,:) = (groupOutcomes{i}(:,OGpE,:)./groupOutcomes{i}(:,TMpE,:)).*100;;% OGlp-ERA
+    groupOutcomes{i}(:,nEp+4,:) = (groupOutcomes{i}(:,OGpE,:)./groupOutcomes{i}(:,TMpE,:)).*100;;% pct generalization
     
 end
 
-names={names{1:end},'deltaOG','LA_ERA','lOG_ERA','pctLearning'};
+names={names{1:end},'deltaOG','LA_ERA','lOG_ERA','pctGeneralization'};
 %extract timecourses
 allconds=studyData.Gradual.getCommonConditions;
 [timeCourse]=getGroupedTimeCourses(groups,allconds,params);
