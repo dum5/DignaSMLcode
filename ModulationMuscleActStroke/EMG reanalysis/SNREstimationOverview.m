@@ -5,8 +5,10 @@ clc
 path='Z:\SubjectData\E01 Synergies\mat\HPF30\';
 strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%SJ 11 omitted, because error
 controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; 
-
 mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
+mFields=[strcat('S',mOrder) strcat('F',mOrder)];
+rSlowIdx=[1:30];
+lSlowIdx=[16:30,1:15];
 mOrder=[strcat('R',mOrder) strcat('L',mOrder)];
 lowVals=table;
 lowVals.sub=cell(30,1);
@@ -28,7 +30,8 @@ for i=1:length(allnames)%for all subjects in the list
     highVals.sub{i}=allnames{i};
     ratios.sub{i}=allnames{i};
      
-    base=expData.metaData.getTrialsInCondition('TM base');
+    %base=expData.metaData.getTrialsInCondition('TM base');
+    base=expData.metaData.getTrialsInCondition('Washout');
     muscles=expData.data{base(1)}.EMGData.labels;
     
     for k=1:length(base)
@@ -52,19 +55,25 @@ for i=1:length(allnames)%for all subjects in the list
             tempdata=[tempdata,squeeze(dt{k}.Data(:,Idx,:))];          
         end
        
+        tempdata=tempdata(:,end-40:end);%for TM post use last 40 strides
         
         %plot(axT,tempdata,'Color',[0.6 0.6 0.6]);
         dt2=nanmean(abs(tempdata),2);
-        dt2=smoothData(dt2,200);
-        lowVals.(mOrder{m})(i)=min(abs(dt2));
-        highVals.(mOrder{m})(i)=max(abs(dt2));
-        ratios.(mOrder{m})(i)=max(abs(dt2))/min(abs(dt2));
+        dt2=smoothData(dt2,200,'nanmean');
+        if expData.getRefLeg=='R'
+            mIdx=rSlowIdx(m);
+        else
+            mIdx=lSlowIdx(m);
+        end
+        lowVals.(mFields{mIdx})(i)=min(abs(dt2));
+        highVals.(mFields{mIdx})(i)=max(abs(dt2));
+        ratios.(mFields{mIdx})(i)=max(abs(dt2))/min(abs(dt2));
         
        
         clear dt tempdata dt2
     end
     
-    clear base baseData baseDataRAligned baseDataLAligned
+    clear base baseData baseDataRAligned baseDataLAligned expData
 end
 
 %plot Data
@@ -75,26 +84,28 @@ x1=(3.*(1:30))-2;
 x2=(3.*(1:30))-1;
 
 for p=1:3
-    if p==1;T=lowVals;
+    if p==1;T=lowVals;        
     elseif p==2;T=highVals;
     elseif p==3;T=ratios;
     end
     T1=T(1:15,:);
     T2=T(16:30,:);
     hold(ha(p))
-    boxplot(ha(p),[T1.RGLU, T1.LGLU,T1.RTFL,T1.LTFL,T1.RADM,T1.LADM,T1.RHIP,T1.LHIP,T1.RRF,T1.LRF,T1.RVL,T1.LVL,T1.RVM,T1.LVM,T1.RSEMT,T1.LSEMT,...
-        T1.RSEMB,T1.LSEMB,T1.RBF,T1.LBF,T1.RMG,T1.LMG,T1.RLG,T1.LLG,T1.RSOL,T1.LSOL,T1.RPER,T1.RPER,T1.RTA,T1.LTA],'position',x1,'widths',0.7,'Color','r')
-    boxplot(ha(p),[T2.RGLU, T2.LGLU,T2.RTFL,T2.LTFL,T2.RADM,T2.LADM,T2.RHIP,T2.LHIP,T2.RRF,T2.LRF,T2.RVL,T2.LVL,T2.RVM,T2.LVM,T2.RSEMT,T2.LSEMT,...
-        T2.RSEMB,T2.LSEMB,T2.RBF,T2.LBF,T2.RMG,T2.LMG,T2.RLG,T2.LLG,T2.RSOL,T2.LSOL,T2.RPER,T2.RPER,T2.RTA,T2.LTA],'position',x2,'widths',0.7,'Color','g')
+    boxplot(ha(p),[T1.SGLU, T1.FGLU,T1.STFL,T1.FTFL,T1.SADM,T1.FADM,T1.SHIP,T1.FHIP,T1.SRF,T1.FRF,T1.SVL,T1.FVL,T1.SVM,T1.FVM,T1.SSEMT,T1.FSEMT,...
+        T1.SSEMB,T1.FSEMB,T1.SBF,T1.FBF,T1.SMG,T1.FMG,T1.SLG,T1.FLG,T1.SSOL,T1.FSOL,T1.SPER,T1.SPER,T1.STA,T1.FTA],'position',x1,'widths',0.7,'Color','r')
+    boxplot(ha(p),[T2.SGLU, T2.FGLU,T2.STFL,T2.FTFL,T2.SADM,T2.FADM,T2.SHIP,T2.FHIP,T2.SRF,T2.FRF,T2.SVL,T2.FVL,T2.SVM,T2.FVM,T2.SSEMT,T2.FSEMT,...
+        T2.SSEMB,T2.FSEMB,T2.SBF,T2.FBF,T2.SMG,T2.FMG,T2.SLG,T2.FLG,T2.SSOL,T2.FSOL,T2.SPER,T2.SPER,T2.STA,T2.FTA],'position',x2,'widths',0.7,'Color','g')
     title(ha(p),names{p})
-    plot(ha(p),x1,[T1.RGLU(3), T1.LGLU(3),T1.RTFL(3),T1.LTFL(3),T1.RADM(3),T1.LADM(3),T1.RHIP(3),T1.LHIP(3),T1.RRF(3),T1.LRF(3),T1.RVL(3),T1.LVL(3),T1.RVM(3),T1.LVM(3),...
-        T1.RSEMT(3),T1.LSEMT(3),T1.RSEMB(3),T1.LSEMB(3),T1.RBF(3),T1.LBF(3),T1.RMG(3),T1.LMG(3),T1.RLG(3),T1.LLG(3),T1.RSOL(3),T1.LSOL(3),T1.RPER(3),T1.RPER(3),T1.RTA(3),T1.LTA(3)],...
+    plot(ha(p),x1,[T1.SGLU(3), T1.FGLU(3),T1.STFL(3),T1.FTFL(3),T1.SADM(3),T1.FADM(3),T1.SHIP(3),T1.FHIP(3),T1.SRF(3),T1.FRF(3),T1.SVL(3),T1.FVL(3),T1.SVM(3),T1.FVM(3),...
+        T1.SSEMT(3),T1.FSEMT(3),T1.SSEMB(3),T1.FSEMB(3),T1.SBF(3),T1.FBF(3),T1.SMG(3),T1.FMG(3),T1.SLG(3),T1.FLG(3),T1.SSOL(3),T1.FSOL(3),T1.SPER(3),T1.SPER(3),T1.STA(3),T1.FTA(3)],...
         '.k','MarkerSize',10);
     grid(ha(p),'on')
     ha(p).GridAlpha=0.8;
     
 end
+plot(ha(1),[1 90],[0.000005,0.000005],'--k')
+plot(ha(2),[1 90],[0.000005,0.000005],'--k')
 yticklabels(ha,'auto')
-xticklabels(ha,{'RGLU', 'LGLU','RTFL','LTFL','RADM','LADM','RHIP','LHIP','RRF','LRF','RVL','LVL','RVM','LVM','RSEMT','LSEMT',...
-        'RSEMB','LSEMB','RBF','LBF','RMG','LMG','RLG','LLG','RSOL','LSOL','RPER','RPER','RTA','LTA'})
+xticklabels(ha,{'S_GLU', 'F_GLU','S_TFL','F_TFL','S_ADM','F_ADM','S_HIP','F_HIP','S_RF','F_RF','S_VL','F_VL','S_VM','F_VM','S_SEMT','F_SEMT',...
+        'S_SEMB','F_SEMB','S_BF','F_BF','S_MG','F_MG','S_LG','F_LG','S_SOL','F_SOL','S_PER','S_PER','S_TA','F_TA'})
 
