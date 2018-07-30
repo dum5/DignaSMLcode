@@ -10,12 +10,15 @@ load(loadName)
 speedmatch=0;
 
 if speedmatch==0
-    Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
+    %Idx=[1:4 6:15]';%exclude pt 5, since there was a loose sensor
+    Idx=[1 2 4 6:15]';%exclude patient 3
     
     BMControl=0.7309;
-    BMStroke=0.6250;%patient 5 excluded, patient 3 included
+    %BMStroke=0.6250;%patient 5 excluded, patient 3 included
+    BMStroke=0.68644;%patient 5 excluded, patient 3 excluded
     CIControl=[0.6833 0.7785];
-    CIStroke=[0.5321 0.7179];%patient 5 excluded, patient 3 included
+    %CIStroke=[0.5321 0.7179];%patient 5 excluded, patient 3 included
+    CIStroke=[0.6234 0.7495];%patient 5 excluded, patient 3 included
     
 elseif speedmatch==1
     t=t(t.SpeedMatch==1,:);

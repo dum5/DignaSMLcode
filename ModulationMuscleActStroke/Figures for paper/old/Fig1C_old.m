@@ -1,8 +1,8 @@
-% clear all
-% close all
-% %% Load data
-% subj='C0014';
-% load(['Z:\SubjectData\E01 Synergies\mat\HPF30\' subj '.mat']);
+clear all
+close all
+%% Load data
+subj='C0014';
+load(['Z:\SubjectData\E01 Synergies\mat\HPF30\' subj '.mat']);
 
 %% Align it
 conds={'TM Base','Adap'};
@@ -27,7 +27,7 @@ xt=sort([M,M(1:end-1)+[diff(M)/2]]);
 xt=[0,8,16:16:80,88,96:16:160];
 %xt=[0:8:MM];
 fs=16; %FontSize
-for i=1:2
+for i=1:3
     ph(i)=axes();
     set(ph(i),'Position',[.05+(i-1)*.33 .4 .25 .5]);
     cc1=get(gca,'ColorOrder');
@@ -67,14 +67,14 @@ if i==2
     pos=get(ph1(i),'Position');
 end
 
-for i=1:2
+for i=2:3
     hold on
     switch i
-        case 1
+        case 2
             B=LBase;
             A=LAdap;
             tit=['SLOW ' muscle];
-        case 2
+        case 3
             B=RBase;
             A=RAdap;
             tit=['FAST ' muscle];
@@ -85,7 +85,7 @@ for i=1:2
     ylabel('')
     ylabel(tit)
     ax=gca;
-    ax.YLabel.Color=cc1(i,:);
+    ax.YLabel.Color=cc1(i-1,:);
     ax.YLabel.FontWeight='bold';
     
     ph1(i)=axes;
@@ -109,7 +109,7 @@ for i=1:2
     end
 end
 drawnow
-for i=1:2
+for i=1:3
     axes(ph(i))
     ll=findobj(ph(i),'Type','Line');
     set(ll,'LineWidth',3)
@@ -131,7 +131,7 @@ for i=1:2
     plot([1.1 4.9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     plot([5.1 5.9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
     plot([6.1 9.9]*16,[1 1]*yOff,'Color',0*ones(1,3),'LineWidth',4,'Clipping','off')
-     if i==2
+     if i==3
         
         legend(ll(end:-1:1),{'Baseline','Adaptation'},'Box','off','Position',[0.8497    0.7091    0.1490    0.2523])
     end
