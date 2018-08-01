@@ -1,8 +1,8 @@
-%clear all
+clear all
 close all
 %% Load data
 subj='C0014';
-%load(['Z:\SubjectData\E01 Synergies\mat\HPF30\' subj '.mat']);
+load(['Z:\SubjectData\E01 Synergies\mat\HPF30\' subj '.mat']);
 
 
 %% Align it
@@ -110,6 +110,7 @@ fs=16; %FontSize
     legend(ll(end:-1:end-1),{'Baseline','Adaptation'})
     
     set(fh,'Position',[0 0 .45*1.5 .2*1.5])
+    set(gcf,'Renderer','painters');
 
     %saveFig(fh,'./',['Fig1B_' num2str(l)],1)
 end

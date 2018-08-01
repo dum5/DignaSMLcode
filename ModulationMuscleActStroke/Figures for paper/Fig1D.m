@@ -17,15 +17,21 @@ for k=[2,1]
     end
 ax=axes;
 %ax.Position=[0.05+(k-1)*.08 .05 .2 .35];
-ax.Position=[0.05+(k-1)*.16 .05 .2 .35];
+ax.Position=[0.05+(k-1)*.1 .05 .2 .35];
 I=imshow(size(map,1)*(aux1+.5),flipud(map),'Border','tight');
 rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
 %%Add arrows
 hold on
 quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux1),zeros(size(aux1)),-.7*sign(aux1),0,'Color','k','LineWidth',2)
+if k==1
+    text(1.7,1,'m1','Clipping','off','FontSize',20,'FontWeight','bold')
+    text(1.7,2,'m2','Clipping','off','FontSize',20,'FontWeight','bold')
+    text(1.7,3,'m3','Clipping','off','FontSize',20,'FontWeight','bold')
+end
+
 ax=axes;
 %ax.Position=[.05+(k-1)*.08 .45 .2 .35];
-ax.Position=[.05+(k-1)*.16 .45 .2 .35];
+ax.Position=[.05+(k-1)*.1 .45 .2 .35];
 I=imshow(size(map,1)*(aux2+.5),flipud(map),'Border','tight');
 rectangle('Position',[.5 .5 1 3],'EdgeColor','k')
 %%Add arrows
@@ -33,7 +39,13 @@ hold on
 quiver(ones(size(aux1)),[1:numel(aux1)]'+.4*sign(aux2),zeros(size(aux1)),-.7*sign(aux2),0,'Color','k','LineWidth',2)
 
 set(gca,'XTickLabel','','YTickLabel','','XTick','','YTick','')
-text(.6,0,tt,'Clipping','off','FontSize',14,'FontWeight','bold')
+text(.6,0,tt,'Clipping','off','FontSize',20,'FontWeight','bold')
+if k==1
+    text(1.7,1,'m1','Clipping','off','FontSize',20,'FontWeight','bold')
+    text(1.7,2,'m2','Clipping','off','FontSize',20,'FontWeight','bold')
+    text(1.7,3,'m3','Clipping','off','FontSize',20,'FontWeight','bold')
+end
+
 
 end
 
@@ -43,9 +55,10 @@ end
 
 %Add lines on fast/slow:
 ccc=get(gca,'ColorOrder');
-plot(0*[1 1],3.45+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
-text(-0.6,6.5,'FAST','Color',ccc(1,:),'Rotation',90,'FontSize',20,'FontWeight','bold')
-plot(0*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
-text(-0.6,3.25,'SLOW','Color',ccc(2,:),'Rotation',90,'FontSize',20,'FontWeight','bold')
+plot(0.3*[1 1],3.45+[.5 3.5],'LineWidth',4,'Color',ccc(1,:),'Clipping','off')
+text(-0.1,6.25,'FAST','Color',ccc(1,:),'Rotation',90,'FontSize',20,'FontWeight','bold')
+plot(0.3*[1 1],[.5 3.5],'LineWidth',4,'Color',ccc(2,:),'Clipping','off')
+text(-0.1,3,'SLOW','Color',ccc(2,:),'Rotation',90,'FontSize',20,'FontWeight','bold')
 
-text(-3,-0.75,'\DeltaEMG(eP_l_A)=\beta_M \DeltaEMG(eA_B)^*','FontSize',16,'FontWeight','bold')
+text(-1,-0.8,'\DeltaEMG(eP_l_A)=\beta_M \DeltaEMG(eA_B^*)','FontSize',20,'FontWeight','bold')
+set(gcf,'Renderer','painters');

@@ -4,20 +4,20 @@ close all
 %%Kinematic outcomes
 
 %% read data
-%matDataDir='C:\Users\did35\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\'
-matDataDir='D:\Documents\OnedrivePitt\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\'
+matDataDir='C:\Users\did35\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\';
+%matDataDir='D:\Documents\OnedrivePitt\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\'
 fileName='groupedParamsForKinAnalysis';
 %%
-matchSpeedFlag=0;
-removeMissing=false;
+
+removeP03FromEmgFlag=1;
+P03Idx=18;
 
 loadName=[matDataDir,fileName]; 
 load(loadName)
 
 patients2=patients.removeSubs({'P0007'});
 controls2=controls.removeSubs({'C0007'});
-%patients2=patients2.removeBadStrides;
-%controls2=controls2.removeBadStrides;
+
 
 eF=1;
 eL=1;
@@ -26,8 +26,8 @@ eL=1;
 
 eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 15 -40 15],...
     [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
-labels={'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm','alphaFast','alphaSlow','xFast','xSlow'};
-%labels={'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm'};
+labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2','alphaFast','alphaSlow','xFast','xSlow'};
+%labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
 
 t=table;
 t.group=cell(30,1);
@@ -38,7 +38,7 @@ cSpeedmatch=[1 1 0 1 1 1 0 1 1 0 1 0 0 0 1]';
 sSpeedmatch=[1 1 0 0 1 0 1 1 1 0 0 1 1 1 0]';
 t.SpeedMatch=[cSpeedmatch;sSpeedmatch];
 
-%get the data for specific epochs in the Table
+%% Contributions Data (no patients are removed here)
 for p=1:length(labels) 
         for e=1:length(eps)
             t.([cell2mat(eps(e,:).Properties.ObsNames),'_',labels{p}])=[squeeze(controls2.getEpochData(eps(e,:),labels{p}));...
@@ -93,9 +93,12 @@ for p=1:length(EMGlabels)
         for e=1:length(eps)
             t.([cell2mat(eps(e,:).Properties.ObsNames),'_',templabel])=[squeeze(groups{1}.getEpochData(eps(e,:),EMGlabels{p}));...
                 squeeze(groups{2}.getEpochData(eps(e,:),EMGlabels{p}))];
+            if removeP03FromEmgFlag
+               t.([cell2mat(eps(e,:).Properties.ObsNames),'_',templabel])(P03Idx)=NaN;
+            end
+                
         end
 end
-
 clear groups patients controls patients2 controls2
 
 %load file with angles
@@ -113,6 +116,10 @@ for e=1:length(eps)
                 squeeze(patients2.getEpochData(eps(e,:),'skneeAngleAtSHS'))];
              t.([cell2mat(eps(e,:).Properties.ObsNames),'_fkneeAngleAtFHS'])=[squeeze(controls2.getEpochData(eps(e,:),'fkneeAngleAtFHS'));...
                 squeeze(patients2.getEpochData(eps(e,:),'fkneeAngleAtFHS'))];
+            if removeP03FromEmgFlag
+               t.([cell2mat(eps(e,:).Properties.ObsNames),'_skneeAngleAtSHS'])(P03Idx)=NaN;
+                t.([cell2mat(eps(e,:).Properties.ObsNames),'_fkneeAngleAtFHS'])(P03Idx)=NaN;
+            end
 end
 
 fileName='RegressionResults';

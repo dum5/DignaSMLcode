@@ -58,3 +58,5 @@ set(ax3,'XLim',[-0.3 0.8],'YLim',[-10 20],'YTick',[-10 0 20],'FontSize',14,'Font
 ylabel(ax3,'\Delta\theta sKnee lA-B')
 xlabel(ax3,'Quad Activity lA-B')
 tx=text(ax3,-0.3, 18,['rho=',num2str(round(rho(2),2)),',p<0.01']);set(tx,'FontSize',14)
+
+

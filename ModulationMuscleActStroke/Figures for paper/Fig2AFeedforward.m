@@ -7,7 +7,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 removeP07Flag=1;
 removeP03Flag=1;
 
@@ -53,7 +53,7 @@ end
 newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 
 f1=figure('Name','Feedforward responses');
-set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 6 6]);
+set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 7 7]);
 
 ax2 = axes('Position',[0.15   0.2   0.35 0.35*1.81],'FontSize',12);%create axis for control checkerboard
 ax3 = axes('Position',[0.15+0.37    0.2    0.35   0.35*1.81],'FontSize',12);%create axis for patient checkerboard

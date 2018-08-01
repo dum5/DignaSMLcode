@@ -6,15 +6,29 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-%strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
-controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-%patient 3 and 5 excluded
-strokesNames={'P0001','P0002','P0004','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
+speedMatchFlag=0;
+removeP05AndP03Flag=1;
 
 
-%preedmatched analysis
-% strokesNames=strcat('P00',{'01','02','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-% controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+if speedMatchFlag
+    %note that patient 5 is removed here
+    strokesNames=strcat('P00',{'01','02','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+    controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+    Idx=[1:8];%all stroke subjects listed above
+else
+    controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+    %patient 3 and 5 will be exlcuded later, otherwise the table messes up
+    strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
+    
+    if removeP05AndP03Flag
+        Idx=[1 2 4 6:15];
+    else
+        Idx=1:15;
+    end
+    
+end
+
+
 
 
 %define groups
@@ -61,7 +75,7 @@ SdataEMG=reshape(flipEMGdata(reshape(SdataEMG,size(labels,1),size(labels,2),size
 
 %% Get all the eA, lA, eP vectors
 shortNames={'lB','eA','lA','eP'};
-longNames={'BASE','eA','lA','eP'}
+longNames={'BASE','eA','lA','eP'};
 for i=1:length(shortNames)
     aux=squeeze(CdataEMG(:,strcmp(ep.Properties.ObsNames,longNames{i}),:));
     eval([shortNames{i} '_C=aux;']);
@@ -79,7 +93,8 @@ eAT_S=fftshift(eA_S,1);
 rob='off';
 
 ttC=table(-mean(eA_C,2), mean(eAT_C,2), -mean(lA_C,2), mean(eP_C,2)-mean(lA_C,2),'VariableNames',{'eA','eAT','lA','eP_lA'});
-ttS=table(-mean(eA_S,2), mean(eAT_S,2), -mean(lA_S,2), mean(eP_S,2)-mean(lA_S,2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+%patients that are don't have good data will be removed
+ttS=table(-mean(eA_S(:,Idx),2), mean(eAT_S(:,Idx),2), -mean(lA_S(:,Idx),2), mean(eP_S(:,Idx),2)-mean(lA_S(:,Idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 
 CmodelFit1a=fitlm(ttC,'eP_lA~eAT-1','RobustOpts',rob)
 Clearn1a=CmodelFit1a.Coefficients.Estimate;
@@ -95,25 +110,31 @@ Sr21a=uncenteredRsquared(SmodelFit1a);
 Sr21a=Sr21a.uncentered;
 %disp(['Uncentered R^2=' num2str(Sr21a,3)])
 
+if speedMatchFlag
+    error('Individual analysis not supported for speedMatch');
+end
+
 %% Individual models::
 rob='off'; %These models can't be fit robustly (doesn't converge)
 %First: repeat the model(s) above on each subject:
 clear CmodelFitAll* ClearnAll* SmodelFitAll* SlearnAll* 
+ClearnAll1a=NaN(15,1);
+SlearnAll1a=NaN(15,1);
 
 for i=1:size(eA_C,2)
     ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
     CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
     ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate;
-    aux=uncenteredRsquared(CmodelFitAll1a{i});
-    Cr2All1a(i)=aux.uncentered;    
+   % aux=uncenteredRsquared(CmodelFitAll1a{i});
+   % Cr2All1a(i)=aux.uncentered;    
 end
 
-for i=1:size(eA_S,2)
+for i=Idx%1:size(eA_S,2)
     ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
     SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
     SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate;
-    aux=uncenteredRsquared(SmodelFitAll1a{i});
-    Sr2All1a(i)=aux.uncentered;    
+  %  aux=uncenteredRsquared(SmodelFitAll1a{i});
+  %  Sr2All1a(i)=aux.uncentered;    
 end
 
 %Magnitude analysis
@@ -123,16 +144,20 @@ eAMagnS=NaN(15,1);
 ePMagnS=NaN(15,1);
 ePBMagnC=NaN(15,1);
 ePBMagnS=NaN(15,1);
+lAMagnC=NaN(15,1);
+lAMagnS=NaN(15,1);
 
 for i=1:size(eA_C,2)
     eAMagnC(i,1)=norm(eA_C(:,i));
     ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
     ePBMagnC(i,1)=norm(eP_C(:,i));
+    lAMagnC(i,1)=norm(lA_C(:,i));
 end
-for i=1:size(eA_S,2)
+for i=Idx%1:size(eA_S,2)
     eAMagnS(i,1)=norm(eA_S(:,i));
     ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
     ePBMagnS(i,1)=norm(eP_S(:,i));
+    lAMagnS(i,1)=norm(lA_S(:,i));
 end
 
 load([matDataDir,'bioData'])
@@ -145,7 +170,7 @@ for c=1:length(groups{1}.adaptData)
     affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
 end
 
-
+%patient 7 and control 7 are not included
 FMselect=FM([1:6,8:16]);
 velSselect=velsS([1:6,8:16]);
 velCselect=velsC([1:6,8:16]);
@@ -165,9 +190,10 @@ tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.
 tALL.eAMagn=[eAMagnC;eAMagnS];
 tALL.ePMagn=[ePMagnC;ePMagnS];
 tALL.ePBMagn=[ePBMagnC;ePBMagnS];
+tALL.lAMagn=[lAMagnC;lAMagnS];
 
 
-%save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
+save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
 
 
 % 
