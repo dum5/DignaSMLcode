@@ -6,7 +6,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 removeP05AndP03Flag=1;
 
 
@@ -192,8 +192,14 @@ tALL.ePMagn=[ePMagnC;ePMagnS];
 tALL.ePBMagn=[ePBMagnC;ePBMagnS];
 tALL.lAMagn=[lAMagnC;lAMagnS];
 
-
-save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
+answer = questdlg('Save results to mat file?');
+switch answer
+case 'Yes'
+    save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
+    disp('matfile saved')
+    case 'No'
+        disp('data not saved')
+end
 
 
 % 
