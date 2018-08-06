@@ -6,7 +6,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 removeP05AndP03Flag=1;
 
 
@@ -96,14 +96,14 @@ ttC=table(-mean(eA_C,2), mean(eAT_C,2), -mean(lA_C,2), mean(eP_C,2)-mean(lA_C,2)
 %patients that are don't have good data will be removed
 ttS=table(-mean(eA_S(:,Idx),2), mean(eAT_S(:,Idx),2), -mean(lA_S(:,Idx),2), mean(eP_S(:,Idx),2)-mean(lA_S(:,Idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 
-CmodelFit1a=fitlm(ttC,'eP_lA~eAT-1','RobustOpts',rob)
+CmodelFit1a=fitlm(ttC,'eP_lA~eA+eAT-1','RobustOpts',rob)
 Clearn1a=CmodelFit1a.Coefficients.Estimate;
 Clearn1aCI=CmodelFit1a.coefCI;
 Cr21a=uncenteredRsquared(CmodelFit1a);
 Cr21a=Cr21a.uncentered;
 %disp(['Uncentered R^2=' num2str(Cr21a,3)])
 
-SmodelFit1a=fitlm(ttS,'eP_lA~eAT-1','RobustOpts',rob)
+SmodelFit1a=fitlm(ttS,'eP_lA~eA+eAT-1','RobustOpts',rob)
 Slearn1a=SmodelFit1a.Coefficients.Estimate;
 Slearn1aCI=SmodelFit1a.coefCI;
 Sr21a=uncenteredRsquared(SmodelFit1a);
@@ -118,21 +118,21 @@ end
 rob='off'; %These models can't be fit robustly (doesn't converge)
 %First: repeat the model(s) above on each subject:
 clear CmodelFitAll* ClearnAll* SmodelFitAll* SlearnAll* 
-ClearnAll1a=NaN(15,1);
-SlearnAll1a=NaN(15,1);
+ClearnAll1a=NaN(15,2);
+SlearnAll1a=NaN(15,2);
 
 for i=1:size(eA_C,2)
     ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
-    CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
-    ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate;
+    CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
+    ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate';
    % aux=uncenteredRsquared(CmodelFitAll1a{i});
    % Cr2All1a(i)=aux.uncentered;    
 end
 
 for i=Idx%1:size(eA_S,2)
     ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
-    SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
-    SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate;
+    SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
+    SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate';
   %  aux=uncenteredRsquared(SmodelFitAll1a{i});
   %  Sr2All1a(i)=aux.uncentered;    
 end
@@ -185,7 +185,8 @@ tALL.age=[ageC; ageS];
 tALL.aff(16:30)=affSide';
 tALL.vel=[velCselect';velSselect'];
 tALL.FM=[repmat(34,15,1);FMselect'];
-tALL.BM=[ClearnAll1a;SlearnAll1a];
+tALL.BS=[ClearnAll1a(:,1);SlearnAll1a(:,1)];
+tALL.BM=[ClearnAll1a(:,2);SlearnAll1a(:,2)];
 tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
 tALL.eAMagn=[eAMagnC;eAMagnS];
 tALL.ePMagn=[ePMagnC;ePMagnS];

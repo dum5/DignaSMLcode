@@ -1,16 +1,16 @@
 %% Group assessments
-%clear all
+clear all
 close all
 clc
 
-% [loadName,matDataDir]=uigetfile('*.mat');
-% loadName=[matDataDir,loadName]; 
-% load(loadName)
+ [loadName,matDataDir]=uigetfile('*.mat');
+ loadName=[matDataDir,loadName]; 
+ load(loadName)
 figuresColorMap;
 ex1=[0.85 0.325 0.098];
 ex2=[0 0.447 0.741];
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 removeP07Flag=1;
 removeP03Flag=1;
 
@@ -256,16 +256,29 @@ load(loadName)
 AddCombinedParamsToTable;
 
 if speedMatchFlag
-    BMControl=0.77714;
-    BMStroke=0.53363;    
-    CIControl=[0.7165 0.8378];
-    CIStroke=[0.4552 0.6121];
+    
+    BSControl=0.1606;
+    BMControl=0.8057;
+    CIBSControl=[0.10212 0.2199];
+    CIBMControl=[0.7463 0.8651];
+       
+    BSStroke=0.3884;
+    BMStroke=0.5908;
+    CIBSStroke=[0.3200 0.4569];
+    CIBMStroke=[0.5224 0.6592];
+    
     t=t(t.SpeedMatch==1,:);
 else
-    BMControl=0.73091;
-    BMStroke=0.68644;%patient 5 excluded, patient 3 excluded
-    CIControl=[0.6833 0.7785];
-    CIStroke=[0.6234 0.7495];%patient 5 excluded, patient 3 included
+    BSControl=0.1717;
+    BMControl=0.7617;
+    CIBSControl=[0.1266 0.2167];
+    CIBMControl=[0.7166 0.8067];
+       
+    BSStroke=0.2227;
+    BMStroke=0.6951;
+    CIBSStroke=[0.1639 0.2814];
+    CIBMStroke=[0.6363 0.7539];
+    
 end
     
 %% Run stats for between group comparison
@@ -287,7 +300,7 @@ else
     p2=['=',num2str(round(p2,2))];
 end
 
-ph.delete
+
 ph(1,1) = axes('Position',[0.075   0.385   0.35 0.25],'FontSize',12);%Magnitudes
 ph(1,2) = axes('Position',[0.075   0.075   0.35 0.25],'FontSize',12);%Regressors
 
@@ -310,10 +323,12 @@ ll2=legend(flipud(ll),'Control','Stroke');
 set(ll2,'EdgeColor','none')
 
 hold(ph(1,2))
-bar(ph(1,2),1,BMControl,'BarWidth',0.35,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
-bar(ph(1,2),2,BMStroke,'BarWidth',0.35,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
-errorbar(ph(1,2),[1 2],[BMControl,BMStroke],[0 0],[diff(CIControl)/2 diff(CIStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
+bar(ph(1,2),1,BSControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+bar(ph(1,2),2,BSStroke,'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
+bar(ph(1,2),3.5,BMControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+bar(ph(1,2),4.5,BMStroke,'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
+errorbar(ph(1,2),[1 2 3.5 4.5],[BSControl,BSStroke BMControl BMStroke],[0 0 0 0],[diff(CIBSControl)/2 diff(CIBSStroke)/2 diff(CIBMControl)/2 diff(CIBMStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
 
-set(ph(1,2),'XLim',[0.5 2.5],'YLim',[0 1],'XTickLabel',{''},'YTick',[0 .5 1])
-ylabel(ph(1,2),'\beta_M','FontWeight','bold')
+set(ph(1,2),'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'},'YTick',[0 .5 1])
+ylabel(ph(1,2),'\beta','FontWeight','bold')
 text(ph(1,2),0.7,1,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')

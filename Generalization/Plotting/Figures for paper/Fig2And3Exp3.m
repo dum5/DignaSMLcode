@@ -19,24 +19,24 @@ T.ExtReadapt=T.netContributionNorm2_lateReadapt-T.velocityContributionNorm2_late
 TControl=T(T.group=='AbruptNoFeedback',:);
 TCatch=T(T.group=='Catch',:);
 %organize data for timeCourses
-binWidth=5;
+binWidth=5;sumMethod='nanmean';
 Inds=[3,5];
 for g=1:2
-    TC{g}.prepertNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(1:150,:),binWidth)';%preperturbation
-    TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(151:1050,:),binWidth)';%adaptation
-    TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{7}(1:100,:),binWidth)';%ogPost
-    TC{g}.readaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{8}(1:600,:),binWidth)';%reAdaptation
-    TC{g}.TMpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{9}(1:100,:),binWidth)';%tmPost
+    TC{g}.prepertNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(1:150,:),binWidth,sumMethod)';%preperturbation
+    TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(151:1050,:),binWidth,sumMethod)';%adaptation
+    TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost
+    TC{g}.readaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{8}(1:600,:),binWidth,sumMethod)';%reAdaptation
+    TC{g}.TMpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
     
-    TC{g}.OGpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{7}(1:100,:),binWidth)';%ogPost    
-    TC{g}.TMpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{9}(1:100,:),binWidth)';%tmPost
-    TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{7}(1:100,:),binWidth)';%ogPost    
-    TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{9}(1:100,:),binWidth)';%tmPost
+    TC{g}.OGpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
+    TC{g}.TMpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
+    TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
+    TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
 end
 [catchError]=getGroupedTimeCourses(groups(5),{'Catch'},{'netContributionNorm2'});
 TMbias=squeeze(groupOutcomes{5}(4,TMref,:))'; 
 cathcError=[catchError{1}.param{1}.cond{1}-TMbias]';
-catchError2=smoothData(catchError{1}.param{1}.cond{1}(1:10,:),binWidth)';
+catchError2=smoothData(catchError{1}.param{1}.cond{1}(1:10,:),binWidth,sumMethod)';
 
 f2=figure('Name','Experiment 3A');
 set(f2,'Color',[1 1 1]','Units','inches','Position',[0 0 3.5 6])
