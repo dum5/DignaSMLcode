@@ -5,11 +5,11 @@ clc
 [loadName,matDataDir]=uigetfile('*.mat');
 loadName=[matDataDir,loadName]; 
 load(loadName)
-
-writePath=uigetdir;
-dt=datestr(datetime('now'));
-dt(find(dt==':'))='-';
-diary([writePath,'\',dt]);
+% 
+% writePath=uigetdir;
+% dt=datestr(datetime('now'));
+% dt(find(dt==':'))='-';
+% diary([writePath,'\',dt]);
 
 figure
 

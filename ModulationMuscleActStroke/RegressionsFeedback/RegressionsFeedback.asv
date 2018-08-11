@@ -6,7 +6,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 removeP03Flag=1;
 groupMedianFlag=0;
 

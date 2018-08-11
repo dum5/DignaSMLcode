@@ -10,7 +10,7 @@ figuresColorMap;
 ex1=[0.85 0.325 0.098];
 ex2=[0 0.447 0.741];
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 removeP07Flag=1;
 removeP03Flag=1;
 
@@ -31,7 +31,6 @@ if removeP07Flag
 end
 if removeP03Flag
    patients2=patients2.removeSubs({'P0003'});
-   controls2=controls2.removeSubs({'C0003'});
 end
 %define groups
 groups{1}=controls2;
@@ -275,10 +274,10 @@ else
     CIBSControl=[0.1083 0.2031];
     CIBMControl=[0.7397 0.8345];
        
-    BSStroke=0.24643;
-    BMStroke=0.68177;
-    CIBSStroke=[0.1866 0.3043];
-    CIBMStroke=[0.6239 0.7396];
+    BSStroke=0.2227;
+    BMStroke=0.6951;
+    CIBSStroke=[0.1639 0.2814];
+    CIBMStroke=[0.6363 0.7539];
     
 end
     
