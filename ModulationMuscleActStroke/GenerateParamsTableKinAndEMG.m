@@ -11,6 +11,7 @@ fileName='groupedParamsForKinAnalysis';
 
 removeP03FromEmgFlag=1;
 P03Idx=18;
+C03Idx=3;
 
 loadName=[matDataDir,fileName]; 
 load(loadName)
@@ -95,6 +96,7 @@ for p=1:length(EMGlabels)
                 squeeze(groups{2}.getEpochData(eps(e,:),EMGlabels{p}))];
             if removeP03FromEmgFlag
                t.([cell2mat(eps(e,:).Properties.ObsNames),'_',templabel])(P03Idx)=NaN;
+               t.([cell2mat(eps(e,:).Properties.ObsNames),'_',templabel])(C03Idx)=NaN;
             end
                 
         end
@@ -119,6 +121,9 @@ for e=1:length(eps)
             if removeP03FromEmgFlag
                t.([cell2mat(eps(e,:).Properties.ObsNames),'_skneeAngleAtSHS'])(P03Idx)=NaN;
                 t.([cell2mat(eps(e,:).Properties.ObsNames),'_fkneeAngleAtFHS'])(P03Idx)=NaN;
+                
+                t.([cell2mat(eps(e,:).Properties.ObsNames),'_skneeAngleAtSHS'])(C03Idx)=NaN;
+                t.([cell2mat(eps(e,:).Properties.ObsNames),'_fkneeAngleAtFHS'])(C03Idx)=NaN;
             end
 end
 

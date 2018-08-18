@@ -76,7 +76,7 @@ patch(axA1,[60 80 80 60],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor'
 h=plot(axA1,v1,'LineWidth',3);
 set(h,{'color'},{ex2; ex1});
 text(axA1,47,0.4,'B','Color',condColors(1,:),'FontSize',14,'FontWeight','bold');
-text(axA1,65,0.4,'eA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
+text(axA1,65,0.4,'EarlyA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
 set(axA1,'XLim',[30 90],'YLim',[-1.5 1.5],'XTick',[0 100],'YTick',[-10 10])
 title(axA1,'TIED-TO-SPLIT')
 ylabel(axA1,'BELT SPEED','FontWeight','bold')
@@ -86,8 +86,8 @@ patch(axA2,[40 60 60 40],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor'
 patch(axA2,[60 80 80 60],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(3,:),'EdgeColor','none')
 h=plot(axA2,v2,'LineWidth',3);
 set(h,{'color'},{ex2; ex1});
-text(axA2,45,0.4,'eA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
-text(axA2,65,0.4,'eP','Color',condColors(3,:),'FontSize',14,'FontWeight','bold');
+text(axA2,45,0.4,'LateA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
+text(axA2,65,0.4,'EarlyP','Color',condColors(3,:),'FontSize',14,'FontWeight','bold');
 set(axA2,'XLim',[30 90],'YLim',[-1.5 1.5],'XTick',[0 100],'YTick',[-10 10])
 title(axA2,'SPLIT-TO-TIED')
 ylabel(axA2,'BELT SPEED','FontWeight','bold')
@@ -164,8 +164,8 @@ cc.Position=[0.6835    0.0815    0.2237    0.0264];
 set(cc,'Ticks',[-0.5 0 0.5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','0%','+50%'});
 
-h=title(ax4,'\Delta EMG eA_B');set(h,'FontSize',14);h=title(ax5,'\Delta EMG eP_l_A');set(h,'FontSize',14)
-h=title(ax2,'\Delta EMG eA_B');set(h,'FontSize',14);h=title(ax3,'\Delta EMG eP_l_A');set(h,'FontSize',14)
+h=title(ax4,'FBK_t_i_e_d_-_t_o_-_s_p_l_i_t');set(h,'FontSize',14);h=title(ax5,'FBK_s_p_l_i_t_-_t_o_-_t_i_e_d');set(h,'FontSize',14)
+h=title(ax2,'FBK_t_i_e_d_-_t_o_-_s_p_l_i_t');set(h,'FontSize',14);h=title(ax3,'FBK_s_p_l_i_t_-_t_o_-_t_i_e_d');set(h,'FontSize',14)
 
 
 %hold(ax2)
@@ -317,7 +317,7 @@ bar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),'BarWidth',0.7,'FaceColor',[0 0 0],'Ed
 errorbar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),0,iqr(TStroke.ePMagn),'Color','k','LineWidth',2)
 
 set(ph(1,1),'XLim',[0.5 5],'XTick',[1.5 4],'YLim',[0 12],'XTickLabel',{'|| FBK_t_i_e_d_-_t_o_-_s_p_l_i_t ||','|| FBK_s_p_l_i_t_-_t_o_-_t_i_e_d ||'},'YTick',[0 5 10])
-ylabel(ph(1,1),'Response magnitude (a.u.)','FontWeight','bold')
+ylabel(ph(1,1),'Response magnitude','FontWeight','bold')
 text(ph(1,1),1,12,'Feedback response magnitudes ','FontSize',14,'FontWeight','bold')
 ll=findobj(ph(1,1),'Type','Bar');
 ll2=legend(flipud(ll),'Control','Stroke');
@@ -329,7 +329,17 @@ bar(ph(1,2),2,BSStroke,'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'L
 bar(ph(1,2),3.5,BMControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
 bar(ph(1,2),4.5,BMStroke,'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
 errorbar(ph(1,2),[1 2 3.5 4.5],[BSControl,BSStroke BMControl BMStroke],[0 0 0 0],[diff(CIBSControl)/2 diff(CIBSStroke)/2 diff(CIBMControl)/2 diff(CIBMStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
+plot(ph(1,2),[3.5 4.5],[0.9 0.9],'-k','LineWidth',2)
+if speedMatchFlag
+    plot(ph(1,2),[1,2],[0.5 0.5],'-k','LineWidth',2)
+end
 
 set(ph(1,2),'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'},'YTick',[0 .5 1])
 ylabel(ph(1,2),'\beta','FontWeight','bold')
 text(ph(1,2),0.7,1,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')
+
+
+annotation(f1,'textbox',[0.005 0.95 0.026 0.047],'String',{'A'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
+annotation(f1,'textbox',[0.46 0.95 0.026 0.047],'String',{'B'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
+annotation(f1,'textbox',[0.005 0.60 0.026 0.047],'String',{'C'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
+

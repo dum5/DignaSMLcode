@@ -7,7 +7,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 removeP07Flag=1;
 removeP03Flag=1;
 
@@ -28,6 +28,7 @@ if removeP07Flag
 end
 if removeP03Flag
    patients2=patients2.removeSubs({'P0003'});
+   controls2=controls2.removeSubs({'C0003'});
 end
 %define groups
 groups{1}=controls2;
