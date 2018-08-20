@@ -25,7 +25,7 @@ else
     strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
     
     if removeP03Flag
-        Idx=[1 2 4 6:15];
+        Idx=[1 2 4:15];
     else
         Idx=1:15;
     end

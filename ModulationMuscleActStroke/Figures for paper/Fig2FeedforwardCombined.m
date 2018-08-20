@@ -146,60 +146,60 @@ plot(ax3,[8.1 11.9]./12,[-0.2 -0.2],'Color','k','LineWidth',3,'Clipping','off')
 
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Figure B. Bars and Scatter%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% [loadName,matDataDir]=uigetfile('*.mat','choose file for barplots');
-% loadName=[matDataDir,loadName]; 
-% load(loadName)
-% 
-% 
-% %% Run stats for between group comparison
-% AddCombinedParamsToTable;
-% 
-% if speedMatchFlag
-%     t=t(t.SpeedMatch==1,:);
-% end
-% 
-% t.group=nominal(t.group);
-% TStroke=t(t.group=='Stroke',:);
-% TControl=t(t.group=='Control',:);
-% 
-% [p1,h1]=ranksum(TStroke.lAMagn,TControl.lAMagn);
-% if p1<0.01
-%     p1='<0.01';
-% else
-%     p1=['=',num2str(round(p1,2))];
-% end
-% 
-% [p2,h2]=ranksum(TStroke.FF_Quad,TControl.FF_Quad);
-% if p2<0.01
-%     p2='<0.01';
-% else
-%     p2=['=',num2str(round(p2,2))];
-% end
-% 
-% [p3,h3]=ranksum(TStroke.FF_skneeAngleAtSHS,TControl.FF_skneeAngleAtSHS);
-% if p3<0.01
-%     p3='<0.01';
-% else
-%     p3=['=',num2str(round(p3,2))];
-% end
-% 
-% %do the plotting
-% %ph.delete
-% ph=tight_subplot(2,2,[0.1 0.075],[0.1 0.1],[0.55 0.02]);
-% set(ph,'YTickLabelMode','auto','XTickLabelMode','auto','FontSize',14,'box','off')
-% 
-% hold(ph(1,1))
-% bar(ph(1,1),1,nanmedian(TControl.lAMagn),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
-% errorbar(ph(1,1),1,nanmedian(TControl.lAMagn),0,iqr(TControl.lAMagn),'Color','k','LineWidth',2)
-% bar(ph(1,1),2,nanmedian(TStroke.lAMagn),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
-% errorbar(ph(1,1),2,nanmedian(TStroke.lAMagn),0,iqr(TStroke.lAMagn),'Color','k','LineWidth',2)
-% set(ph(1,1),'XLim',[0.5 2.5],'YLim',[0 8],'XTickLabel',{''},'YTick',[0 4 8])
-% ylabel(ph(1,1),'|| LateA ||','FontWeight','bold')
-% text(ph(1,1),1,9,'Magnitude of EMG modulation','FontSize',14,'FontWeight','bold')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Figure B. Bars and Scatter%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+[loadName,matDataDir]=uigetfile('*.mat','choose file for barplots');
+loadName=[matDataDir,loadName]; 
+load(loadName)
+
+
+%% Run stats for between group comparison
+AddCombinedParamsToTable;
+
+if speedMatchFlag
+    t=t(t.SpeedMatch==1,:);
+end
+
+t.group=nominal(t.group);
+TStroke=t(t.group=='Stroke',:);
+TControl=t(t.group=='Control',:);
+
+[p1,h1]=ranksum(TStroke.lAMagn,TControl.lAMagn);
+if p1<0.01
+    p1='<0.01';
+else
+    p1=['=',num2str(round(p1,2))];
+end
+
+[p2,h2]=ranksum(TStroke.FF_Quad,TControl.FF_Quad);
+if p2<0.01
+    p2='<0.01';
+else
+    p2=['=',num2str(round(p2,2))];
+end
+
+[p3,h3]=ranksum(TStroke.FF_skneeAngleAtSHS,TControl.FF_skneeAngleAtSHS);
+if p3<0.01
+    p3='<0.01';
+else
+    p3=['=',num2str(round(p3,2))];
+end
+
+%do the plotting
+%ph.delete
+ph=tight_subplot(2,2,[0.1 0.075],[0.1 0.1],[0.55 0.02]);
+set(ph,'YTickLabelMode','auto','XTickLabelMode','auto','FontSize',14,'box','off')
+
+hold(ph(1,1))
+bar(ph(1,1),1,nanmedian(TControl.lAMagn),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
+errorbar(ph(1,1),1,nanmedian(TControl.lAMagn),0,iqr(TControl.lAMagn),'Color','k','LineWidth',2)
+bar(ph(1,1),2,nanmedian(TStroke.lAMagn),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+errorbar(ph(1,1),2,nanmedian(TStroke.lAMagn),0,iqr(TStroke.lAMagn),'Color','k','LineWidth',2)
+set(ph(1,1),'XLim',[0.5 2.5],'YLim',[0 8],'XTickLabel',{''},'YTick',[0 4 8])
+ylabel(ph(1,1),'|| LateA ||','FontWeight','bold')
+text(ph(1,1),1,9,'Magnitude of EMG modulation','FontSize',14,'FontWeight','bold')
 
 
 hold(ph(1,2))
@@ -236,7 +236,7 @@ ydata=[TControl.FF_skneeAngleAtSHS;TStroke.FF_skneeAngleAtSHS];ydata=ydata(~isna
 r=num2str(round(r,2));
 rfit=b+xdata.*m;
 plot(ph(2,2),xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
-%legend(ph(2,2),ll(end:-1:1),{'CONTROL','STROKE'},'box','off', 'Position',[0.6 0.45 0.35 0.08])
+legend(ph(2,2),ll(end:-1:1),{'CONTROL','STROKE'},'box','off', 'Position',[0.6 0.45 0.35 0.08])
 set(ph(2,2),'XLim',[-0.3 0.8],'YLim',[-10 20],'YTick',[-10 0 10 20]);
 ylabel(ph(2,2),'\theta Knee_s_l_o_w LateA','FontWeight','bold')
 xlabel(ph(2,2),'EMG_Q_u_a_d LateA','FontWeight','bold')

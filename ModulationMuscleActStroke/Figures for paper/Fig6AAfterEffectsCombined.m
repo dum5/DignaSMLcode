@@ -7,7 +7,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 removeP07Flag=1;
 removeP03Flag=1;
 
@@ -169,7 +169,7 @@ t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
 TControl=t(t.group=='Control',:);
 
-[p1,h1]=ranksum(TStroke.ePMagn,TControl.ePMagn);
+[p1,h1]=ranksum(TStroke.ePBMagn,TControl.ePBMagn);
 if p1<0.01
     p1='<0.01';
 else
@@ -181,13 +181,15 @@ end
 
 
 hold(ax4)
-bar(ax4,1,nanmedian(TControl.ePMagn),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
-errorbar(ax4,1,nanmedian(TControl.ePMagn),0,iqr(TControl.ePMagn),'Color','k','LineWidth',2)
-bar(ax4,2,nanmedian(TStroke.ePMagn),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
-errorbar(ax4,2,nanmedian(TStroke.ePMagn),0,iqr(TStroke.ePMagn),'Color','k','LineWidth',2)
-set(ax4,'XLim',[0.5 2.5],'YLim',[0 8],'XTickLabel',{''},'YTick',[0 4 8])
+bar(ax4,1,nanmedian(TControl.ePBMagn),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
+errorbar(ax4,1,nanmedian(TControl.ePBMagn),0,iqr(TControl.ePBMagn),'Color','k','LineWidth',2)
+bar(ax4,2,nanmedian(TStroke.ePBMagn),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+errorbar(ax4,2,nanmedian(TStroke.ePBMagn),0,iqr(TStroke.ePBMagn),'Color','k','LineWidth',2)
+set(ax4,'XLim',[0.5 2.5],'YLim',[0 11],'XTickLabel',{''},'YTick',[0 5 10])
 ylabel(ax4,'|| EarlyP ||','FontWeight','bold')
-text(ax4,1,9,'Magnitude after effects','FontSize',14,'FontWeight','bold')
-
+text(ax4,1,11,'Magnitude after effects','FontSize',14,'FontWeight','bold')
+ll=findobj(ax4,'Type','Bar');
+ll2=legend(flipud(ll),'Control','Stroke');
+set(ll2,'EdgeColor','none')
 
 
