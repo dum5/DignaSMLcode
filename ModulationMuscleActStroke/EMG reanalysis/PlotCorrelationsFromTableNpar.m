@@ -38,9 +38,9 @@ for a = 1:size(ax,1)
     xdata=xdata(Idx2);ydata=ydata(Idx2);
     
     
-%     [r,m,b] = regression(xdata,ydata,'one');
-%     rfit=b+xdata.*m;
-%     plot(ax(a,c),xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
+     [r,m,b] = regression(xdata,ydata,'one');
+     rfit=b+xdata.*m;
+     plot(ax(a,c),xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
     %lsline(ax(a,c));
     [rho,p]=corr(xdata,ydata,'Type','Spearman');
     xpos=get(ax(a,c),'XLim');ypos=get(ax(a,c),'YLim');
