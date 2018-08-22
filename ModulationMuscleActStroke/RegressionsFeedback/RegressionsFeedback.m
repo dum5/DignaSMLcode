@@ -6,9 +6,9 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 removeP03Flag=1;
-groupMedianFlag=0;
+groupMedianFlag=1;
 
 %selection of subjects is as follows: subjects 3 are always removed
 %(patients and controls)
