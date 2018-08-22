@@ -13,6 +13,7 @@ binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
 faceCols=[1 1 1;0 0 0];
 patchCols=[0.7 0.7 0.7;1 1 1];
+edgeCols=[0.7 0.7 0.7;0 0 0 ];
 
 
 
@@ -91,9 +92,9 @@ groupsUnbiased{2}=groups{2}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
 fh=figure;
 fullscreen
 set(fh,'Color',[1 1 1])
-xpos=[0.03 0.51];
+xpos=[0.05 0.72];
 ypos=[0.7722 0.5370 0.3017 0.0665];
-w=[0.45 0.2310];
+w=[0.6 0.2310];
 h=0.1820;
 
 M=length(labels);
@@ -123,34 +124,17 @@ for i=1:M
             dt=getGroupedData(groupsUnbiased{g},labels{i},eps2.Condition{E},0,numberOfStrides,eps2.ExemptFirst(E),eps2.ExemptLast(E),1);
             dt=squeeze(dt{1});
             dt2=smoothData(dt,binWidth,'nanmean');
-%             %smoothing
-%             start=1:size(dt,1)-(binWidth-1);
-%             stop=start+binWidth-1;
-%             nbins=length(start);
-%             
-%             dt2=NaN(length(start),size(dt,2));
-%             %running average for each subject
-%             for s=1:size(dt,2)
-%                 for binNum=1:length(start)
-%                     dt2(binNum,s)=nanmean(dt(start(binNum):stop(binNum),s));
-%                 end
-%             end
+
             if Inds(1)==0
                 Inds=1:size(dt2,1);
             else
                 Inds=Inds(end)+21:Inds(end)+size(dt2,1)+20;
             end
            %plot here directly, ohterwise patches mess up
-            plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',5,'MarkerFaceColor',faceCols(g,:),'MarkerEdgeColor',faceCols(g,:))
+            plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',2,'MarkerFaceColor',faceCols(g,:),'MarkerEdgeColor',faceCols(g,:))
             patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],patchCols(g,:),'FaceAlpha',0.25,'EdgeColor','k');
             
-%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
-%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
-%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
-%             meanData=[meanData;nan(20,1);nanmean(dt2,2)];%group AVG
-%             minData=[minData;nan(20,1);nanmean(dt2,2)-nanstd(dt2')'./sqrt(size(dt2,2))];%mean-SEM
-%             maxData=[maxData;nan(20,1);nanmean(dt2,2)+nanstd(dt2')'./sqrt(size(dt2,2))];%mean+SEM
-            
+%            
         end
         pa=findobj(ph(i,1),'Type','Patch');
         for n=1:length(pa)
@@ -228,7 +212,7 @@ for l=1:length(labels)
     end
 end
 
-set(ph(:,:),'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
+set(ph(:,:),'FontSize',12,'TitleFontSizeMultiplier',1.1,'box','off');
 
 
 %generate plots for between epoch measures
@@ -265,7 +249,7 @@ plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
 
 %set titles and labels
 set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
-set(ph(4,2),'XTickLabel',{'eA_B','lA_B','eP_l_A','eP_B'})
+set(ph(4,2),'XTickLabel',{'EarlyA','LateA','EarlyP-LateA','EarlyP'})
 set(ph(:,1),'XTick',[20 365 700],'XTickLabel',{''},'XLim',[1 804])
 set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
 
