@@ -118,11 +118,10 @@ for i=1:M
      pt=patch(ph(i,1),[563:593 fliplr(563:593)],[-1*ones(1,31) ones(1,31)],condColors(2,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
      pt=patch(ph(i,1),[614:628 fliplr(614:628)],[-1*ones(1,15) ones(1,15)],condColors(3,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
      if i==1
-         text(ph(i,1),10,0.17,'B','FontSize',16,'Color',condColors(1,:),'FontWeight','bold');
-         text(ph(i,1),52,0.17,'EarlyA','FontSize',16,'Color',condColors(2,:),'FontWeight','bold');
-         text(ph(i,1),563,0.17,'LateA','FontSize',16,'Color',condColors(2,:),'FontWeight','bold');
-         text(ph(i,1),614,0.17,'EarlyP','FontSize',16,'Color',condColors(3,:),'FontWeight','bold');
-         text(ph(i,1),-40,0.25,'A','FontSize',16,'FontWeight','bold')
+         text(ph(i,1),1,0.15,'B','FontSize',14,'Color',condColors(1,:));
+         text(ph(i,1),1,0.15,'B','FontSize',14,'Color',condColors(2,:));
+         text(ph(i,1),1,0.15,'B','FontSize',14,'Color',condColors(2,:));
+         text(ph(i,1),1,0.15,'B','FontSize',14,'Color',condColors(,:));
      end
      
     for g=1:length(groupsUnbiased);
@@ -218,7 +217,7 @@ for l=1:length(labels)
     end
 end
 
-set(ph(:,:),'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
+set(ph(:,:),'FontSize',12,'TitleFontSizeMultiplier',1.1,'box','off');
 
 
 %generate plots for between epoch measures
@@ -232,8 +231,7 @@ bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',faceCols(2,:),'BarW
 errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
 plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
 ll=findobj(ph(1,2),'Type','Bar');
-legend(ll(end:-1:1),{'Control','Stroke'},'box','off','Position',[0.6800 0.9135 0.0762 0.0569]);
- text(ph(1,2),-1,0.25,'B','FontSize',16,'FontWeight','bold')
+legend(ll(end:-1:1),{'CONTROL','STROKE'},'box','off','Position',[0.6800 0.9135 0.0762 0.0569]);
 
 hold(ph(2,2));
 bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',faceCols(1,:),'BarWidth',0.2)
