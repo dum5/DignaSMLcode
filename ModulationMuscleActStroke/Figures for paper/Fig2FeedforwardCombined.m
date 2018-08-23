@@ -236,8 +236,8 @@ ydata=[TControl.FF_skneeAngleAtSHS;TStroke.FF_skneeAngleAtSHS];ydata=ydata(~isna
 r=num2str(round(r,2));
 rfit=b+xdata.*m;
 plot(ph(2,2),xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
-legend(ph(2,2),ll(end:-1:1),{'CONTROL','STROKE'},'box','off', 'Position',[0.6 0.45 0.35 0.08])
-set(ph(2,2),'XLim',[-0.3 0.8],'YLim',[-10 20],'YTick',[-10 0 10 20]);
+%legend(ph(2,2),ll(end:-1:1),{'CONTROL','STROKE'},'box','off', 'Position',[0.6 0.45 0.35 0.08])
+set(ph(2,2),'XLim',[-0.3 1.2],'YLim',[-10 20],'YTick',[-10 0 10 20]);
 ylabel(ph(2,2),'\theta Knee_s_l_o_w LateA','FontWeight','bold')
 xlabel(ph(2,2),'EMG_Q_u_a_d LateA','FontWeight','bold')
 tx=text(ph(2,2),-0.3, 20,['rho=',num2str(round(rho(2),2)),',p<0.01']);set(tx,'FontSize',14)

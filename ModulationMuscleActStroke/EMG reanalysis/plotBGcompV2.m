@@ -142,8 +142,8 @@ plot3(ps,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'Li
 for i=1:size(hb,1)
     for k=1:size(hb,2)
         if hb(i,k)==1 %&& abs(groupMedDiff(i,k))>0.1
-            plot3(pc,(k-0.7)/12,i-0.5,1,'*','MarkerSize',16,'Color','k')
-            plot3(ps,(k-0.7)/12,i-0.5,1,'*','MarkerSize',16,'Color','k')           
+            plot3(pc,(k-0.7)/12,i-0.5,1,'*','MarkerSize',11,'Color','k')
+            plot3(ps,(k-0.7)/12,i-0.5,1,'*','MarkerSize',11,'Color','k')           
         end
     end
 end
