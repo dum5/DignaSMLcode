@@ -7,7 +7,7 @@ close all
 %%%%%%%%%%%%%%%%%%
 
 %make sure all groups are defined
-%GenerateParamsTable;
+GenerateParamsTable;
 colors=[0.2 0.2 1;0.8 0 0;0.2 0.2 1;0.8 0 0];
 colors2=[0.1 0.1 0.5;0.6 0 0;0.1 0.1 0.5;0.6 0 0];
 
