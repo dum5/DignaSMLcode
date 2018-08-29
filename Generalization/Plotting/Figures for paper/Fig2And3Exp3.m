@@ -33,7 +33,7 @@ for g=1:2
     TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
     TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
 end
-[catchError]=getGroupedTimeCourses(groups(5),{'Catch'},{'netContributionNorm2'});
+catchError=getGroupedTimeCourses(groups{5},{'Catch'},{'netContributionNorm2'});
 TMbias=squeeze(groupOutcomes{5}(4,TMref,:))'; 
 cathcError=[catchError{1}.param{1}.cond{1}-TMbias]';
 catchError2=smoothData(catchError{1}.param{1}.cond{1}(1:10,:),binWidth,sumMethod)';

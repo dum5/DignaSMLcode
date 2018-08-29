@@ -31,8 +31,8 @@ gradPert1=[linspace(1.125,1.5,600) 1.5*ones(1,300)];
 gradPert2=[linspace(1.125,0.75,600) 0.75*ones(1,300)];
 catchPert1=[linspace(1.125,1.5,40) 1.5*ones(1,559) NaN 1.125*ones(1,10) NaN 1.5*ones(1,289)];
 catchPert2=[linspace(1.125,0.75,40) 0.75*ones(1,559) NaN 1.125*ones(1,10) NaN 0.75*ones(1,289)];
-gCatchPert1=[linspace(1.125,1.5,599) NaN 1.125*ones(1,10) NaN 1.5*ones(1,289)];%check
-gCatchPert2=[linspace(1.125,0.75,599) NaN 1.125*ones(1,10) NaN 0.75*ones(1,289)];%ceck
+gCatchPert1=[linspace(1.125,1.5,600) 1.5*ones(1,149) NaN 1.125*ones(1,10) NaN 1.5*ones(1,139)];%check
+gCatchPert2=[linspace(1.125,0.75,600) 0.75*ones(1,149) NaN 1.125*ones(1,10) NaN 0.75*ones(1,139)];%ceck
 
 abruptPert1=[nan 1.5*ones(1,899)];
 abruptPert2=[nan 0.75*ones(1,899)];
@@ -105,6 +105,7 @@ text(ax(4),320, 1,'AbruptTM','FontSize',12,'FontName','Arial','Color',ColFullAbr
 
 %control catch
 text(ax(5),x3(1)+150,2,'C Experiment 3','FontSize',14,'FontName','Arial','FontWeight','Bold')
+text(ax(5),x3(1)+150,0.2,'D Visual Feedback','FontSize',14,'FontName','Arial','FontWeight','Bold')
 
 plot(ax(5),[x2,x3],[tied,rampPert1],'Color',ColControl,'LineWidth',3)
 plot(ax(5),[x2,x3],[tied,rampPert2],'Color',ColControl,'LineWidth',3)
@@ -123,7 +124,7 @@ plot(ax(6),[x3(1) x3(1)],[0.5 5.55],'--k')
 plot(ax(6),[x4(1) x4(1)],[0.5 5.55],'--k')
 
 text(ax(5),x3(420),1.65,'Catch','FontSize',10,'FontName','Arial')
-text(ax(5),x3(700),1.2,['After',newline','Catch'],'FontSize',10,'FontName','Arial')
+text(ax(5),x3(700),1.2,['After Catch'],'FontSize',10,'FontName','Arial')
 
 %gradual and catch gradual
 plot(ax(6),[x2,x3],[tied,gradPert1],'Color',ColGradual,'LineWidth',3)
@@ -135,7 +136,7 @@ text(ax(6),x3(1), 1.6,'Small Implicit','FontSize',12,'FontName','Arial','Color',
 text(ax(6),x3(1), 0.7,'Small Catch','FontSize',12,'FontName','Arial','Color',ColCatch,'FontWeight','bold')
 
 text(ax(6),x3(420),1.65,'Catch','FontSize',10,'FontName','Arial')
-text(ax(6),x3(700),1.2,['After',newline','Catch'],'FontSize',10,'FontName','Arial')
+text(ax(6),x3(700),1.2,['After Catch'],'FontSize',10,'FontName','Arial')
 
 
 set(gcf,'Renderer','painters');

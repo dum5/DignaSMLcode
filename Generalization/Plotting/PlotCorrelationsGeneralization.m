@@ -9,7 +9,7 @@
 
 
 
-%GenerateParamsTable
+GenerateParamsTable
 
 varnames=T.Properties.VariableNames';
 xvar=listdlg('PromptString','Select Predictors','SelectionMode','multiple','ListString',varnames);xvarnames=varnames(xvar);

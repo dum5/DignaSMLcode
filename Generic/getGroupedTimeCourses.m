@@ -13,9 +13,16 @@ if isstruct(this)
     end
 end
 
+if length(this)==1;
+    dt=this;
+    clear this
+    this{1}=dt;
+end
 
 for group=1:length(this)
     M=2000;%assume that 2000 is max number of datapoints
+    timeCourse{group}.parNames=params;
+    timeCourse{group}.condNames=conds;
     for par=1:length(params)
         for cond=1:length(conds)
             timeCourse{group}.param{par}.cond{cond}=NaN(M,length(this{group}.adaptData));

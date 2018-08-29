@@ -32,6 +32,16 @@ for i=1:length(groupsnames)
     groups{i}=groups{i}.removeBadStrides;
 end
 
+[file,path]=uigetfile('*.mat','choose file for distraction groups');
+load([path,file]);
+groupsnames=[groupsnames;fieldnames(studyData)];
+for m=i+1:i+2
+    groups{m}=eval(['studyData.',groupsnames{m}]);
+    %groups{i}.groupID=groupsnames{i};This is not allowed for
+    %groupAdaptationData
+    groups{m}=groups{m}.removeBadStrides;    
+end
+
 
 %define stride numbers associated with specific events in each protocol
 startsplit=NaN(1,length(groups));fullsplit=NaN(1,length(groups));
@@ -58,8 +68,14 @@ for i=1:length(groups)
         fullsplit(i)=1;
     elseif strcmp(groupsnames{i},'TMAbruptNoFeedback')
         startsplit(i)=150;
-        fullsplit(i)=190;
-    end   
+        fullsplit(i)=190;    
+    elseif strcmp(groupsnames{i},'GradualNoCatch')
+        startsplit(i)=300;
+        fullsplit(i)=900; 
+    elseif strcmp(groupsnames{i},'GradualCatch')
+        startsplit(i)=300;
+        fullsplit(i)=900;
+    end 
 end
 
 %define epochs
@@ -99,14 +115,19 @@ correctTMslow=9;%indices of parameters that need to be corrected for TM slow
 OGind=[3,4];%epoch associated with OGpost
 TMind=[5:10];%epoch associated with treadmill trials, except the reference trial
 
+%find lata Adaptation, because this is a different conditionName for
+%distraction people
+Index = find(contains(names,'lateAdap'));
 for i=1:length(groups)
      nsub=length(groups{i}.adaptData);
     %exemptFirst=[eFbase eFbase eF 0 eF 0 0 startsplit(i) fullsplit(i) 0 eFSlowbase];
     exemptFirst=[0 0 eF 0 eF 0 0 startsplit(i), fullsplit(i), eF, 0]; 
     [epsData{i}] = defineEpochs(names,conds,strideNo, exemptFirst,exemptLast,summethods);%this will be used to compute the baseline bias manually, since predefined function performs poorly for OG trials
-    
     groupOutcomes{i}=NaN(length(params),length(names)+20,nsub);
-    
+   if  i>7
+       epsData{i}.Condition{Index}='Re-adaptation';
+   end
+       
 end
 
 
@@ -133,7 +154,14 @@ ERA=strfind(names,'EarlyReadapt');ERA=find(not(cellfun('isempty', ERA)));
 nEp=length(names);%number of epochs
 for i=1:length(groups)
     nsub=length(groups{i}.adaptData);
-    groupOutcomes{i}(1:length(params),1:length(names),1:nsub)=groups{i}.getEpochData(epsData{i},params);% nLabels x nEpochs x nSubjects
+    for n=1:length(names)
+        try groupOutcomes{i}(1:length(params),n,1:nsub)=groups{i}.getEpochData(epsData{i}(n,:),params);
+        catch
+            warning(['epoch',names{n},'not available for group:',groupsnames{i}])
+              
+        end
+    end
+    %groupOutcomes{i}(1:length(params),1:length(names),1:nsub)=groups{i}.getEpochData(epsData{i},params);% nLabels x nEpochs x nSubjects
     
     %correct for bias
     for ind=TMind
@@ -148,30 +176,39 @@ for i=1:length(groups)
     groupOutcomes{i}(:,nEp+1,:) = groupOutcomes{i}(:,OGpE,:) - groupOutcomes{i}(:,OGpL,:);%delta OG post
     groupOutcomes{i}(:,nEp+2,:) = groupOutcomes{i}(:,LA,:) - groupOutcomes{i}(:,ERA,:);% LA-ERA
     groupOutcomes{i}(:,nEp+3,:) = groupOutcomes{i}(:,OGpL,:) - groupOutcomes{i}(:,ERA,:);% OGlp-ERA
-    groupOutcomes{i}(:,nEp+4,:) = (groupOutcomes{i}(:,OGpE,:)./groupOutcomes{i}(:,TMpE,:)).*100;;% pct generalization
+    groupOutcomes{i}(:,nEp+4,:) = (groupOutcomes{i}(:,OGpE,:)./groupOutcomes{i}(:,TMpE,:)).*100;% pct generalization
     
 end
 
 names={names{1:end},'deltaOG','LA_ERA','lOG_ERA','pctGeneralization'};
 %extract timecourses
-allconds=studyData.Gradual.getCommonConditions;
-[timeCourse]=getGroupedTimeCourses(groups,allconds,params);
+%allconds=groups{1}.getCommonConditions;
+%allconds=studyData.Gradual.getCommonConditions;
+%[timeCourse]=getGroupedTimeCourses(groups,allconds,params);
 
 
 %remove appropriate Bias
-condtypes=NaN(size(allconds));
-for c=1:length(allconds)
-    if strcmp(allconds{c}(1:2),'OG')
-        condtypes(c)=1;
-    else
-        condtypes(c)=2;
-    end
-end
-
-OGind=find(condtypes==1);
-TMind=find(condtypes==2);
+% condtypes=NaN(size(allconds));
+% for c=1:length(allconds)
+%     if strcmp(allconds{c}(1:2),'OG')
+%         condtypes(c)=1;
+%     else
+%         condtypes(c)=2;
+%     end
+% end
+% 
+% OGind=find(condtypes==1);
+% TMind=find(condtypes==2);
 % 
  for i=1:length(groups);
+     allconds=groups{i}.getCommonConditions;
+     timeCourse(i)=getGroupedTimeCourses(groups{i},allconds,params);
+     
+     %remove appropriate bias for each groups, since conditions vary
+     OGind = find(startsWith(allconds,'OG'));
+     TMind = find(~startsWith(allconds,'OG'));
+
+     
      for p=1:length(params)
          OGbias=squeeze(groupOutcomes{i}(p,OGref,:))';
          if p==5;
@@ -196,11 +233,16 @@ params2={'maxError','meanError','strideMonIncrease','ErrorFromMonIncrese','maxEr
 %find index for gradual adaptation
 cInd=NaN(2,1);
 tpInd=NaN;
-tcInd = strfind(allconds,'gradual adaptation');cInd(1,1) = find(not(cellfun('isempty', tcInd)));
-tcInd = strfind(allconds,'readaptation');cInd(2,1) = find(not(cellfun('isempty', tcInd)));
-tpInd = strfind(params,'netContributionNorm2');ParInd = find(not(cellfun('isempty', tpInd)));
+% tcInd = strfind(allconds,'gradual adaptation');cInd(1,1) = find(not(cellfun('isempty', tcInd)));
+% tcInd = strfind(allconds,'readaptation');cInd(2,1) = find(not(cellfun('isempty', tcInd)));
+% tpInd = strfind(params,'netContributionNorm2');ParInd = find(not(cellfun('isempty', tpInd)));
 
 for i=1:length(groups)
+    
+    cInd=find(endsWith(timeCourse{i}.condNames,'adaptation'))';
+    ParInd=find(contains(timeCourse{i}.parNames','netContributionNorm2'));
+    
+    
     %initialize matrices for data
     NonEpochoutcome{i}.par{1}=NaN(length(groups{i}.adaptData),1);
     NonEpochoutcome{i}.par{2}=NaN(length(groups{i}.adaptData),1);
@@ -212,7 +254,10 @@ for i=1:length(groups)
     
     %first get gradualAdaptation and readaptation
     tempdata=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(1,1)));%gradual adaptation
-    tempdata2=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(2,1)));%readaptation
+    if i<8
+        tempdata2=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(2,1)));%readaptation
+    else tempdata2=NaN(20,length(groups{i}.adaptData));
+    end
     
     %extract parameters for all subjects
     for sj=1:length(groups{i}.adaptData)   

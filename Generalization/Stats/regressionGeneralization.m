@@ -9,7 +9,7 @@
 
 
 GenerateParamsTable
-
+T.group=nominal(T.group);
 
 varnames=T.Properties.VariableNames';
 pred=listdlg('PromptString','Select Predictors','SelectionMode','multiple','ListString',varnames);

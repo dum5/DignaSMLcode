@@ -9,7 +9,8 @@
 N19_ExtractAllData
 
 
-groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
+%groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
+groupOrder={'AbruptFeedback','AbruptNoFeedback','Gradual','Catch'};
 %groupOrder={'Catch'};
 colcodes=[0.6 0 0.6;0.8 0 0;0.2 0.2 1;0.6 0.6 0.6;0.9 0.9 1;0.8 0.35 0.35;0.1 0.5 0.8];%DO NOT TOUCH!!
 
@@ -19,7 +20,8 @@ colcodes=[0.6 0 0.6;0.8 0 0;0.2 0.2 1;0.6 0.6 0.6;0.9 0.9 1;0.8 0.35 0.35;0.1 0.
 groupInd=NaN(1,length(groupOrder));
 
 for i=1:length(groupOrder)
-    tempInd = regexp(groupsnames,['^',groupOrder{i}]);groupInd(i) = find(not(cellfun('isempty', tempInd))); 
+    groupInd(i)=find(startsWith(groupsnames,groupOrder{i}),1,'first');
+    %tempInd = regexp(groupsnames,['^',groupOrder{i}]);groupInd(i) = find(not(cellfun('isempty', tempInd))); 
     nsub=length(groups{groupInd(i)}.adaptData);
     if i==1
         subcodes=cellstr(repmat(groupsnames{groupInd(i)},nsub,1));
