@@ -7,7 +7,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %settings
-matchSpeedFlag=0;
+matchSpeedFlag=1;
 removeP07Flag=1;
 binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
@@ -56,8 +56,11 @@ end
 groups{1}=controls2;
 groups{2}=patients2;
 
-groupsUnbiased{1}=groups{1}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
-groupsUnbiased{2}=groups{2}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
+%groupsUnbiased{1}=groups{1}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
+%groupsUnbiased{2}=groups{2}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
+
+groupsUnbiased{1}=groups{1}.removeBaselineEpoch(eps(1,:),[]);
+groupsUnbiased{2}=groups{2}.removeBaselineEpoch(eps(1,:),[]);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% run stats using rm model%%
@@ -137,7 +140,7 @@ for i=1:M
             end
             
             %get data
-            dt=getGroupedData(groupsUnbiased{g},labels{i},eps2.Condition{E},0,numberOfStrides,eps2.ExemptFirst(E),eps2.ExemptLast(E),1);
+            dt=getGroupedData(groupsUnbiased{g}.removeBadStrides,labels{i},eps2.Condition{E},0,numberOfStrides,eps2.ExemptFirst(E),eps2.ExemptLast(E),1);
             dt=squeeze(dt{1});
             dt2=smoothData(dt,binWidth,'nanmean');
 

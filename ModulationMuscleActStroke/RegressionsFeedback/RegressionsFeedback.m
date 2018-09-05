@@ -6,9 +6,9 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 removeP03Flag=1;
-groupMedianFlag=1;
+groupMedianFlag=0;
 
 %selection of subjects is as follows: subjects 3 are always removed
 %(patients and controls)
@@ -164,19 +164,35 @@ ePBMagnC=NaN(15,1);
 ePBMagnS=NaN(15,1);
 lAMagnC=NaN(15,1);
 lAMagnS=NaN(15,1);
+csc=NaN(15,1);
+cmc=NaN(15,1);
+css=NaN(15,1);
+cms=NaN(15,1);
 
 for i=Idx%1:size(eA_C,2)
     eAMagnC(i,1)=norm(eA_C(:,i));
     ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
     ePBMagnC(i,1)=norm(eP_C(:,i));
     lAMagnC(i,1)=norm(lA_C(:,i));
+    csc(i,1)=cosine(eP_C(:,i)-lA_C(:,i),-eA_C(:,i));
+    cmc(i,1)=cosine(eP_C(:,i)-lA_C(:,i),eAT_C(:,i));
 end
 for i=Idx%1:size(eA_S,2)
     eAMagnS(i,1)=norm(eA_S(:,i));
     ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
     ePBMagnS(i,1)=norm(eP_S(:,i));
     lAMagnS(i,1)=norm(lA_S(:,i));
+    css(i,1)=cosine(eP_S(:,i)-lA_S(:,i),-eA_S(:,i));
+    cms(i,1)=cosine(eP_S(:,i)-lA_S(:,i),eAT_S(:,i));
 end
+
+%cosine analysis
+cscg=(cosine(mean(eP_C(:,Idx)-lA_C(:,Idx),2),-mean(eA_C(:,Idx),2)))
+cmcg=(cosine(mean(eP_C(:,Idx)-lA_C(:,Idx),2),mean(eAT_C(:,Idx),2)))
+
+cssg=(cosine(mean(eP_S(:,Idx)-lA_S(:,Idx),2),-mean(eA_S(:,Idx),2)))
+cmsg=(cosine(mean(eP_S(:,Idx)-lA_S(:,Idx),2),mean(eAT_S(:,Idx),2)))
+
 
 load([matDataDir,'bioData'])
 clear ageC ageS;
@@ -211,6 +227,9 @@ tALL.eAMagn=[eAMagnC;eAMagnS];
 tALL.ePMagn=[ePMagnC;ePMagnS];
 tALL.ePBMagn=[ePBMagnC;ePBMagnS];
 tALL.lAMagn=[lAMagnC;lAMagnS];
+tALL.cs=[csc;css];
+tALL.cm=[cmc;cms];
+
 
 answer = questdlg('Save results to mat file?');
 switch answer

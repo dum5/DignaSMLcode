@@ -34,6 +34,9 @@ t=table;
 t.group=cell(30,1);
 t.group(1:15,1)={'Control'};
 t.group(16:30,1)={'Stroke'};
+t.ID=[controls2.ID';patients2.ID'];
+
+
 
 cSpeedmatch=[1 1 0 1 1 1 0 1 1 0 1 0 0 0 1]';
 sSpeedmatch=[1 1 0 0 1 0 1 1 1 0 0 1 1 1 0]';
@@ -101,6 +104,8 @@ for p=1:length(EMGlabels)
                 
         end
 end
+t.nAdap=[getNumStridesInCond(groups{1},'Adaptation');getNumStridesInCond(groups{2},'Adaptation')];
+t.nPost=[getNumStridesInCond(groups{1},'Washout');getNumStridesInCond(groups{2},'Washout')];
 clear groups patients controls patients2 controls2
 
 %load file with angles
