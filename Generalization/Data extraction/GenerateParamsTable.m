@@ -6,11 +6,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-N19_ExtractAllData
+%N19_ExtractAllData
 
 
 %groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
-groupOrder={'AbruptFeedback','AbruptNoFeedback','Gradual','Catch'};
+groupOrder={'AbruptNoFeedback','Catch'};
 %groupOrder={'Catch'};
 colcodes=[0.6 0 0.6;0.8 0 0;0.2 0.2 1;0.6 0.6 0.6;0.9 0.9 1;0.8 0.35 0.35;0.1 0.5 0.8];%DO NOT TOUCH!!
 
