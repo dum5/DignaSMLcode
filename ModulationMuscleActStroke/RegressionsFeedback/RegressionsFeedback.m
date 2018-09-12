@@ -7,8 +7,8 @@ loadName=[matDataDir,loadName];
 load(loadName)
 
 speedMatchFlag=0;
-removeP03Flag=1;
-groupMedianFlag=0;
+%removeP03Flag=1;
+groupMedianFlag=1;
 
 %selection of subjects is as follows: subjects 3 are always removed
 %(patients and controls)
@@ -17,18 +17,21 @@ groupMedianFlag=0;
 
 if speedMatchFlag
     strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-    controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-    Idx=[1:9];%all subjects listed above
+    %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+    controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+    
+    pIdx=[1:9];%all subjects listed above
+    cIdx=[1:9];
 else
-    controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+   controlsNames={'C0007','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+   % controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+    
     %patient 3 will be exlcuded later, otherwise the table messes up
     strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
     
-    if removeP03Flag
-        Idx=[1 2 4:15];
-    else
-        Idx=1:15;
-    end
+    pIdx=[1:15];
+    cIdx=[1:2 4:15];
+    
     
 end
 
@@ -56,7 +59,7 @@ newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 eE=1;
 eL=1;
 
-ep=defineEpochs({'BASE','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 15 -40 15],[eE eE eE eE],[eL eL eL eL],'nanmean');
+ep=defineEpochs({'BASE','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 5 -40 5],[eE eE eE eE],[eL eL eL eL],'nanmean');
 baseEp=defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmean');
 
 %extract data for stroke and controls separately
@@ -100,13 +103,13 @@ eAT_S=fftshift(eA_S,1);
 rob='off';
 
 if groupMedianFlag
-    ttC=table(-median(eA_C(:,Idx),2), median(eAT_C(:,Idx),2), -median(lA_C(:,Idx),2), median(eP_C(:,Idx),2)-median(lA_C(:,Idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+    ttC=table(-median(eA_C(:,cIdx),2), median(eAT_C(:,cIdx),2), -median(lA_C(:,cIdx),2), median(eP_C(:,cIdx),2)-median(lA_C(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
     %patients that are don't have good data will be removed
-    ttS=table(-median(eA_S(:,Idx),2), median(eAT_S(:,Idx),2), -median(lA_S(:,Idx),2), median(eP_S(:,Idx),2)-median(lA_S(:,Idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+    ttS=table(-median(eA_S(:,pIdx),2), median(eAT_S(:,pIdx),2), -median(lA_S(:,pIdx),2), median(eP_S(:,pIdx),2)-median(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 else
-    ttC=table(-mean(eA_C(:,Idx),2), mean(eAT_C(:,Idx),2), -mean(lA_C(:,Idx),2), mean(eP_C(:,Idx),2)-mean(lA_C(:,Idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+    ttC=table(-mean(eA_C(:,cIdx),2), mean(eAT_C(:,cIdx),2), -mean(lA_C(:,cIdx),2), mean(eP_C(:,cIdx),2)-mean(lA_C(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
     %patients that are don't have good data will be removed
-    ttS=table(-mean(eA_S(:,Idx),2), mean(eAT_S(:,Idx),2), -mean(lA_S(:,Idx),2), mean(eP_S(:,Idx),2)-mean(lA_S(:,Idx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+    ttS=table(-mean(eA_S(:,pIdx),2), mean(eAT_S(:,pIdx),2), -mean(lA_S(:,pIdx),2), mean(eP_S(:,pIdx),2)-mean(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 end
 
 CmodelFit1a=fitlm(ttC,'eP_lA~eA+eAT-1','RobustOpts',rob)
@@ -139,7 +142,7 @@ SlearnAll1a=NaN(15,2);
 Cr2All1a=NaN(15,1);
 Sr2All1a=NaN(15,1);
 
-for i=Idx%1:size(eA_C,2)
+for i=cIdx%1:size(eA_C,2)
     ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
     CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
     ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate';
@@ -147,7 +150,7 @@ for i=Idx%1:size(eA_C,2)
     Cr2All1a(i)=aux.uncentered;    
 end
 
-for i=Idx%1:size(eA_S,2)
+for i=pIdx%1:size(eA_S,2)
     ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
     SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
     SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate';
@@ -169,7 +172,7 @@ cmc=NaN(15,1);
 css=NaN(15,1);
 cms=NaN(15,1);
 
-for i=Idx%1:size(eA_C,2)
+for i=cIdx%1:size(eA_C,2)
     eAMagnC(i,1)=norm(eA_C(:,i));
     ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
     ePBMagnC(i,1)=norm(eP_C(:,i));
@@ -177,7 +180,7 @@ for i=Idx%1:size(eA_C,2)
     csc(i,1)=cosine(eP_C(:,i)-lA_C(:,i),-eA_C(:,i));
     cmc(i,1)=cosine(eP_C(:,i)-lA_C(:,i),eAT_C(:,i));
 end
-for i=Idx%1:size(eA_S,2)
+for i=pIdx%1:size(eA_S,2)
     eAMagnS(i,1)=norm(eA_S(:,i));
     ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
     ePBMagnS(i,1)=norm(eP_S(:,i));
@@ -187,11 +190,11 @@ for i=Idx%1:size(eA_S,2)
 end
 
 %cosine analysis
-cscg=(cosine(mean(eP_C(:,Idx)-lA_C(:,Idx),2),-mean(eA_C(:,Idx),2)))
-cmcg=(cosine(mean(eP_C(:,Idx)-lA_C(:,Idx),2),mean(eAT_C(:,Idx),2)))
+cscg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),-mean(eA_C(:,cIdx),2)));
+cmcg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),mean(eAT_C(:,cIdx),2)));
 
-cssg=(cosine(mean(eP_S(:,Idx)-lA_S(:,Idx),2),-mean(eA_S(:,Idx),2)))
-cmsg=(cosine(mean(eP_S(:,Idx)-lA_S(:,Idx),2),mean(eAT_S(:,Idx),2)))
+cssg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),-mean(eA_S(:,pIdx),2)));
+cmsg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),mean(eAT_S(:,pIdx),2)));
 
 
 load([matDataDir,'bioData'])
@@ -207,7 +210,7 @@ end
 %patient 7 and control 7 are not included
 FMselect=FM([1:6,8:16]);
 velSselect=velsS([1:6,8:16]);
-velCselect=velsC([1:6,8:16]);
+velCselect=velsC([7,2:6,8:16]);
 
 tALL=table;
 tALL.group=cell(30,1);tALL.aff=cell(30,1);tALL.sens=NaN(30,1);
