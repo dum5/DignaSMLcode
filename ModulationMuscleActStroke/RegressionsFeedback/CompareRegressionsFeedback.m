@@ -120,22 +120,91 @@ else
     ttS=table(-mean(eA_S(:,pIdx),2), mean(eAT_S(:,pIdx),2), -mean(lA_S(:,pIdx),2), mean(eP_S(:,pIdx),2)-mean(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 end
 
-CmodelFit1a=fitlm(ttC,'eP_lA~eA+eAT-1','RobustOpts',rob)
+%unit variance scaling
+ttC.eATnorm=ttC.eAT./norm(ttC.eAT);
+ttC.eP_lAnorm=ttC.eP_lA./norm(ttC.eP_lA);
+ttC.eAnorm=ttC.eA./norm(ttC.eA);
+
+ttS.eATnorm=ttS.eAT./norm(ttS.eAT);
+ttS.eP_lAnorm=ttS.eP_lA./norm(ttS.eP_lA);
+ttS.eAnorm=ttS.eA./norm(ttS.eA);
+
+CmodelFit1a=fitlm(ttC,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
 Clearn1a=CmodelFit1a.Coefficients.Estimate;
 Clearn1aCI=CmodelFit1a.coefCI;
-Cr21a=uncenteredRsquared(CmodelFit1a);
-Cr21a=Cr21a.uncentered;
-%disp(['Uncentered R^2=' num2str(Cr21a,3)])
+Cr1a=uncenteredRsquared(CmodelFit1a);
+Cr1a=Cr1a.uncentered;
+
+CmodelFit1b=fitlm(ttC,'eP_lAnorm~eATnorm-1','RobustOpts',rob);
+Clearn1b=CmodelFit1b.Coefficients.Estimate;
+Clearn1bCI=CmodelFit1b.coefCI;
+Cr1b=uncenteredRsquared(CmodelFit1b);
+Cr1b=Cr1b.uncentered;
+
+CmodelFit2=fitlm(ttC,'eP_lAnorm~eAnorm+eAnorm-1','RobustOpts',rob);
+Clearn2=CmodelFit2.Coefficients.Estimate;
+Clearn2CI=CmodelFit2.coefCI;
+Cr2=uncenteredRsquared(CmodelFit2);
+Cr2=Cr2.uncentered;
+
+
+CmodelFit3a=fitlm(ttC,'eP_lA~eA-1','RobustOpts',rob);
+Clearn3a=CmodelFit3a.Coefficients.Estimate;
+Clearn3aCI=CmodelFit3a.coefCI;
+Cr3a=uncenteredRsquared(CmodelFit3a);
+Cr3a=Cr3a.uncentered;
+
+CmodelFit3b=fitlm(ttC,'eP_lA~eAT-1','RobustOpts',rob);
+Clearn3b=CmodelFit3b.Coefficients.Estimate;
+Clearn3bCI=CmodelFit3b.coefCI;
+Cr3b=uncenteredRsquared(CmodelFit3b);
+Cr3b=Cr3b.uncentered;
+
+CmodelFit4=fitlm(ttC,'eP_lA~eA+eAT-1','RobustOpts',rob);
+Clearn4=CmodelFit4.Coefficients.Estimate;
+Clearn4CI=CmodelFit4.coefCI;
+Cr4=uncenteredRsquared(CmodelFit4);
+Cr4=Cr4.uncentered;
 
 
 
-SmodelFit1a=fitlm(ttS,'eP_lA~eA+eAT-1','RobustOpts',rob)
+SmodelFit1a=fitlm(ttS,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
 Slearn1a=SmodelFit1a.Coefficients.Estimate;
 Slearn1aCI=SmodelFit1a.coefCI;
-Sr21a=uncenteredRsquared(SmodelFit1a);
-Sr21a=Sr21a.uncentered;
-%disp(['Uncentered R^2=' num2str(Sr21a,3)])
+Sr1a=uncenteredRsquared(SmodelFit1a);
+Sr1a=Sr1a.uncentered;
 
+SmodelFit1b=fitlm(ttS,'eP_lAnorm~eATnorm-1','RobustOpts',rob);
+Slearn1b=SmodelFit1b.Coefficients.Estimate;
+Slearn1bCI=SmodelFit1b.coefCI;
+Sr1b=uncenteredRsquared(SmodelFit1b);
+Sr1b=Sr1b.uncentered;
+
+
+SmodelFit2=fitlm(ttS,'eP_lAnorm~eAnorm+eAnorm-1','RobustOpts',rob);
+Slearn2=SmodelFit2.Coefficients.Estimate;
+Slearn2CI=SmodelFit2.coefCI;
+Sr2=uncenteredRsquared(SmodelFit2);
+Sr2=Sr2.uncentered;
+
+
+SmodelFit3a=fitlm(ttS,'eP_lA~eA-1','RobustOpts',rob);
+Slearn3a=SmodelFit3a.Coefficients.Estimate;
+Slearn3aCI=SmodelFit3a.coefCI;
+Sr3a=uncenteredRsquared(SmodelFit3a);
+Sr3a=Sr3a.uncentered;
+
+SmodelFit3b=fitlm(ttS,'eP_lA~eAT-1','RobustOpts',rob);
+Slearn3b=SmodelFit3b.Coefficients.Estimate;
+Slearn3bCI=SmodelFit3b.coefCI;
+Sr3b=uncenteredRsquared(SmodelFit3b);
+Sr3b=Sr3b.uncentered;
+
+SmodelFit4=fitlm(ttS,'eP_lA~eA+eAT-1','RobustOpts',rob);
+Slearn4=SmodelFit4.Coefficients.Estimate;
+Slearn4CI=SmodelFit4.coefCI;
+Sr4=uncenteredRsquared(SmodelFit4);
+Sr4=Sr4.uncentered;
 
 if speedMatchFlag
     error('Individual analysis not supported for speedMatch');
@@ -149,53 +218,22 @@ ClearnAll1a=NaN(15,2);
 SlearnAll1a=NaN(15,2);
 Cr2All1a=NaN(15,1);
 Sr2All1a=NaN(15,1);
-
-for i=cIdx%1:size(eA_C,2)
-    ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
-    CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
-    ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate';
-    aux=uncenteredRsquared(CmodelFitAll1a{i});
-    Cr2All1a(i)=aux.uncentered;    
-end
-
-for i=pIdx%1:size(eA_S,2)
-    ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
-    SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
-    SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate';
-    aux=uncenteredRsquared(SmodelFitAll1a{i});
-    Sr2All1a(i)=aux.uncentered;    
-end
-
-%Magnitude analysis
-eAMagnC=NaN(15,1);
-ePMagnC=NaN(15,1);
-eAMagnS=NaN(15,1);
-ePMagnS=NaN(15,1);
-ePBMagnC=NaN(15,1);
-ePBMagnS=NaN(15,1);
-lAMagnC=NaN(15,1);
-lAMagnS=NaN(15,1);
-csc=NaN(15,1);
-cmc=NaN(15,1);
-css=NaN(15,1);
-cms=NaN(15,1);
-
-for i=cIdx%1:size(eA_C,2)
-    eAMagnC(i,1)=norm(eA_C(:,i));
-    ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
-    ePBMagnC(i,1)=norm(eP_C(:,i));
-    lAMagnC(i,1)=norm(lA_C(:,i));
-    csc(i,1)=cosine(eP_C(:,i)-lA_C(:,i),-eA_C(:,i));
-    cmc(i,1)=cosine(eP_C(:,i)-lA_C(:,i),eAT_C(:,i));
-end
-for i=pIdx%1:size(eA_S,2)
-    eAMagnS(i,1)=norm(eA_S(:,i));
-    ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
-    ePBMagnS(i,1)=norm(eP_S(:,i));
-    lAMagnS(i,1)=norm(lA_S(:,i));
-    css(i,1)=cosine(eP_S(:,i)-lA_S(:,i),-eA_S(:,i));
-    cms(i,1)=cosine(eP_S(:,i)-lA_S(:,i),eAT_S(:,i));
-end
+% 
+% for i=cIdx%1:size(eA_C,2)
+%     ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
+%     CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
+%     ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate';
+%     aux=uncenteredRsquared(CmodelFitAll1a{i});
+%     Cr2All1a(i)=aux.uncentered;    
+% end
+% 
+% for i=pIdx%1:size(eA_S,2)
+%     ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
+%     SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
+%     SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate';
+%     aux=uncenteredRsquared(SmodelFitAll1a{i});
+%     Sr2All1a(i)=aux.uncentered;    
+% end
 
 %cosine analysis
 cscg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),-mean(eA_C(:,cIdx),2)));

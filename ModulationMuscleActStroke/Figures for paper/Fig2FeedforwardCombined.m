@@ -27,11 +27,11 @@ else
 end
 if removeP07Flag
    patients2=patients2.removeSubs({'P0007'});
-   controls2=controls2.removeSubs({'C0007'});   
+   controls2=controls2.removeSubs({'C0001'});   
 end
 if removeP03Flag
    patients2=patients2.removeSubs({'P0003'});
-   controls2=controls2.removeSubs({'C0003'});
+   %controls2=controls2.removeSubs({'C0003'});
 end
 %define groups
 groups{1}=controls2;
@@ -70,8 +70,8 @@ eL=1;
 evLabel={'iHS','','cTO','','','','cHS','','iTO','','',''};
 %set axes;
 
-[eps] = defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],'nanmean');
-[reps] = defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmean');
+[eps] = defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],'nanmedian');
+[reps] = defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmedian');
 [f1,fb,ax2,ax3,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax2,ax3,pd1,eps,reps,newLabelPrefix,groups,0.1,0.1,'nanmedian');
 close(fb)
 

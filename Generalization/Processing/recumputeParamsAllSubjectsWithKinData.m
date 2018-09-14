@@ -1,10 +1,12 @@
 clear all
 close all
 
-cd('Z:\SubjectData\E04 Generalization Young');
+cd('Z:\SubjectData\E04 Generalization Young\ExpData\TMandKinEvents');
 list=dir('*.mat');
 
-for i=24:length(list)
+[indx,tf] = listdlg('ListString',{list.name}');
+
+for i=indx
     name=list(i).name;
     load(name)
     expData=expData.flushAndRecomputeParameters('kin');

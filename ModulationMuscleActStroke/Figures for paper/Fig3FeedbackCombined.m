@@ -13,6 +13,7 @@ ex2=[0 0.447 0.741];
 speedMatchFlag=0;
 removeP07Flag=1;
 removeP03Flag=1;
+earlyStrides=5;
 
 strokesFast=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
 controlsSlow=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
@@ -27,11 +28,11 @@ else
 end
 if removeP07Flag
    patients2=patients2.removeSubs({'P0007'});
-   controls2=controls2.removeSubs({'C0007'});   
+   controls2=controls2.removeSubs({'C0001'});   
 end
 if removeP03Flag
    patients2=patients2.removeSubs({'P0003'});
-   controls2=controls2.removeSubs({'C0003'});
+   %controls2=controls2.removeSubs({'C0003'});
 end
 %define groups
 groups{1}=controls2;
@@ -108,12 +109,12 @@ evLabel={'iHS','','cTO','','','','cHS','','iTO','','',''};
 
 
 
-[eps1] = defineEpochs({'eA'},{'Adaptation'}',[15],[eE],[eL],'nanmean');
-[reps1] = defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmean');
+[eps1] = defineEpochs({'eA'},{'Adaptation'}',[earlyStrides],[eE],[eL],'nanmedian');
+[reps1] = defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmedian');
 
 
-[eps2] = defineEpochs({'eP'},{'Washout'}',[15],[eE],[eL],'nanmean');
-[reps2] = defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],'nanmean');
+[eps2] = defineEpochs({'eP'},{'Washout'}',[earlyStrides],[eE],[eL],'nanmedian');
+[reps2] = defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],'nanmedian');
 
 [f1,fb,ax4,ax2,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax4,ax2,pd1,eps1,reps1,newLabelPrefix,groups,0.1,0.1,'nanmedian');
 [f1,fb,ax5,ax3,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax5,ax3,pd1,eps2,reps2,newLabelPrefix,groups,0.1,0.1,'nanmedian');
