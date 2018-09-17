@@ -9,7 +9,7 @@ load(loadName)
 speedMatchFlag=1;
 %removeP03Flag=1;
 groupMedianFlag=1;
-nstrides=5;
+nstrides=15;
 %pIdx=[1:2 4:15];
 %cIdx=[1:15];
 summethod='nanmedian';
@@ -24,21 +24,22 @@ if speedMatchFlag
 %     %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
 %     controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
     
-strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+strokesNames=strcat('P00',{'01','02','05','08','09','10','13','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
 controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
 
 
 
-    pIdx=[1:10];%all subjects listed above
+    pIdx=[1:9];%all subjects listed above
     cIdx=[1:9];
 else
-   controlsNames={'C0007','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+   controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
    %controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
     
     %patient 3 will be exlcuded later, otherwise the table messes up
-    strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
+    strokesNames={'P0001','P0002','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
     
-    
+    pIdx=[1:14];
+    cIdx=[1:14];
     
     
 end
@@ -120,7 +121,7 @@ else
     ttS=table(-mean(eA_S(:,pIdx),2), mean(eAT_S(:,pIdx),2), -mean(lA_S(:,pIdx),2), mean(eP_S(:,pIdx),2)-mean(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 end
 
-%unit variance scaling
+%normalizing vectors
 ttC.eATnorm=ttC.eAT./norm(ttC.eAT);
 ttC.eP_lAnorm=ttC.eP_lA./norm(ttC.eP_lA);
 ttC.eAnorm=ttC.eA./norm(ttC.eA);
@@ -128,6 +129,26 @@ ttC.eAnorm=ttC.eA./norm(ttC.eA);
 ttS.eATnorm=ttS.eAT./norm(ttS.eAT);
 ttS.eP_lAnorm=ttS.eP_lA./norm(ttS.eP_lA);
 ttS.eAnorm=ttS.eA./norm(ttS.eA);
+
+%generate table for each subject
+ttCall=table;
+for c=cIdx
+    ttCall.eA(:,c)=eA_C(:,c);
+    ttCall.eAnorm(:,c)=eA_C(:,c)./norm(eA_C(:,c));
+    ttCall.eAT(:,c)=eAT_C(:,c);
+    ttCall.eATnorm(:,c)=eAT_C(:,c)./norm(eAT_C(:,c));
+    ttCall.eP_lA(:,c)=eP_C(:,c)-lA_C(:,c);
+    ttCall.eP_lAnorm(:,c)=ttCall.eP_lA(:,c)./norm(ttCall.eP_lA(:,c));    
+end
+ttSall=table;
+for c=pIdx
+    ttSall.eA(:,c)=eA_S(:,c);
+    ttSall.eAnorm(:,c)=eA_S(:,c)./norm(eA_S(:,c));
+    ttSall.eAT(:,c)=eAT_S(:,c);
+    ttSall.eATnorm(:,c)=eAT_S(:,c)./norm(eAT_S(:,c));
+    ttSall.eP_lA(:,c)=eP_S(:,c)-lA_S(:,c);
+    ttSall.eP_lAnorm(:,c)=ttSall.eP_lA(:,c)./norm(ttSall.eP_lA(:,c));    
+end
 
 CmodelFit1a=fitlm(ttC,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
 Clearn1a=CmodelFit1a.Coefficients.Estimate;
@@ -141,7 +162,7 @@ Clearn1bCI=CmodelFit1b.coefCI;
 Cr1b=uncenteredRsquared(CmodelFit1b);
 Cr1b=Cr1b.uncentered;
 
-CmodelFit2=fitlm(ttC,'eP_lAnorm~eAnorm+eAnorm-1','RobustOpts',rob);
+CmodelFit2=fitlm(ttC,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
 Clearn2=CmodelFit2.Coefficients.Estimate;
 Clearn2CI=CmodelFit2.coefCI;
 Cr2=uncenteredRsquared(CmodelFit2);
@@ -181,7 +202,7 @@ Sr1b=uncenteredRsquared(SmodelFit1b);
 Sr1b=Sr1b.uncentered;
 
 
-SmodelFit2=fitlm(ttS,'eP_lAnorm~eAnorm+eAnorm-1','RobustOpts',rob);
+SmodelFit2=fitlm(ttS,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
 Slearn2=SmodelFit2.Coefficients.Estimate;
 Slearn2CI=SmodelFit2.coefCI;
 Sr2=uncenteredRsquared(SmodelFit2);
@@ -206,119 +227,318 @@ Slearn4CI=SmodelFit4.coefCI;
 Sr4=uncenteredRsquared(SmodelFit4);
 Sr4=Sr4.uncentered;
 
-if speedMatchFlag
-    error('Individual analysis not supported for speedMatch');
-end
-
-%% Individual models::
-rob='off'; %These models can't be fit robustly (doesn't converge)
-%First: repeat the model(s) above on each subject:
-clear CmodelFitAll* ClearnAll* SmodelFitAll* SlearnAll* 
-ClearnAll1a=NaN(15,2);
-SlearnAll1a=NaN(15,2);
-Cr2All1a=NaN(15,1);
-Sr2All1a=NaN(15,1);
-% 
-% for i=cIdx%1:size(eA_C,2)
-%     ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
-%     CmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
-%     ClearnAll1a(i,:)=CmodelFitAll1a{i}.Coefficients.Estimate';
-%     aux=uncenteredRsquared(CmodelFitAll1a{i});
-%     Cr2All1a(i)=aux.uncentered;    
-% end
-% 
-% for i=pIdx%1:size(eA_S,2)
-%     ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
-%     SmodelFitAll1a{i}=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
-%     SlearnAll1a(i,:)=SmodelFitAll1a{i}.Coefficients.Estimate';
-%     aux=uncenteredRsquared(SmodelFitAll1a{i});
-%     Sr2All1a(i)=aux.uncentered;    
-% end
-
-%cosine analysis
-cscg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),-mean(eA_C(:,cIdx),2)));
-cmcg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),mean(eAT_C(:,cIdx),2)));
-
-cssg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),-mean(eA_S(:,pIdx),2)));
-cmsg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),mean(eAT_S(:,pIdx),2)));
-
-
-load([matDataDir,'bioData'])
-clear ageC ageS;
-for c=1:length(groups{1}.adaptData)
-    ageC(c,1)=groups{1}.adaptData{c}.getSubjectAgeAtExperimentDate;
-    ageS(c,1)=groups{2}.adaptData{c}.getSubjectAgeAtExperimentDate;
-    genderC{c}=groups{1}.adaptData{c}.subData.sex;
-    genderS{c}=groups{2}.adaptData{c}.subData.sex;
-    affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
-end
-
-%patient 7 and control 7 are not included
-FMselect=FM([1:6,8:16]);
-velSselect=velsS([1:6,8:16]);
-velCselect=velsC([7,2:6,8:16]);
-
-tALL=table;
-tALL.group=cell(30,1);tALL.aff=cell(30,1);tALL.sens=NaN(30,1);
-tALL.group(1:15,1)={'control'};
-tALL.group(16:30,1)={'stroke'};
-tALL.group=nominal(tALL.group);
-tALL.gender=[genderC';genderS'];
-tALL.age=[ageC; ageS];
-tALL.aff(16:30)=affSide';
-tALL.vel=[velCselect';velSselect'];
-tALL.FM=[repmat(34,15,1);FMselect'];
-tALL.BS=[ClearnAll1a(:,1);SlearnAll1a(:,1)];
-tALL.BM=[ClearnAll1a(:,2);SlearnAll1a(:,2)];
-tALL.R2=[Cr2All1a;Sr2All1a];
-tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
-tALL.eAMagn=[eAMagnC;eAMagnS];
-tALL.ePMagn=[ePMagnC;ePMagnS];
-tALL.ePBMagn=[ePBMagnC;ePBMagnS];
-tALL.lAMagn=[lAMagnC;lAMagnS];
-tALL.cs=[csc;css];
-tALL.cm=[cmc;cms];
-
-
-answer = questdlg('Save results to mat file?');
-switch answer
-case 'Yes'
-    save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
-    disp('matfile saved')
-    case 'No'
-        disp('data not saved')
-end
-
-
-% 
 % figure
-% set(gcf,'Color',[1 1 1])
-% x=[1,2];
-% subplot(2,3,1)
+% subplot(2,2,1)
 % hold on
-% bar(x,[Clearn1a Slearn1a],'FaceColor',[0.5 0.5 0.5])
-% errorbar(x,[Clearn1a Slearn1a],[diff(Clearn1aCI)/2 diff(Slearn1aCI)/2],'Color','k','LineWidth',2,'LineStyle','none')
-% set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{''},'FontSize',16)
-% ylabel('\beta_M group regression')
-% title('ADAPTATION OF FEEDBACK RESPONSES')
+% bar([1 3.5],[Clearn1a Clearn1b],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+% bar([2 4.5],[Slearn1a Slearn1b],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+% plot([1 1],Clearn1aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([3.5 3.5],Clearn1bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([2 2],Slearn1aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([4.5 4.5],Slearn1bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+% title('Norm Vectors, single regressions')
+% if Clearn1aCI(2)<Slearn1aCI(1)
+%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+% end
+% if Clearn1bCI(1)>Slearn1bCI(2)
+%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+% end
 % 
-% subplot(2,3,4)
+% subplot(2,2,2)
+% IdxBM=find(strcmp(CmodelFit2.PredictorNames,'eATnorm'),1,'first');
+% IdxBS=find(strcmp(CmodelFit2.PredictorNames,'eAnorm'),1,'first');
 % hold on
-% bar(x,nanmean([ClearnAll1a SlearnAll1a]),'FaceColor',[0.5 0.5 0.5])
-% errorbar(x,nanmean([ClearnAll1a SlearnAll1a]),nanstd([ClearnAll1a SlearnAll1a])./sqrt(15),'Color','k','LineWidth',2,'LineStyle','none')
-% set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},'FontSize',16)
-% ylabel('\beta_M individual regressions')
+% bar([1 3.5],[Clearn2([IdxBS,IdxBM])],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+% bar([2 4.5],[Slearn2([IdxBS,IdxBM])],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+% plot([1 1],Clearn2CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([3.5 3.5],Clearn2CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([2 2],Slearn2CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([4.5 4.5],Slearn2CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+% title('Norm Vectors, combined regression')
+% if Clearn2CI(IdxBS,2)<Slearn2CI(IdxBS,1)
+%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+% end
+% if Clearn2CI(IdxBM,1)>Slearn2CI(IdxBM,2)
+%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+% end
 % 
+% subplot(2,2,3)
+% hold on
+% bar([1 3.5],[Clearn3a Clearn3b],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+% bar([2 4.5],[Slearn3a Slearn3b],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+% plot([1 1],Clearn3aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([3.5 3.5],Clearn3bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([2 2],Slearn3aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([4.5 4.5],Slearn3bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+% title('NonNormalized, single regressions')
+% if Clearn3aCI(2)<Slearn3aCI(1)
+%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+% end
+% if Clearn3bCI(1)>Slearn3bCI(2)
+%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+% end
+% 
+% subplot(2,2,4)
+% IdxBM=find(strcmp(CmodelFit4.PredictorNames,'eAT'),1,'first');
+% IdxBS=find(strcmp(CmodelFit4.PredictorNames,'eA'),1,'first');
+% hold on
+% bar([1 3.5],[Clearn4([IdxBS,IdxBM])],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+% bar([2 4.5],[Slearn4([IdxBS,IdxBM])],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+% plot([1 1],Clearn4CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([3.5 3.5],Clearn4CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([2 2],Slearn4CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% plot([4.5 4.5],Slearn4CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+% title('NonNormalized, combined regressions')
+% if Clearn4CI(IdxBS,2)<Slearn4CI(IdxBS,1)
+%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+% end
+% if Clearn4CI(IdxBM,1)>Slearn4CI(IdxBM,2)
+%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+% end
 
-clear t TStroke TControl
-t=tALL;
-t.group=nominal(t.group);
-TStroke=t(t.group=='stroke',:);
-TControl=t(t.group=='control',:);
-Clearn1aCI
-Slearn1aCI
+%individual regressions to be implemented
+Clearn1All=NaN(length(cIdx),2);
+Clearn2All=NaN(length(cIdx),2);
+Clearn3All=NaN(length(cIdx),2);
+Clearn4All=NaN(length(cIdx),2);
 
-[h,p]=ranksum(TControl.cm,TStroke.cm)
-[h,p]=ranksum(TControl.cs,TStroke.cs)
+Slearn1All=NaN(length(pIdx),2);
+Slearn2All=NaN(length(pIdx),2);
+Slearn3All=NaN(length(pIdx),2);
+Slearn4All=NaN(length(pIdx),2);
+
+%warning, cIdx can only be consecutive number, otherwise indexing does not
+%work
+for i=1:length(cIdx)
+    ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
+    ttAll.eAnorm=ttAll.eA./norm(ttAll.eA);
+    ttAll.eATnorm=ttAll.eAT./norm(ttAll.eAT);
+    ttAll.eP_lAnorm=ttAll.eP_lA./norm(ttAll.eP_lA);
+    
+    %option 1 cosine analysis
+    dt=fitlm(ttAll,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
+    Clearn1All(i,1)=dt.Coefficients.Estimate;clear dt
+    
+    dt=fitlm(ttAll,'eP_lAnorm~eATnorm-1','RobustOpts',rob);
+    Clearn1All(i,2)=dt.Coefficients.Estimate;clear dt
+    
+    %option 2 normalized vecors combined regression
+    
+    dt=fitlm(ttAll,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+    IdxBS=find(strcmp(dt.PredictorNames,'eAnorm'),1,'first');
+    IdxBM=find(strcmp(dt.PredictorNames,'eATnorm'),1,'first');
+    Clearn2All(i,1)=dt.Coefficients.Estimate(IdxBS);
+    Clearn2All(i,2)=dt.Coefficients.Estimate(IdxBM);clear dt IdxBS IdxBM
+    
+    %option 3 single regressors
+    dt=fitlm(ttAll,'eP_lA~eA-1','RobustOpts',rob);
+    Clearn3All(i,1)=dt.Coefficients.Estimate;clear dt
+    
+    dt=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
+    Clearn3All(i,2)=dt.Coefficients.Estimate;clear dt
+    
+    %option 4 combined regression
+    
+    dt=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
+    IdxBS=find(strcmp(dt.PredictorNames,'eA'),1,'first');
+    IdxBM=find(strcmp(dt.PredictorNames,'eAT'),1,'first');
+    Clearn4All(i,1)=dt.Coefficients.Estimate(IdxBS);
+    Clearn4All(i,2)=dt.Coefficients.Estimate(IdxBM);clear dt IdxBS IdxBM ttAll
+    
+end
+
+for i=1:length(pIdx)
+    ttAll=table(-eA_S(:,i), eAT_S(:,i), -lA_S(:,i), eP_S(:,i)-lA_S(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
+    ttAll.eAnorm=ttAll.eA./norm(ttAll.eA);
+    ttAll.eATnorm=ttAll.eAT./norm(ttAll.eAT);
+    ttAll.eP_lAnorm=ttAll.eP_lA./norm(ttAll.eP_lA);
+    
+    %option 1 cosine analysis
+    dt=fitlm(ttAll,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
+    Slearn1All(i,1)=dt.Coefficients.Estimate;clear dt
+    
+    dt=fitlm(ttAll,'eP_lAnorm~eATnorm-1','RobustOpts',rob);
+    Slearn1All(i,2)=dt.Coefficients.Estimate;clear dt
+    
+    %option 2 normalized vecors combined regression
+    
+    dt=fitlm(ttAll,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+    IdxBS=find(strcmp(dt.PredictorNames,'eAnorm'),1,'first');
+    IdxBM=find(strcmp(dt.PredictorNames,'eATnorm'),1,'first');
+    Slearn2All(i,1)=dt.Coefficients.Estimate(IdxBS);
+    Slearn2All(i,2)=dt.Coefficients.Estimate(IdxBM);clear dt IdxBS IdxBM
+    
+    %option 3 single regressors
+    dt=fitlm(ttAll,'eP_lA~eA-1','RobustOpts',rob);
+    Slearn3All(i,1)=dt.Coefficients.Estimate;clear dt
+    
+    dt=fitlm(ttAll,'eP_lA~eAT-1','RobustOpts',rob);
+    Slearn3All(i,2)=dt.Coefficients.Estimate;clear dt
+    
+    %option 4 combined regression
+    
+    dt=fitlm(ttAll,'eP_lA~eA+eAT-1','RobustOpts',rob);
+    IdxBS=find(strcmp(dt.PredictorNames,'eA'),1,'first');
+    IdxBM=find(strcmp(dt.PredictorNames,'eAT'),1,'first');
+    Slearn4All(i,1)=dt.Coefficients.Estimate(IdxBS);
+    Slearn4All(i,2)=dt.Coefficients.Estimate(IdxBM);clear dt IdxBS IdxBM ttALL
+end
+
+figure
+subplot(2,2,1)
+hold on
+bar([1 3.5],nanmedian(Clearn1All),'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],nanmedian(Slearn1All),'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+errorbar([1 3.5],nanmedian(Clearn1All),iqr(Clearn1All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+errorbar([2 4.5],nanmedian(Slearn1All),iqr(Slearn1All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('Norm Vectors, single regressions')
+[p1,h1]=ranksum(Clearn1All(:,1),Slearn1All(:,1));
+[p2,h2]=ranksum(Clearn1All(:,2),Slearn1All(:,2));
+if p1<0.05
+      plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if p2<0.05
+      plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
+
+subplot(2,2,2)
+hold on
+bar([1 3.5],nanmedian(Clearn2All),'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],nanmedian(Slearn2All),'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+errorbar([1 3.5],nanmedian(Clearn2All),iqr(Clearn2All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+errorbar([2 4.5],nanmedian(Slearn2All),iqr(Slearn2All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('Norm Vectors, combined regressions')
+[p1,h1]=ranksum(Clearn2All(:,1),Slearn2All(:,1));
+[p2,h2]=ranksum(Clearn2All(:,2),Slearn2All(:,2));
+if p1<0.05
+      plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if p2<0.05
+      plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
+
+subplot(2,2,3)
+hold on
+bar([1 3.5],nanmedian(Clearn3All),'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],nanmedian(Slearn3All),'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+errorbar([1 3.5],nanmedian(Clearn3All),iqr(Clearn3All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+errorbar([2 4.5],nanmedian(Slearn3All),iqr(Slearn3All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('Non-normalized single regressions')
+[p1,h1]=ranksum(Clearn3All(:,1),Slearn3All(:,1));
+[p2,h2]=ranksum(Clearn3All(:,2),Slearn3All(:,2));
+if p1<0.05
+      plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if p2<0.05
+      plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
+
+subplot(2,2,4)
+hold on
+bar([1 3.5],nanmedian(Clearn4All),'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],nanmedian(Slearn4All),'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+errorbar([1 3.5],nanmedian(Clearn4All),iqr(Clearn4All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+errorbar([2 4.5],nanmedian(Slearn4All),iqr(Slearn4All),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5])
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('NonNormalized combined regressions')
+[p1,h1]=ranksum(Clearn4All(:,1),Slearn4All(:,1));
+[p2,h2]=ranksum(Clearn4All(:,2),Slearn4All(:,2));
+if p1<0.05
+      plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if p2<0.05
+      plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
 
 
+
+% 
+% 
+% 
+% 
+% load([matDataDir,'bioData'])
+% clear ageC ageS;
+% for c=1:length(groups{1}.adaptData)
+%     ageC(c,1)=groups{1}.adaptData{c}.getSubjectAgeAtExperimentDate;
+%     ageS(c,1)=groups{2}.adaptData{c}.getSubjectAgeAtExperimentDate;
+%     genderC{c}=groups{1}.adaptData{c}.subData.sex;
+%     genderS{c}=groups{2}.adaptData{c}.subData.sex;
+%     affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
+% end
+% 
+% %patient 7 and control 7 are not included
+% FMselect=FM([1:6,8:16]);
+% velSselect=velsS([1:6,8:16]);
+% velCselect=velsC([7,2:6,8:16]);
+% 
+% tALL=table;
+% tALL.group=cell(30,1);tALL.aff=cell(30,1);tALL.sens=NaN(30,1);
+% tALL.group(1:15,1)={'control'};
+% tALL.group(16:30,1)={'stroke'};
+% tALL.group=nominal(tALL.group);
+% tALL.gender=[genderC';genderS'];
+% tALL.age=[ageC; ageS];
+% tALL.aff(16:30)=affSide';
+% tALL.vel=[velCselect';velSselect'];
+% tALL.FM=[repmat(34,15,1);FMselect'];
+% tALL.BS=[ClearnAll1a(:,1);SlearnAll1a(:,1)];
+% tALL.BM=[ClearnAll1a(:,2);SlearnAll1a(:,2)];
+% tALL.R2=[Cr2All1a;Sr2All1a];
+% tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
+% tALL.eAMagn=[eAMagnC;eAMagnS];
+% tALL.ePMagn=[ePMagnC;ePMagnS];
+% tALL.ePBMagn=[ePBMagnC;ePBMagnS];
+% tALL.lAMagn=[lAMagnC;lAMagnS];
+% tALL.cs=[csc;css];
+% tALL.cm=[cmc;cms];
+% 
+% 
+% answer = questdlg('Save results to mat file?');
+% switch answer
+% case 'Yes'
+%     save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
+%     disp('matfile saved')
+%     case 'No'
+%         disp('data not saved')
+% end
+% 
+% 
+% % 
+% % figure
+% % set(gcf,'Color',[1 1 1])
+% % x=[1,2];
+% % subplot(2,3,1)
+% % hold on
+% % bar(x,[Clearn1a Slearn1a],'FaceColor',[0.5 0.5 0.5])
+% % errorbar(x,[Clearn1a Slearn1a],[diff(Clearn1aCI)/2 diff(Slearn1aCI)/2],'Color','k','LineWidth',2,'LineStyle','none')
+% % set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{''},'FontSize',16)
+% % ylabel('\beta_M group regression')
+% % title('ADAPTATION OF FEEDBACK RESPONSES')
+% % 
+% % subplot(2,3,4)
+% % hold on
+% % bar(x,nanmean([ClearnAll1a SlearnAll1a]),'FaceColor',[0.5 0.5 0.5])
+% % errorbar(x,nanmean([ClearnAll1a SlearnAll1a]),nanstd([ClearnAll1a SlearnAll1a])./sqrt(15),'Color','k','LineWidth',2,'LineStyle','none')
+% % set(gca,'XLim',[0.5 2.5],'YLim',[0 1],'XTick',[1 2],'XTickLabel',{'CONTROL','STROKE'},'FontSize',16)
+% % ylabel('\beta_M individual regressions')
+% % 
+% 
+% clear t TStroke TControl
+% t=tALL;
+% t.group=nominal(t.group);
+% TStroke=t(t.group=='stroke',:);
+% TControl=t(t.group=='control',:);
+% Clearn1aCI
+% Slearn1aCI
+% 
+% [h,p]=ranksum(TControl.cm,TStroke.cm)
+% [h,p]=ranksum(TControl.cs,TStroke.cs)
+% 
+% 
