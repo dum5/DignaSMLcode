@@ -6,7 +6,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 %removeP03Flag=1;
 groupMedianFlag=1;
 nstrides=5;
@@ -353,8 +353,8 @@ for i=1:length(cIdx)
     Clearn4All(i,1)=dt.Coefficients.Estimate(IdxBS);
     Clearn4All(i,2)=dt.Coefficients.Estimate(IdxBM);clear dt IdxBS IdxBM 
     
-    CMagn(i,1)=norm(ttAll.eA);
-    CMagn(i,2)=norm(ttAll.eP_lA);
+    Cmagn(i,1)=norm(ttAll.eA);
+    Cmagn(i,2)=norm(ttAll.eP_LA);
     clear ttAll
 end
 
@@ -394,8 +394,8 @@ for i=1:length(pIdx)
     Slearn4All(i,1)=dt.Coefficients.Estimate(IdxBS);
     Slearn4All(i,2)=dt.Coefficients.Estimate(IdxBM);clear dt IdxBS IdxBM 
     
-    SMagn(i,1)=norm(ttAll.eA);
-    SMagn(i,2)=norm(ttAll.eP_lA);
+    Smagn(i,1)=norm(ttAll.eA);
+    Smagn(i,2)=norm(ttAll.eP_LA);
     clear ttAll
 end
 % 
@@ -468,8 +468,8 @@ end
 %       plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
 % end
 
-CMagn(:,3)=CMagn(:,1)-CMagn(:,2);
-SMagn(:,3)=SMagn(:,1)-SMagn(:,2);
+Cmagn(:,3)=Cmagn(:,1)-Cmagn(:,2);
+Smagn(:,3)=Smagn(:,1)-Smagn(:,2);
 
 
 figure
@@ -479,20 +479,8 @@ bar([1 3.5 6],nanmedian(CMagn),'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
 bar([2 4.5 7],nanmedian(SMagn),'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
 errorbar([1 3.5 6],nanmedian(CMagn),iqr(CMagn),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5]);
 errorbar([2 4.5 7],nanmedian(SMagn),iqr(SMagn),'LineStyle','none','LineWidth',2,'Color',[0.5 0.5 0.5]);
-[p1,h1]=ranksum(CMagn(:,1),SMagn(:,1));
-[p2,h2]=ranksum(CMagn(:,2),SMagn(:,2));
-[p3,h3]=ranksum(CMagn(:,3),SMagn(:,3));
-lims=get(gca,'YLim');upperL=lims(2)*0.9;
-if p1<0.05
-      plot([1 2],[upperL upperL],'-k','LineWidth',2)
-end
-if p2<0.05
-      plot([3.5 4.5],[upperL upperL],'-k','LineWidth',2)
-end
-if p3<0.05
-      plot([6 7],[upperL upperL],'-k','LineWidth',2)
-end
-set(gca,'XLim',[0.5 7.5],'XTick',[1.5 4 6.5],'XTickLabel',{'||earlyA||','||earlyP-lateA||','deltaMagn'})
+[p1,h1]=ranksum(Clearn4All(:,1),Slearn4All(:,1));
+
 
 % 
 % 

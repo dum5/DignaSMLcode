@@ -9,8 +9,8 @@
 N19_ExtractAllData
 
 
-%groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback','GradualCatch','GradualNoCatch'};
-groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
+groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback','GradualCatch','GradualNoCatch'};
+%groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
 
 %groupOrder={'AbruptNoFeedback','Catch'};
 %groupOrder={'Catch'};
