@@ -9,6 +9,12 @@ close all
 %make sure all groups are defined
 %GenerateParamsTable;
 
+[loadName,matDataDir]=uigetfile('choose data file ','*.mat');
+loadName=[matDataDir,loadName]; 
+load(loadName)
+
+timeCourseUnbiased{1, 1}.param{1, 4}.cond{1, 8}(183,3)=NaN;%this is a huge outlier that was not detected as a bad stride
+
 colors=[0.2 0.2 1;0.6 0.6 0.6;0.6 0 0.6];
 colors2=[0.1 0.1 0.5;0.3 0.3 0.3;0.2 0 0.2];
 
@@ -343,15 +349,16 @@ text(ax4c,0.7,0.26,'stepTime','FontSize',12,'FontName','Arial');
 
 
 f4=figure('Name','Additional results');
-set(f4,'Color',[1 1 1]','Units','inches','Position',[0 0 4 2])
+set(f4,'Color',[1 1 1]','Units','inches','Position',[0 0 7 2])
 
 lower=0.25;%position of bottom axes
 left=0.12;
 height=0.7;%height of axes
-width=0.35;
+width=0.2;
 
 ax1a = axes('Position',[left  lower width height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[0 100],'YTick',[0 50 100],'FontSize',12,'FontName','Arial');
-ax1b = axes('Position',[left+width+0.15  lower width height],'Clipping','off','XLim',[-0.3 0],'YLim',[0 0.3],'FontSize',12,'FontName','Arial');
+ax1b = axes('Position',[left+width+0.1  lower width height],'Clipping','off','XLim',[0.5 3.5],'YLim',[0 0.12],'FontSize',12,'FontName','Arial');
+ax1c = axes('Position',[left+2*(width+0.1)  lower width height],'Clipping','off','XLim',[-0.3 0],'YLim',[0 0.3],'FontSize',12,'FontName','Arial');
 
 hold(ax1a)
 bar(ax1a,1,nanmean(TControl.netContributionNorm2_pctGeneralization),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
@@ -365,18 +372,33 @@ errorbar(ax1a,3,nanmean(TGradual.netContributionNorm2_pctGeneralization),nanstd(
     'Color','k','LineWidth',2)
 text(ax1a,0.7,100,'%Generalization','FontSize',12,'FontName','Arial');
 
+
 hold(ax1b)
-plot(ax1b,TControl.maxError,TControl.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.2 0.2 1]);
-plot(ax1b,TFeedback.maxError,TFeedback.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0.6 0.6]);
-plot(ax1b,TGradual.maxError,TGradual.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0 0.6]);
+bar(ax1b,1,nanmean(TControl.netContributionNorm2_LA_ERA),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
+errorbar(ax1b,1,nanmean(TControl.netContributionNorm2_LA_ERA),nanstd(TControl.netContributionNorm2_LA_ERA)./sqrt(length(TControl.netContributionNorm2_LA_ERA)),...
+    'Color','k','LineWidth',2)
+bar(ax1b,2,nanmean(TFeedback.netContributionNorm2_LA_ERA),'FaceColor',[0.6 0.6 0.6],'BarWidth',0.7);
+errorbar(ax1b,2,nanmean(TFeedback.netContributionNorm2_LA_ERA),nanstd(TFeedback.netContributionNorm2_LA_ERA)./sqrt(length(TFeedback.netContributionNorm2_LA_ERA)),...
+    'Color','k','LineWidth',2)
+bar(ax1b,3,nanmean(TGradual.netContributionNorm2_LA_ERA),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
+errorbar(ax1b,3,nanmean(TGradual.netContributionNorm2_LA_ERA),nanstd(TGradual.netContributionNorm2_LA_ERA)./sqrt(length(TGradual.netContributionNorm2_LA_ERA)),...
+    'Color','k','LineWidth',2)
+plot(ax1b,[1 3],[0.11 0.11],'Color','k','LineWidth',2)
+plot(ax1b,[2 3],[0.105 0.105],'Color','k','LineWidth',2)
+text(ax1b,1,0.12,'LA-earlyReAdap','FontSize',12,'FontName','Arial');
+
+hold(ax1c)
+plot(ax1c,TControl.maxError,TControl.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.2 0.2 1]);
+plot(ax1c,TFeedback.maxError,TFeedback.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0.6 0.6]);
+plot(ax1c,TGradual.maxError,TGradual.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0 0.6]);
 xdata=TExp1.maxError;ydata=TExp1.netContributionNorm2_OG_P;
 [r,m,b] = regression(xdata,ydata,'one');
 rfit=b+xdata.*m;
 %plot(ax1b,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
 [rho,pval]=corr(xdata,ydata,'type','Spearman');
-xpos=get(ax1b,'XLim');ypos=get(ax1b,'YLim');
-text(ax1b,-0.3,0.3,['Rho=',num2str(round(rho,2)),' p=',num2str(round(pval,2))],'FontSize',12,'FontName','Arial');
-xlabel(ax1b,'Max Error')
-ylabel(ax1b,'stepAsym OGp')
+xpos=get(ax1c,'XLim');ypos=get(ax1b,'YLim');
+text(ax1c,-0.3,0.3,['Rho=',num2str(round(rho,2)),' p=',num2str(round(pval,2))],'FontSize',12,'FontName','Arial');
+xlabel(ax1c,'Max Error')
+ylabel(ax1c,'stepAsym OGp')
 
 

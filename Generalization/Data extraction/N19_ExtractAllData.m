@@ -20,7 +20,6 @@ close all
 %[file,path]=uigetfile('Z:\Users\Wouter\Generalization Young\Paramfiles Study after ReviewEventGui\*.mat','choose file to load');
 [file,path]=uigetfile('*.mat','choose file to load');
 
-
 load([path,file]);
 
 %remove Bias and Bad strides for all groups
@@ -107,12 +106,11 @@ summethods=({'nanmedian','nanmedian','nanmean','nanmean','nanmean','nanmean','na
 
 %extract data for epochs and subtract reference condition and remove
 %appropriate bias
- params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2',...
-     'spatialContributionPNorm','stepTimeContributionPNorm','velocityContributionPNorm','netContributionPNorm','FyPSmax'};
+ params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
 %params={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'}
 
-correctTMbase=1:8;%indices of parameters that need to be corrected for TM base
-correctTMslow=9;%indices of parameters that need to be corrected for TM slow
+correctTMbase=1:4;%indices of parameters that need to be corrected for TM base
+correctTMslow=[];%indices of parameters that need to be corrected for TM slow
 
 OGind=[3,4];%epoch associated with OGpost
 TMind=[5:10];%epoch associated with treadmill trials, except the reference trial
@@ -157,11 +155,15 @@ nEp=length(names);%number of epochs
 for i=1:length(groups)
     nsub=length(groups{i}.adaptData);
     for n=1:length(names)
-        try groupOutcomes{i}(1:length(params),n,1:nsub)=groups{i}.getEpochData(epsData{i}(n,:),params);
+        try
+        groupOutcomes{i}(1:length(params),n,1:nsub)=groups{i}.getEpochData(epsData{i}(n,:),params);
+%             if i==8
+%                 keyboard
+%             end
         catch
             warning(['epoch',names{n},'not available for group:',groupsnames{i}])
-              
-        end
+        end  
+        
     end
     %groupOutcomes{i}(1:length(params),1:length(names),1:nsub)=groups{i}.getEpochData(epsData{i},params);% nLabels x nEpochs x nSubjects
     

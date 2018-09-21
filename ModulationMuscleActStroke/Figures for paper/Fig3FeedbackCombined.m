@@ -10,33 +10,47 @@ figuresColorMap;
 ex1=[0.85 0.325 0.098];
 ex2=[0 0.447 0.741];
 
-speedMatchFlag=0;
-removeP07Flag=1;
-removeP03Flag=1;
-earlyStrides=5;
+speedMatchFlag=1;
+%removeP03Flag=1;
+groupMedianFlag=1;
+nstrides=5;
+%pIdx=[1:2 4:15];
+%cIdx=[1:15];
+summethod='nanmedian';
 
-strokesFast=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsSlow=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+%selection of subjects is as follows: subjects 3 are always removed
+%(patients and controls)
+
 
 
 if speedMatchFlag
-   patients2=patients.getSubGroup(strokesFast);
-   controls2=controls.getSubGroup(controlsSlow);
+%     strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+%     %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+%     controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+    
+strokesNames=strcat('P00',{'01','02','05','08','09','10','13','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+
+
+
+    pIdx=[1:9];%all subjects listed above
+    cIdx=[1:9];
 else
-    patients2=patients;
-    controls2=controls;
+   controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+   %controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
+    
+    %patient 3 will be exlcuded later, otherwise the table messes up
+    strokesNames={'P0001','P0002','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
+    
+    pIdx=[1:14];
+    cIdx=[1:14];
+    
+    
 end
-if removeP07Flag
-   patients2=patients2.removeSubs({'P0007'});
-   controls2=controls2.removeSubs({'C0001'});   
-end
-if removeP03Flag
-   patients2=patients2.removeSubs({'P0003'});
-   %controls2=controls2.removeSubs({'C0003'});
-end
+
 %define groups
-groups{1}=controls2;
-groups{2}=patients2;
+groups{1}=controls.getSubGroup(controlsNames);
+groups{2}=patients.getSubGroup(strokesNames);
 
 %% Get normalized parameters:
 %Define parameters we care about:
@@ -109,11 +123,11 @@ evLabel={'iHS','','cTO','','','','cHS','','iTO','','',''};
 
 
 
-[eps1] = defineEpochs({'eA'},{'Adaptation'}',[earlyStrides],[eE],[eL],'nanmedian');
+[eps1] = defineEpochs({'eA'},{'Adaptation'}',[5],[eE],[eL],'nanmedian');
 [reps1] = defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],'nanmedian');
 
 
-[eps2] = defineEpochs({'eP'},{'Washout'}',[earlyStrides],[eE],[eL],'nanmedian');
+[eps2] = defineEpochs({'eP'},{'Washout'}',[5],[eE],[eL],'nanmedian');
 [reps2] = defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],'nanmedian');
 
 [f1,fb,ax4,ax2,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax4,ax2,pd1,eps1,reps1,newLabelPrefix,groups,0.1,0.1,'nanmedian');

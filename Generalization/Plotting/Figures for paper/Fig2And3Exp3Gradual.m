@@ -7,7 +7,12 @@ close all
 %%%%%%%%%%%%%%%%%%
 
 %make sure all groups are defined
-%GenerateParamsTable;
+
+[loadName,matDataDir]=uigetfile('choose data file ','*.mat');
+loadName=[matDataDir,loadName]; 
+load(loadName)
+
+
 colors=[0.2 0.2 1;0.67 0.85 0.30];
 colors2=[0.1 0.1 0.5;0.37 0.55 0.0];
 

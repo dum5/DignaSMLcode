@@ -6,7 +6,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 %removeP03Flag=1;
 groupMedianFlag=1;
 nstrides=5;
@@ -576,4 +576,63 @@ set(gca,'XLim',[0.5 7.5],'XTick',[1.5 4 6.5],'XTickLabel',{'||earlyA||','||early
 % [h,p]=ranksum(TControl.cm,TStroke.cm)
 % [h,p]=ranksum(TControl.cs,TStroke.cs)
 % 
-% 
+figure
+set(gcf,'Color',[1 1 1]','Units','inches','Position',[0 0 10 10]);
+subplot(3,3,1)
+[a]=plotCor(gca,SMagn(:,1),Slearn4All(:,1),CMagn(:,1),Clearn4All(:,1));
+ylabel('\beta_S');title('||EarlyA||')
+subplot(3,3,2)
+[a]=plotCor(gca,SMagn(:,2),Slearn4All(:,1),CMagn(:,2),Clearn4All(:,1));
+title('||EarlyP-LateA||')
+subplot(3,3,3)
+[a]=plotCor(gca,SMagn(:,3),Slearn4All(:,1),CMagn(:,3),Clearn4All(:,1));
+title('||deltaMagn||')
+
+subplot(3,3,4)
+[a]=plotCor(gca,SMagn(:,1),Slearn4All(:,2),CMagn(:,1),Clearn4All(:,2));
+ylabel('\beta_M');
+subplot(3,3,5)
+[a]=plotCor(gca,SMagn(:,2),Slearn4All(:,2),CMagn(:,2),Clearn4All(:,2));
+subplot(3,3,6)
+[a]=plotCor(gca,SMagn(:,3),Slearn4All(:,2),CMagn(:,3),Clearn4All(:,2));
+
+
+
+
+
+
+function [a]=plotCor(ax,xDataS,yDataS,xDataC,yDataC)
+hold(ax)
+a=[];
+
+if nargin>3
+    plot(ax,xDataC,yDataC,'ok','MarkerFaceColor',[1 1 1])
+    [rhoc,pc]=corr([xDataC,yDataC],'Type','Spearman');
+    %tc=text(ax,0,yl(2)+3*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')
+    if pc(2)<0.05
+    [r,slope,intercept] = regression(xDataC,yDataC,'one');
+    x=get(ax,'XLim');
+    pred=intercept+slope.*x;
+    plot(ax,x,pred,'-k','LineWidth',2','Color',[0.7 0.7 0.7])
+    clear r slope intercept x pred
+    end
+end
+plot(ax,xDataS,yDataS,'ok','MarkerFaceColor',[0 0 0])
+[rhos,ps]=corr([xDataS,yDataS],'Type','Spearman');
+%ts=text(ax,0,yl(2)+diff(yl)/10,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),3))]);set(ts,'Color',[0 0 0],'FontSize',12,'FontWeight','bold')
+if ps(2)<0.05
+    [r,slope,intercept] = regression(xDataS,yDataS,'one');
+    x=get(ax,'XLim');
+    pred=intercept+slope.*x;
+    plot(ax,x,pred,'-k','LineWidth',2')
+    clear r slope intercept x pred
+end
+yl=get(ax,'YLim');
+xl=get(ax,'XLim');
+tc=text(ax,0,yl(2)+1.5*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')
+ts=text(ax,0,yl(2)+diff(yl)/10,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),3))]);set(ts,'Color',[0 0 0],'FontSize',12,'FontWeight','bold')
+   % keyboard
+end
+ 
+ 
+ 
