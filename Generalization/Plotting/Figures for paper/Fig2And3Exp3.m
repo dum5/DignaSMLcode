@@ -7,7 +7,11 @@ close all
 %%%%%%%%%%%%%%%%%%
 
 %make sure all groups are defined
-%GenerateParamsTable;
+
+[loadName,matDataDir]=uigetfile('choose data file ','*.mat');
+loadName=[matDataDir,loadName]; 
+load(loadName)
+
 colors=[0.2 0.2 1;0.67 0.85 0.30];
 colors2=[0.1 0.1 0.5;0.37 0.55 0.0];
 
@@ -18,25 +22,44 @@ T.ExtReadapt=T.netContributionNorm2_lateReadapt-T.velocityContributionNorm2_late
 %organize data for bar plots
 TControl=T(T.group=='AbruptNoFeedback',:);
 TCatch=T(T.group=='Catch',:);
+TGradualNoCatch=T(T.group=='GradualNoCatch',:);
+TGradualCatch=T(T.group=='GradualCatch',:);
+
 %organize data for timeCourses
 binWidth=5;sumMethod='nanmean';
-Inds=[3,5];
-for g=1:2
-    TC{g}.prepertNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(1:150,:),binWidth,sumMethod)';%preperturbation
-    TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(151:1050,:),binWidth,sumMethod)';%adaptation
-    TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost
-    TC{g}.readaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{8}(1:600,:),binWidth,sumMethod)';%reAdaptation
-    TC{g}.TMpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
+Inds=[3,5,9,8];%control,catch,gradual no catch, gradual catch
+prepertIdx=[1:150;1:150;151:300;151:300]';
+startAdapt=[151 151 301 301];
+
+for g=1:4
+    TC{g}.prepertNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(prepertIdx(:,g),:),binWidth,sumMethod)';%preperturbation
+    if g==4
+        TC{g}.adaptNet=[smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+744,:),binWidth,sumMethod)
+            smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'Catch'))}(1:10,:),binWidth,sumMethod)
+            smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'Re-adaptation'))}(1:150,:),binWidth,sumMethod)]';
+    elseif g==2
+        TC{g}.adaptNet=[smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+599,:),binWidth,sumMethod)
+            smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'catch'))}(1:10,:),binWidth,sumMethod)
+            smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g)+600:startAdapt(g)+900,:),binWidth,sumMethod)]';
     
-    TC{g}.OGpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
-    TC{g}.TMpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
-    TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
-    TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
+    else
+        TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+899,:),binWidth,sumMethod)';%adaptation
+    end
+    TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost
+    if g<3
+        TC{g}.readaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'readaptation'))}(1:600,:),binWidth,sumMethod)';%reAdaptation
+    end
+    
+    TC{g}.TMpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'TM post'))}(1:100,:),binWidth,sumMethod)';%tmPost
+    
+    TC{g}.OGpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost    
+    TC{g}.TMpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{find(contains(timeCourse{Inds(g)}.condNames,'TM post'))}(1:100,:),binWidth,sumMethod)';%tmPost
+    TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost    
+    TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{find(contains(timeCourse{Inds(g)}.condNames,'TM post'))}(1:100,:),binWidth,sumMethod)';%tmPost
+
+    
 end
-catchError=getGroupedTimeCourses(groups{5},{'Catch'},{'netContributionNorm2'});
-TMbias=squeeze(groupOutcomes{5}(4,TMref,:))'; 
-cathcError=[catchError{1}.param{1}.cond{1}-TMbias]';
-catchError2=smoothData(catchError{1}.param{1}.cond{1}(1:10,:),binWidth,sumMethod)';
+
 
 f2=figure('Name','Experiment 3A');
 set(f2,'Color',[1 1 1]','Units','inches','Position',[0 0 3.5 6])
@@ -79,9 +102,9 @@ for g=1:2
     ns=size(TC{g}.prepertNet,1);
     dt=TC{g}.prepertNet(:,end-49:end);
     dt2=TC{g}.adaptNet(:,1:880);
-    if g==2
-        dt2=[dt2(:,1:594) catchError2 dt2(:,601:880)];
-    end
+%     if g==2
+%         dt2=[dt2(:,1:594) catchError2 dt2(:,601:880)];
+%     end
     patch(ax1,[1:50 fliplr(1:50)],[nanmean(dt)+(nanstd(dt)./sqrt(ns)) fliplr(nanmean(dt)-(nanstd(dt)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
     patch(ax1,[51:930 fliplr(51:930)],[nanmean(dt2)+(nanstd(dt2)./sqrt(ns)) fliplr(nanmean(dt2)-(nanstd(dt2)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
     plot(ax1,1:50,nanmean(dt),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
