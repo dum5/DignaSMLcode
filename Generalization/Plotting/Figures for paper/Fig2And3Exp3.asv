@@ -415,7 +415,7 @@ height=0.7;%height of axes
 width=0.2;
 
 ax1a = axes('Position',[left  lower width height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[0 100],'YTick',[0 50 100],'FontSize',12,'FontName','Arial');
-ax1b = axes('Position',[left+width+0.1  lower width height],'Clipping','off','XLim',[0.5 2.5],'XTickLabel',{''},'YLim',[0 0.12],'FontSize',12,'FontName','Arial');
+ax1b = axes('Position',[left+width+0.1  lower width height],'Clipping','off','XLim',[0.5 2.5],'XTickLabel',{''}'YLim',[0 0.12],'FontSize',12,'FontName','Arial');
 %ax1c = axes('Position',[left+2*(width+0.1)  lower width height],'Clipping','off','XLim',[-0.3 0],'YLim',[0 0.3],'FontSize',12,'FontName','Arial');
 
 hold(ax1a)
