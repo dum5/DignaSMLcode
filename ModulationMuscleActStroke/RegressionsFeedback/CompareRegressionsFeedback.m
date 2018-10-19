@@ -6,7 +6,7 @@ clc
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 %removeP03Flag=1;
 groupMedianFlag=1;
 nstrides=5;
@@ -24,13 +24,14 @@ if speedMatchFlag
 %     %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
 %     controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
     
-strokesNames=strcat('P00',{'01','02','05','08','09','10','13','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
+%strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15'}); %Patients above .72m/s, which is the group mean. N=9. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+%controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=9. Mean speed=.9495m/s
 
+strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=9. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+controlsNames=strcat('C00',{'02','03','04','05','06','07','09','10','12','16'});
 
-
-    pIdx=[1:9];%all subjects listed above
-    cIdx=[1:9];
+    pIdx=1:length(strokesNames);
+    cIdx=1:length(controlsNames);
 else
    controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
    %controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
@@ -227,78 +228,78 @@ Slearn4CI=SmodelFit4.coefCI;
 Sr4=uncenteredRsquared(SmodelFit4);
 Sr4=Sr4.uncentered;
 
-% figure
-% subplot(2,2,1)
-% hold on
-% bar([1 3.5],[Clearn1a Clearn1b],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
-% bar([2 4.5],[Slearn1a Slearn1b],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
-% plot([1 1],Clearn1aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([3.5 3.5],Clearn1bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([2 2],Slearn1aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([4.5 4.5],Slearn1bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
-% title('Norm Vectors, single regressions')
-% if Clearn1aCI(2)<Slearn1aCI(1)
-%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
-% end
-% if Clearn1bCI(1)>Slearn1bCI(2)
-%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
-% end
-% 
-% subplot(2,2,2)
-% IdxBM=find(strcmp(CmodelFit2.PredictorNames,'eATnorm'),1,'first');
-% IdxBS=find(strcmp(CmodelFit2.PredictorNames,'eAnorm'),1,'first');
-% hold on
-% bar([1 3.5],[Clearn2([IdxBS,IdxBM])],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
-% bar([2 4.5],[Slearn2([IdxBS,IdxBM])],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
-% plot([1 1],Clearn2CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([3.5 3.5],Clearn2CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([2 2],Slearn2CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([4.5 4.5],Slearn2CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
-% title('Norm Vectors, combined regression')
-% if Clearn2CI(IdxBS,2)<Slearn2CI(IdxBS,1)
-%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
-% end
-% if Clearn2CI(IdxBM,1)>Slearn2CI(IdxBM,2)
-%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
-% end
-% 
-% subplot(2,2,3)
-% hold on
-% bar([1 3.5],[Clearn3a Clearn3b],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
-% bar([2 4.5],[Slearn3a Slearn3b],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
-% plot([1 1],Clearn3aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([3.5 3.5],Clearn3bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([2 2],Slearn3aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([4.5 4.5],Slearn3bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
-% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
-% title('NonNormalized, single regressions')
-% if Clearn3aCI(2)<Slearn3aCI(1)
-%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
-% end
-% if Clearn3bCI(1)>Slearn3bCI(2)
-%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
-% end
-% 
-% subplot(2,2,4)
-% IdxBM=find(strcmp(CmodelFit4.PredictorNames,'eAT'),1,'first');
-% IdxBS=find(strcmp(CmodelFit4.PredictorNames,'eA'),1,'first');
-% hold on
-% bar([1 3.5],[Clearn4([IdxBS,IdxBM])],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
-% bar([2 4.5],[Slearn4([IdxBS,IdxBM])],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
-% plot([1 1],Clearn4CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([3.5 3.5],Clearn4CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([2 2],Slearn4CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% plot([4.5 4.5],Slearn4CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
-% set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
-% title('NonNormalized, combined regressions')
-% if Clearn4CI(IdxBS,2)<Slearn4CI(IdxBS,1)
-%     plot([1 2],[0.95 0.95],'-k','LineWidth',2)
-% end
-% if Clearn4CI(IdxBM,1)>Slearn4CI(IdxBM,2)
-%     plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
-% end
+figure
+subplot(2,2,1)
+hold on
+bar([1 3.5],[Clearn1a Clearn1b],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],[Slearn1a Slearn1b],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+plot([1 1],Clearn1aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([3.5 3.5],Clearn1bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([2 2],Slearn1aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([4.5 4.5],Slearn1bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('Norm Vectors, single regressions')
+if Clearn1aCI(2)<Slearn1aCI(1)
+    plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if Clearn1bCI(1)>Slearn1bCI(2)
+    plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
+
+subplot(2,2,2)
+IdxBM=find(strcmp(CmodelFit2.PredictorNames,'eATnorm'),1,'first');
+IdxBS=find(strcmp(CmodelFit2.PredictorNames,'eAnorm'),1,'first');
+hold on
+bar([1 3.5],[Clearn2([IdxBS,IdxBM])],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],[Slearn2([IdxBS,IdxBM])],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+plot([1 1],Clearn2CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([3.5 3.5],Clearn2CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([2 2],Slearn2CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([4.5 4.5],Slearn2CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('Norm Vectors, combined regression')
+if Clearn2CI(IdxBS,2)<Slearn2CI(IdxBS,1)
+    plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if Clearn2CI(IdxBM,1)>Slearn2CI(IdxBM,2)
+    plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
+
+subplot(2,2,3)
+hold on
+bar([1 3.5],[Clearn3a Clearn3b],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],[Slearn3a Slearn3b],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+plot([1 1],Clearn3aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([3.5 3.5],Clearn3bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([2 2],Slearn3aCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([4.5 4.5],Slearn3bCI,'Color',[0.5 0.5 0.5],'LineWidth',2)
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('NonNormalized, single regressions')
+if Clearn3aCI(2)<Slearn3aCI(1)
+    plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if Clearn3bCI(1)>Slearn3bCI(2)
+    plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
+
+subplot(2,2,4)
+IdxBM=find(strcmp(CmodelFit4.PredictorNames,'eAT'),1,'first');
+IdxBS=find(strcmp(CmodelFit4.PredictorNames,'eA'),1,'first');
+hold on
+bar([1 3.5],[Clearn4([IdxBS,IdxBM])],'FaceColor',[1 1 1],'LineWidth',2,'BarWidth',0.3)
+bar([2 4.5],[Slearn4([IdxBS,IdxBM])],'FaceColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+plot([1 1],Clearn4CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([3.5 3.5],Clearn4CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([2 2],Slearn4CI(IdxBS,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+plot([4.5 4.5],Slearn4CI(IdxBM,:),'Color',[0.5 0.5 0.5],'LineWidth',2)
+set(gca,'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'});
+title('NonNormalized, combined regressions')
+if Clearn4CI(IdxBS,2)<Slearn4CI(IdxBS,1)
+    plot([1 2],[0.95 0.95],'-k','LineWidth',2)
+end
+if Clearn4CI(IdxBM,1)>Slearn4CI(IdxBM,2)
+    plot([3.5 4.5],[0.95 0.95],'-k','LineWidth',2)
+end
 
 %individual regressions to be implemented
 Clearn1All=NaN(length(cIdx),2);

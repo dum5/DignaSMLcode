@@ -2,46 +2,34 @@ clear all
 close all
 clc
 
+%In this version the following has been updated
+% - Patient selection has changed according to what we agreed on in Sept 2018
+% - Regressions are performed on normalized vectors, since BM on the non-normalized data depends on
+%   magnitude in the stroke group (rho=-0.55, p=0.046).
+% - We use the first 5 strides to characterize feedback-generated activity
+% - The data table for individual subjects will be generated with all 16
+%   subjects, such that different selections are possible in subsequent
+%   analyses (set allSubFlag to 1)
+% - Analyses on group median data are performed with allSubFlag at 0,
+%   subject selection depends on speedMatchFlag
+
+
 [loadName,matDataDir]=uigetfile('*.mat');
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
 speedMatchFlag=1;
-%removeP03Flag=1;
-groupMedianFlag=1;
-nstrides=5;
-%pIdx=[1:2 4:15];
-%cIdx=[1:15];
-summethod='nanmedian';
+allSubFlag=0;%use this flag to generate the table that includes all subjects
+%this needs to happen separately, since indices will be messed up ohterwise
 
-%selection of subjects is as follows: subjects 3 are always removed
-%(patients and controls)
+groupMedianFlag=1; %do not change
+nstrides=5;% do not change
+summethod='nanmedian';% do not change
 
+SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
 
-
-if speedMatchFlag
-%     strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-%     %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-%     controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-    
-strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-
-
-
-    pIdx=[1:10];%all subjects listed above
-    cIdx=[1:9];
-else
-   controlsNames={'C0007','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-   %controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-    
-    %patient 3 will be exlcuded later, otherwise the table messes up
-    strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
-    
-    
-    
-    
-end
+pIdx=1:length(strokesNames);
+cIdx=1:length(controlsNames);
 
 %define groups
 groups{1}=controls.getSubGroup(controlsNames);
@@ -85,7 +73,7 @@ SdataEMG=SdataEMG-SBB; %Removing base
 labels2=labels(:);
 Index = find(contains(labels2,'SOL'));%find all Soleus muscle data in the labels
 ptIdx=find(contains(strokesNames,'P0005'));
-SdataEMG(Index,:,ptIdx)=0;
+SdataEMG(Index,:,ptIdx)=0;%I checked this and it indeed removes all the large peaks from the subject data, regardles of which subs are selected
    
 %Flipping EMG:
 CdataEMG=reshape(flipEMGdata(reshape(CdataEMG,size(labels,1),size(labels,2),size(CdataEMG,2),size(CdataEMG,3)),1,2),numel(labels),size(CdataEMG,2),size(CdataEMG,3));
@@ -120,16 +108,34 @@ else
     ttS=table(-mean(eA_S(:,pIdx),2), mean(eAT_S(:,pIdx),2), -mean(lA_S(:,pIdx),2), mean(eP_S(:,pIdx),2)-mean(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
 end
 
-CmodelFit1a=fitlm(ttC,'eP_lA~eA+eAT-1','RobustOpts',rob)
+
+%normalizing vectors
+ttC.eATnorm=ttC.eAT./norm(ttC.eAT);
+ttC.eP_lAnorm=ttC.eP_lA./norm(ttC.eP_lA);
+ttC.eAnorm=ttC.eA./norm(ttC.eA);
+
+ttS.eATnorm=ttS.eAT./norm(ttS.eAT);
+ttS.eP_lAnorm=ttS.eP_lA./norm(ttS.eP_lA);
+ttS.eAnorm=ttS.eA./norm(ttS.eA);
+
+%do the regression
+CmodelFit1a=fitlm(ttC,'eP_lA~eAnorm-1','RobustOpts',rob)
 Clearn1a=CmodelFit1a.Coefficients.Estimate;
 Clearn1aCI=CmodelFit1a.coefCI;
 Cr21a=uncenteredRsquared(CmodelFit1a);
 Cr21a=Cr21a.uncentered;
 %disp(['Uncentered R^2=' num2str(Cr21a,3)])
 
+CmodelFit1b=fitlm(ttC,'eP_lA~eATnorm-1','RobustOpts',rob)
+Clearn1b=CmodelFit1b.Coefficients.Estimate;
+Clearn1bCI=CmodelFit1b.coefCI;
+Cr21b=uncenteredRsquared(CmodelFit1b);
+Cr21b=Cr21b.uncentered;
+%disp(['Uncentered R^2=' num2str(Cr21a,3)])
 
 
-SmodelFit1a=fitlm(ttS,'eP_lA~eA+eAT-1','RobustOpts',rob)
+
+SmodelFit1a=fitlm(ttS,'eP_lA~eAnorm-1','RobustOpts',rob)
 Slearn1a=SmodelFit1a.Coefficients.Estimate;
 Slearn1aCI=SmodelFit1a.coefCI;
 Sr21a=uncenteredRsquared(SmodelFit1a);
@@ -145,10 +151,10 @@ end
 rob='off'; %These models can't be fit robustly (doesn't converge)
 %First: repeat the model(s) above on each subject:
 clear CmodelFitAll* ClearnAll* SmodelFitAll* SlearnAll* 
-ClearnAll1a=NaN(15,2);
-SlearnAll1a=NaN(15,2);
-Cr2All1a=NaN(15,1);
-Sr2All1a=NaN(15,1);
+ClearnAll1a=NaN(16,2);
+SlearnAll1a=NaN(16,2);
+Cr2All1a=NaN(16,1);
+Sr2All1a=NaN(16,1);
 
 for i=cIdx%1:size(eA_C,2)
     ttAll=table(-eA_C(:,i), eAT_C(:,i), -lA_C(:,i), eP_C(:,i)-lA_C(:,i),'VariableNames',{'eA','eAT','lA','eP_lA'});
@@ -167,18 +173,18 @@ for i=pIdx%1:size(eA_S,2)
 end
 
 %Magnitude analysis
-eAMagnC=NaN(15,1);
-ePMagnC=NaN(15,1);
-eAMagnS=NaN(15,1);
-ePMagnS=NaN(15,1);
-ePBMagnC=NaN(15,1);
-ePBMagnS=NaN(15,1);
-lAMagnC=NaN(15,1);
+eAMagnC=NaN(16,1);
+ePMagnC=NaN(16,1);
+eAMagnS=NaN(16,1);
+ePMagnS=NaN(16,1);
+ePBMagnC=NaN(16,1);
+ePBMagnS=NaN(16,1);
+lAMagnC=NaN(16,1);
 lAMagnS=NaN(15,1);
-csc=NaN(15,1);
-cmc=NaN(15,1);
-css=NaN(15,1);
-cms=NaN(15,1);
+% csc=NaN(16,1);
+% cmc=NaN(16,1);
+% css=NaN(16,1);
+% cms=NaN(16,1);
 
 for i=cIdx%1:size(eA_C,2)
     eAMagnC(i,1)=norm(eA_C(:,i));
@@ -197,12 +203,12 @@ for i=pIdx%1:size(eA_S,2)
     cms(i,1)=cosine(eP_S(:,i)-lA_S(:,i),eAT_S(:,i));
 end
 
-%cosine analysis
-cscg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),-mean(eA_C(:,cIdx),2)));
-cmcg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),mean(eAT_C(:,cIdx),2)));
-
-cssg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),-mean(eA_S(:,pIdx),2)));
-cmsg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),mean(eAT_S(:,pIdx),2)));
+% %cosine analysis = is no longer needed here
+% cscg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),-mean(eA_C(:,cIdx),2)));
+% cmcg=(cosine(mean(eP_C(:,cIdx)-lA_C(:,cIdx),2),mean(eAT_C(:,cIdx),2)));
+% 
+% cssg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),-mean(eA_S(:,pIdx),2)));
+% cmsg=(cosine(mean(eP_S(:,pIdx)-lA_S(:,pIdx),2),mean(eAT_S(:,pIdx),2)));
 
 
 load([matDataDir,'bioData'])
@@ -215,31 +221,31 @@ for c=1:length(groups{1}.adaptData)
     affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
 end
 
-%patient 7 and control 7 are not included
-FMselect=FM([1:6,8:16]);
-velSselect=velsS([1:6,8:16]);
-velCselect=velsC([7,2:6,8:16]);
+%Selection of subjects removed
+FMselect=FM;
+velSselect=velsS;
+velCselect=velsC;
 
 tALL=table;
-tALL.group=cell(30,1);tALL.aff=cell(30,1);tALL.sens=NaN(30,1);
-tALL.group(1:15,1)={'control'};
-tALL.group(16:30,1)={'stroke'};
+tALL.group=cell(32,1);tALL.aff=cell(32,1);tALL.sens=NaN(32,1);
+tALL.group(1:16,1)={'control'};
+tALL.group(17:30,1)={'stroke'};
 tALL.group=nominal(tALL.group);
 tALL.gender=[genderC';genderS'];
 tALL.age=[ageC; ageS];
-tALL.aff(16:30)=affSide';
+tALL.aff(17:32)=affSide';
 tALL.vel=[velCselect';velSselect'];
-tALL.FM=[repmat(34,15,1);FMselect'];
+tALL.FM=[repmat(34,16,1);FMselect'];
 tALL.BS=[ClearnAll1a(:,1);SlearnAll1a(:,1)];
 tALL.BM=[ClearnAll1a(:,2);SlearnAll1a(:,2)];
 tALL.R2=[Cr2All1a;Sr2All1a];
-tALL.sens(16:30)=[3.61 3.61 2.83 2.83 6.65 3.61 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
+tALL.sens(17:32)=[3.61 3.61 2.83 2.83 6.65 3.61 NaN 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
 tALL.eAMagn=[eAMagnC;eAMagnS];
 tALL.ePMagn=[ePMagnC;ePMagnS];
 tALL.ePBMagn=[ePBMagnC;ePBMagnS];
 tALL.lAMagn=[lAMagnC;lAMagnS];
-tALL.cs=[csc;css];
-tALL.cm=[cmc;cms];
+%tALL.cs=[csc;css];
+%tALL.cm=[cmc;cms];
 
 
 answer = questdlg('Save results to mat file?');
