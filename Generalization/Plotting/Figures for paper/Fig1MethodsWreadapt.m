@@ -172,8 +172,8 @@ text(ax(5),x3(420),1.65,'Catch','FontSize',10,'FontName','Arial')
 text(ax(5),x3(700),1.2,['After Catch'],'FontSize',10,'FontName','Arial')
 
 %gradual and catch gradual
-plot(ax(6),[x2,x3],[tied,gradPert1],'Color',ColGradual,'LineWidth',3)
-plot(ax(6),[x2,x3],[tied,gradPert2],'Color',ColGradual,'LineWidth',3)
+plot(ax(6),[x2,x3],[tied,gradPert1],'Color',ColGradual,'LineWidth',3,'LineStyle',':')
+plot(ax(6),[x2,x3],[tied,gradPert2],'Color',ColGradual,'LineWidth',3,'LineStyle',':')
 plot(ax(6),[x2,x3],[tied,gCatchPert1]+offset,'Color',ColCatch,'LineWidth',3,'LineStyle',':')
 plot(ax(6),[x2,x3],[tied,gCatchPert2]+offset,'Color',ColCatch,'LineWidth',3,'LineStyle',':')
 

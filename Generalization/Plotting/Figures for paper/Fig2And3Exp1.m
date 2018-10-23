@@ -206,6 +206,7 @@ errorbar(ax4c,3,nanmean(TGradual.stepTimeContributionNorm2_OG_P),nanstd(TGradual
 text(ax4c,0.7,0.16,'stepTime','FontSize',12,'FontName','Arial');
 
 
+set(gcf,'Renderer','painters');
 
 f3=figure('Name','Experiment 1B');
 set(f3,'Color',[1 1 1]','Units','inches','Position',[0 0 3.5 6])
@@ -348,6 +349,7 @@ errorbar(ax4c,2,nanmean(TFeedback.stepTimeContributionNorm2_TM_P),nanstd(TFeedba
 %     'Color','k','LineWidth',2)
 text(ax4c,0.7,0.26,'stepTime','FontSize',12,'FontName','Arial');
 
+set(gcf,'Renderer','painters');
 
 f4=figure('Name','Additional results');
 set(f4,'Color',[1 1 1]','Units','inches','Position',[0 0 7 2])

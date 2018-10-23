@@ -12,7 +12,8 @@ close all
 loadName=[matDataDir,loadName]; 
 load(loadName)
 
-colors=[0.2 0.2 1;0.67 0.85 0.30;0.2 0.2 1;0.67 0.85 0.30];
+%colors=[0.2 0.2 1;0.67 0.85 0.30;0.2 0.2 1;0.67 0.85 0.30];
+colors=[0.2 0.2 1;0.67 0.85 0.30;0.6 0 0.6;0.67 0.85 0.30];
 colors2=[0.1 0.1 0.5;0.37 0.55 0.0;0.1 0.1 0.5;0.37 0.55 0.0];
 
 %Create separate table for each group
@@ -96,6 +97,7 @@ hold(ax1)%control and small errors
 l=get(ax1,'YLim');
 plot(ax1,[50 50],[l(1) l(2)],'--k','Color',[0.6 0.6 0.6],'LineWidth',2)
 patch(ax1,[91 105 105 91],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
+patch(ax1,[91+560 105+560 105+560 91+560],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
 text(ax1,-100,l(2)+0.03,'A','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax1,200,l(2)+0.03,'Adaptation Errors','FontSize',14,'FontName','Arial')
 for g=1:4
@@ -119,7 +121,7 @@ lines=findobj(ax1,'Type','Line');
 %text(ax1,200,0.15,'Control','Color',colors(1,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 %text(ax1,200,0.08,'Catch','Color',colors(2,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 plot(ax1,[700 800],[-0.22 -0.22],'k','LineWidth',2)
-h=legend(ax1,lines([7 5 3 1]),{'Control','Catch','GradualNoCatch','GradualCatch'},'box','off','FontSize',10,'FontName','Arial');
+h=legend(ax1,lines([7 5 3 1]),{'Control','Large error Catch','Small error','Small error Catch'},'box','off','FontSize',10,'FontName','Arial');
 text(ax1,700,-0.15,'100 srides','FontName','Arial','FontSize',10);
 
 annotation(f2,'arrow',[0.773809523809524 0.705357142857143],[0.904513888888889 0.902777777777778]);
@@ -136,7 +138,7 @@ errorbar(ax2a,1,nanmean(TControl.maxError),nanstd(TControl.maxError)./sqrt(lengt
 bar(ax2a,2,nanmean(TCatch.maxError),'FaceColor',[0.67 0.85 0.3],'BarWidth',0.7);
 errorbar(ax2a,2,nanmean(TCatch.maxError),nanstd(TCatch.maxError)./sqrt(length(TCatch.maxError)),...
     'Color','k','LineWidth',2)
-bar(ax2a,3,nanmean(TGradualNoCatch.maxError),'EdgeColor',[0.2 0.2 1],'FaceColor',[1 1 1],'BarWidth',0.7);
+bar(ax2a,3,nanmean(TGradualNoCatch.maxError),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 errorbar(ax2a,3,nanmean(TGradualNoCatch.maxError),nanstd(TGradualNoCatch.maxError)./sqrt(length(TGradualNoCatch.maxError)),...
     'Color','k','LineWidth',2)
 bar(ax2a,4,nanmean(TGradualCatch.maxError),'EdgeColor',[0.67 0.85 0.3],'FaceColor',[1 1 1],'BarWidth',0.7);
@@ -186,7 +188,7 @@ bar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),'FaceColor',[0.37 0.55
 errorbar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),nanstd(TCatch.netContributionNorm2_lateAdapt)./sqrt(length(TCatch.netContributionNorm2_lateAdapt)),...
     'Color','k','LineWidth',2)
 
-bar(ax2c,3,nanmean(TGradualNoCatch.netContributionNorm2_lateAdapt),'EdgeColor',[0.2 0.2 1],'FaceColor',[1 1 1],'BarWidth',0.7);
+bar(ax2c,3,nanmean(TGradualNoCatch.netContributionNorm2_lateAdapt),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 errorbar(ax2c,3,nanmean(TGradualNoCatch.netContributionNorm2_lateAdapt),nanstd(TGradualNoCatch.netContributionNorm2_lateAdapt)./sqrt(length(TGradualNoCatch.netContributionNorm2_lateAdapt)),...
     'Color','k','LineWidth',2)
 bar(ax2c,4,nanmean(TGradualCatch.netContributionNorm2_lateAdapt),'EdgeColor',[0.37 0.55 0.0],'FaceColor',[1 1 1],'BarWidth',0.7);
@@ -237,7 +239,7 @@ errorbar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),nanstd(TControl.netC
 bar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
 errorbar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),nanstd(TCatch.netContributionNorm2_OG_P)./sqrt(length(TCatch.netContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-bar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),'EdgeColor',[0.2 0.2 1],'FaceColor',[1 1 1],'BarWidth',0.7);
+bar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 errorbar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),nanstd(TGradualNoCatch.netContributionNorm2_OG_P)./sqrt(length(TGradualNoCatch.netContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
 bar(ax4a,4,nanmean(TGradualCatch.netContributionNorm2_OG_P),'EdgeColor',[0.67 0.85 0.30],'FaceColor',[1 1 1],'BarWidth',0.7);
@@ -255,7 +257,7 @@ errorbar(ax4b,1,nanmean(TControl.spatialContributionNorm2_OG_P),nanstd(TControl.
 bar(ax4b,2,nanmean(TCatch.spatialContributionNorm2_OG_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
 errorbar(ax4b,2,nanmean(TCatch.spatialContributionNorm2_OG_P),nanstd(TCatch.spatialContributionNorm2_OG_P)./sqrt(length(TCatch.spatialContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-bar(ax4b,3,nanmean(TGradualNoCatch.spatialContributionNorm2_OG_P),'EdgeColor',[0.2 0.2 1],'FaceColor',[1 1 1],'BarWidth',0.7);
+bar(ax4b,3,nanmean(TGradualNoCatch.spatialContributionNorm2_OG_P),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 errorbar(ax4b,3,nanmean(TGradualNoCatch.spatialContributionNorm2_OG_P),nanstd(TGradualNoCatch.spatialContributionNorm2_OG_P)./sqrt(length(TGradualNoCatch.spatialContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
 bar(ax4b,4,nanmean(TGradualCatch.spatialContributionNorm2_OG_P),'EdgeColor',[0.67 0.85 0.30],'FaceColor',[1 1 1],'BarWidth',0.7);
@@ -273,7 +275,7 @@ errorbar(ax4c,1,nanmean(TControl.stepTimeContributionNorm2_OG_P),nanstd(TControl
 bar(ax4c,2,nanmean(TCatch.stepTimeContributionNorm2_OG_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
 errorbar(ax4c,2,nanmean(TCatch.stepTimeContributionNorm2_OG_P),nanstd(TCatch.stepTimeContributionNorm2_OG_P)./sqrt(length(TCatch.stepTimeContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-bar(ax4c,3,nanmean(TGradualNoCatch.stepTimeContributionNorm2_OG_P),'EdgeColor',[0.2 0.2 1],'FaceColor',[1 1 1],'BarWidth',0.7);
+bar(ax4c,3,nanmean(TGradualNoCatch.stepTimeContributionNorm2_OG_P),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 errorbar(ax4c,3,nanmean(TGradualNoCatch.stepTimeContributionNorm2_OG_P),nanstd(TGradualNoCatch.stepTimeContributionNorm2_OG_P)./sqrt(length(TGradualNoCatch.stepTimeContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
 bar(ax4c,4,nanmean(TGradualCatch.stepTimeContributionNorm2_OG_P),'EdgeColor',[0.67 0.85 0.30],'FaceColor',[1 1 1],'BarWidth',0.7);
@@ -283,7 +285,7 @@ plot(ax4c,[2.5 2.5],[-0.05 0.15],'--k','LineWidth',2,'Color',[0.6 0.6 0.6])
 plot(ax4c,[1 2],[0.1 0.1],'Color','k','LineWidth',2)
 text(ax4c,0.7,0.16,'stepTime','FontSize',12,'FontName','Arial');
 
-
+set(gcf,'Renderer','painters');
 
 f3=figure('Name','Experiment 3B');
 set(f3,'Color',[1 1 1]','Units','inches','Position',[0 0 3.5 6])
@@ -404,6 +406,7 @@ errorbar(ax4c,2,nanmean(TCatch.stepTimeContributionNorm2_TM_P),nanstd(TCatch.ste
     'Color','k','LineWidth',2)
 text(ax4c,0.7,0.26,'stepTime','FontSize',12,'FontName','Arial');
 
+set(gcf,'Renderer','painters');
 
 
 f4=figure('Name','Additional results');

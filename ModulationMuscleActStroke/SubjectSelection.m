@@ -1,6 +1,6 @@
 
 if allSubFlag
-    strokesNames=strcat('P00',{'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
+    strokesNames=strcat('P00',{'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16'}); 
     controlsNames=strcat('C00',{'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16'});
     speedMatch=zeros(32,1);
     fullGroup=zeros(32,1);

@@ -14,6 +14,7 @@ load(loadName)
 speedMatchFlag=0;
 %removeP03Flag=1;
 groupMedianFlag=1;
+allSubFlag=0;
 
 %pIdx=[1:2 4:15];
 %cIdx=[1:15];
@@ -23,28 +24,7 @@ summethod='nanmedian';
 %(patients and controls)
 
 
-
-if speedMatchFlag
-%     strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-%     %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-%     controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-    
-strokesNames=strcat('P00',{'01','02','05','08','09','10','13','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-
-
-
-else
-        
-   controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-   %controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-    
-    %patient 3 will be exlcuded later, otherwise the table messes up
-    strokesNames={'P0001','P0002','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
-      
-    
-end
-
+SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
 
 %define groups
 groups{1}=controls.getSubGroup(controlsNames);
@@ -172,7 +152,9 @@ load(loadName)
 AddCombinedParamsToTable;
 
 if speedMatchFlag
-    t=t(t.SpeedMatch==1,:);
+    t=t(t.speedMatch==1,:);
+else
+    t=t(t.fullGroup==1,:);
 end
 
 t.group=nominal(t.group);
@@ -208,7 +190,8 @@ set(ph,'YTickLabelMode','auto','XTickLabelMode','auto','FontSize',14,'box','off'
 hold(ph(1,1))
 bar(ph(1,1),1,nanmedian(TControl.lAMagn),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
 errorbar(ph(1,1),1,nanmedian(TControl.lAMagn),0,iqr(TControl.lAMagn),'Color','k','LineWidth',2)
-bar(ph(1,1),2,nanmedian(TStroke.lAMagn),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+hs=bar(ph(1,1),2,nanmedian(TStroke.lAMagn),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+hatchfill2(hs)
 errorbar(ph(1,1),2,nanmedian(TStroke.lAMagn),0,iqr(TStroke.lAMagn),'Color','k','LineWidth',2)
 set(ph(1,1),'XLim',[0.5 2.5],'YLim',[0 8],'XTickLabel',{''},'YTick',[0 4 8])
 ylabel(ph(1,1),'|| LateA ||','FontWeight','bold')
@@ -218,7 +201,8 @@ text(ph(1,1),1,9,'Magnitude of EMG modulation','FontSize',14,'FontWeight','bold'
 hold(ph(1,2))
 bar(ph(1,2),1,nanmedian(TControl.FF_Quad),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
 errorbar(ph(1,2),1,nanmedian(TControl.FF_Quad),0,iqr(TControl.FF_Quad),'Color','k','LineWidth',2)
-bar(ph(1,2),2,nanmedian(TStroke.FF_Quad),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+hs=bar(ph(1,2),2,nanmedian(TStroke.FF_Quad),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
+hatchfill2(hs)
 errorbar(ph(1,2),2,nanmedian(TStroke.FF_Quad),0,iqr(TStroke.FF_Quad),'Color','k','LineWidth',2)
 set(ph(1,2),'XLim',[0.5 2.5],'YLim',[0 0.8],'XTickLabel',{''},'YTick',[0 0.3 0.6 0.8])
 ylabel(ph(1,2),'EMG_Q_u_a_d LateA','FontWeight','bold')
@@ -231,7 +215,8 @@ set(ll2,'EdgeColor','none')
 hold(ph(2,1))
 bar(ph(2,1),1,nanmedian(TControl.FF_skneeAngleAtSHS),'BarWidth',0.5,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
 errorbar(ph(2,1),1,nanmedian(TControl.FF_skneeAngleAtSHS),0,iqr(TControl.FF_skneeAngleAtSHS),'Color','k','LineWidth',2)
-bar(ph(2,1),2,nanmedian(TStroke.FF_skneeAngleAtSHS),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+hs=bar(ph(2,1),2,nanmedian(TStroke.FF_skneeAngleAtSHS),'BarWidth',0.5,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
+hatchfill2(hs)
 errorbar(ph(2,1),2,nanmedian(TStroke.FF_skneeAngleAtSHS),0,iqr(TStroke.FF_skneeAngleAtSHS),'Color','k','LineWidth',2)
 set(ph(2,1),'XLim',[0.5 2.5],'YLim',[0 15],'XTickLabel',{''},'YTick',[0 5 10 15])
 ylabel(ph(2,1),'\theta Knee_s_l_o_w LateA','FontWeight','bold')
@@ -254,6 +239,10 @@ set(ph(2,2),'XLim',[-0.3 1.2],'YLim',[-10 20],'YTick',[-10 0 10 20]);
 ylabel(ph(2,2),'\theta Knee_s_l_o_w LateA','FontWeight','bold')
 xlabel(ph(2,2),'EMG_Q_u_a_d LateA','FontWeight','bold')
 tx=text(ph(2,2),-0.3, 20,['rho=',num2str(round(rho(2),2)),',p<0.01']);set(tx,'FontSize',14)
+ll=findobj(ph(2,2),'Type','Line');
+ll3=legend(flipud(ll),'Control','Stroke');
+set(ll3,'EdgeColor','none')
+
 
 annotation(f1,'textbox',[0.005 0.95 0.026 0.047],'String',{'A'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
 annotation(f1,'textbox',[0.5 0.95 0.026 0.047],'String',{'B'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');

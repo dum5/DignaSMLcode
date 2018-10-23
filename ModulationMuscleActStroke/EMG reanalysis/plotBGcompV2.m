@@ -137,8 +137,8 @@ groupMedDiff=transpose(squeeze(nanmedian(dataEc,4)-nanmedian(dataEs,4)));
 
 %Perform stats on counts
 [pvalb,hb,alphaAdj_b]=checkerCountstatsV2(dataBinaryc,dataBinarys,allsigns,fdr,'benhoch');
-plot3(pc,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
-plot3(ps,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
+%plot3(pc,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
+%plot3(ps,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
 for i=1:size(hb,1)
     for k=1:size(hb,2)
         if hb(i,k)==1 %&& abs(groupMedDiff(i,k))>0.1

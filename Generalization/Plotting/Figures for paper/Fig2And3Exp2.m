@@ -39,14 +39,14 @@ for g=1:4
         TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{6}(1:900,:),binWidth,sumMethod)';%adaptation
     end
     
-    TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost
+    TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost
     TC{g}.readaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{8}(1:600,:),binWidth,sumMethod)';%reAdaptation
-    TC{g}.TMpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
+    TC{g}.TMpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'TM post'))}(1:100,:),binWidth,sumMethod)';%tmPost
     
-    TC{g}.OGpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
-    TC{g}.TMpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
-    TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{7}(1:100,:),binWidth,sumMethod)';%ogPost    
-    TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{9}(1:100,:),binWidth,sumMethod)';%tmPost
+    TC{g}.OGpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost    
+    TC{g}.TMpSP=smoothData(timeCourseUnbiased{Inds(g)}.param{1}.cond{find(contains(timeCourse{Inds(g)}.condNames,'TM post'))}(1:100,:),binWidth,sumMethod)';%tmPost
+    TC{g}.OGpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost    
+    TC{g}.TMpST=smoothData(timeCourseUnbiased{Inds(g)}.param{2}.cond{find(contains(timeCourse{Inds(g)}.condNames,'TM post'))}(1:100,:),binWidth,sumMethod)';%tmPost
 end
 
 f2=figure('Name','Experiment 1A');
@@ -261,7 +261,7 @@ plot(ax4c,[2.5 2.5],[-0.05 0.2],'--k','LineWidth',2,'Color',[0.6 0.6 0.6])
 text(ax4c,1,-0.05,'OG','FontSize',12,'FontName','Arial')
 text(ax4c,3,-0.05,'TM','FontSize',12,'FontName','Arial')
 
-
+set(gcf,'Renderer','painters');
 
 
 f3=figure('Name','Experiment 1B');
@@ -456,6 +456,7 @@ text(ax4c,1,-0.05,'TM','FontSize',12,'FontName','Arial')
 text(ax4c,3,-0.05,'OG','FontSize',12,'FontName','Arial')
 
 
+set(gcf,'Renderer','painters');
 
 f4=figure('Name','Additional results');
 set(f4,'Color',[1 1 1]','Units','inches','Position',[0 0 7 2])

@@ -21,32 +21,7 @@ summethod='nanmedian';
 %selection of subjects is as follows: subjects 3 are always removed
 %(patients and controls)
 
-
-
-if speedMatchFlag
-%     strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-%     %controlsNames=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-%     controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-    
-strokesNames=strcat('P00',{'01','02','05','08','09','10','13','15','16'}); %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsNames=strcat('C00',{'02','04','05','06','07','09','10','12','16'}); %Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-
-
-
-    pIdx=[1:9];%all subjects listed above
-    cIdx=[1:9];
-else
-   controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-   %controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
-    
-    %patient 3 will be exlcuded later, otherwise the table messes up
-    strokesNames={'P0001','P0002','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
-    
-    pIdx=[1:14];
-    cIdx=[1:14];
-    
-    
-end
+SubjectSelection
 
 %define groups
 groups{1}=controls.getSubGroup(controlsNames);
@@ -273,28 +248,29 @@ AddCombinedParamsToTable;
 
 if speedMatchFlag
     
-    BSControl=0.16056;
-    BMControl=0.80573;
-    CIBSControl=[0.1012 0.2199];
-    CIBMControl=[0.7463 0.8651];
-       
-    BSStroke=0.39916;
-    BMStroke=0.58885;
-    CIBSStroke=[0.3331 0.4653];
-    CIBMStroke=[0.5228 0.6550];
+%     BSControl=0.16056;
+%     BMControl=0.80573;
+%     CIBSControl=[0.1012 0.2199];
+%     CIBMControl=[0.7463 0.8651];
+%        
+%     BSStroke=0.39916;
+%     BMStroke=0.58885;
+%     CIBSStroke=[0.3331 0.4653];
+%     CIBMStroke=[0.5228 0.6550];
     
-    t=t(t.SpeedMatch==1,:);
+    t=t(t.speedMatch==1,:);
 else
-    BSControl=0.15568;
-    BMControl=0.78709;
-    CIBSControl=[0.1083 0.2031];
-    CIBMControl=[0.7397 0.8345];
-       
-    BSStroke=0.24643;
-    BMStroke=0.68177;
-    CIBSStroke=[0.1866 0.3043];
-    CIBMStroke=[0.6239 0.7396];
+%     BSControl=0.15568;
+%     BMControl=0.78709;
+%     CIBSControl=[0.1083 0.2031];
+%     CIBMControl=[0.7397 0.8345];
+%        
+%     BSStroke=0.24643;
+%     BMStroke=0.68177;
+%     CIBSStroke=[0.1866 0.3043];
+%     CIBMStroke=[0.6239 0.7396];
     
+    t=t(t.fullGroup==1,:);
 end
     
 %% Run stats for between group comparison

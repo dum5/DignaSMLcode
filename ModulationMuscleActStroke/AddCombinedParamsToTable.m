@@ -1,7 +1,14 @@
 %generate combined EMG parameters
-t.Base_Quad=[t.Base_sVMs_1+t.Base_sVMs_2+t.Base_sVLs_1+t.Base_sVLs_2+t.Base_sRFs_1]./5;
-t.lA_Quad=[t.lA_sVMs_1+t.lA_sVMs_2+t.lA_sVLs_1+t.lA_sVLs_2+t.lA_sRFs_1]./5;
-t.eA_Quad=[t.eA_sVMs_1+t.eA_sVMs_2+t.eA_sVLs_1+t.eA_sVLs_2+t.eA_sRFs_1]./5;
+t.Base_Quad=nanmean([t.Base_sVMs_1,t.Base_sVMs_2,t.Base_sVMs_3,t.Base_sVLs_1,t.Base_sVLs_2,t.Base_sRFs_1]')';
+t.lA_Quad=nanmean([t.lA_sVMs_1,t.lA_sVMs_2,t.lA_sVMs_3,t.lA_sVLs_1,t.lA_sVLs_2,t.lA_sRFs_1]')';
+t.eA_Quad=nanmean([t.eA_sVMs_1,t.eA_sVMs_2,t.eA_sVMs_3,t.eA_sVLs_1,t.eA_sVLs_2,t.eA_sRFs_1]')';
+% 
+% t.Base_Quad=[t.Base_sVMs_1+t.Base_sVMs_2+t.Base_sVLs_1+t.Base_sVLs_2+t.Base_sRFs_1]./5;
+% t.lA_Quad=[t.lA_sVMs_1+t.lA_sVMs_2+t.lA_sVLs_1+t.lA_sVLs_2+t.lA_sRFs_1]./5;
+% t.eA_Quad=[t.eA_sVMs_1+t.eA_sVMs_2+t.eA_sVLs_1+t.eA_sVLs_2+t.eA_sRFs_1]./5;
+
+
+
 %based on old between group sign
 % t.Base_Quad=[t.Base_sVMs_1+t.Base_sVMs_2+t.Base_sVMs_3+t.Base_sVMs_4+...
 %     t.Base_sVLs_3+t.Base_sVLs_4+t.Base_sVLs_1+t.Base_sVLs_2+t.Base_sRFs_1+t.Base_sRFs_4]./10;

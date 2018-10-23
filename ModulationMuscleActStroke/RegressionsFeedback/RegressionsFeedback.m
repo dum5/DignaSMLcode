@@ -172,7 +172,7 @@ elseif allSubFlag==1;
         dt.eATNorm=dt.eAT./norm(dt.eAT);
         dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
         
-        SmodelFitAll2{c}=fitlm(ttAll,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
+        SmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
         SlearnAll2(c,:)=SmodelFitAll2{c}.Coefficients.Estimate';
         aux=uncenteredRsquared(SmodelFitAll2{c});
         Sr2All2(c)=aux.uncentered;
@@ -187,7 +187,7 @@ elseif allSubFlag==1;
     ePBMagnC=NaN(16,1);
     ePBMagnS=NaN(16,1);
     lAMagnC=NaN(16,1);
-    lAMagnS=NaN(15,1);
+    lAMagnS=NaN(16,1);
     
     
     for i=cIdx%1:size(eA_C,2)
@@ -225,10 +225,13 @@ elseif allSubFlag==1;
     velCselect=velsC;
     
     tALL=table;
-    tALL.group=cell(32,1);tALL.aff=cell(32,1);tALL.sens=NaN(32,1);
-    tALL.group(1:16,1)={'control'};
-    tALL.group(17:30,1)={'stroke'};
-    tALL.group=nominal(tALL.group);
+    %tALL.group=cell(32,1);
+    tALL.aff=cell(32,1);tALL.sens=NaN(32,1);
+    %tALL.group(1:16,1)={'control'};
+    %tALL.group(17:32,1)={'stroke'};
+    %tALL.group=nominal(tALL.group);
+    tALL.speedMatch=speedMatch;
+    tALL.fullGroup=fullGroup;
     tALL.gender=[genderC';genderS'];
     tALL.age=[ageC; ageS];
     tALL.aff(17:32)=affSide';
@@ -249,7 +252,7 @@ elseif allSubFlag==1;
     answer = questdlg('Save results to mat file?');
     switch answer
         case 'Yes'
-            save([matDataDir,'RegressionResults.mat'],'Clearn1a','Clearn1aCI','Slearn1a','Slearn1aCI','tALL');
+            save([matDataDir,'RegressionResults.mat'],'tALL');
             disp('matfile saved')
         case 'No'
             disp('data not saved')
