@@ -3,14 +3,15 @@ clear all
 close all
 clc
 
- [loadName,matDataDir]=uigetfile('*.mat');
- loadName=[matDataDir,loadName]; 
- load(loadName)
+[loadName,matDataDir]=uigetfile('*.mat');
+loadName=[matDataDir,loadName]; 
+load(loadName)
 figuresColorMap;
 ex1=[0.85 0.325 0.098];
 ex2=[0 0.447 0.741];
 
-speedMatchFlag=1;
+speedMatchFlag=0;
+allSubFlag=0;
 %removeP03Flag=1;
 groupMedianFlag=1;
 nstrides=5;
@@ -247,32 +248,32 @@ load(loadName)
 AddCombinedParamsToTable;
 
 if speedMatchFlag
-    
-%     BSControl=0.16056;
-%     BMControl=0.80573;
-%     CIBSControl=[0.1012 0.2199];
-%     CIBMControl=[0.7463 0.8651];
-%        
-%     BSStroke=0.39916;
-%     BMStroke=0.58885;
-%     CIBSStroke=[0.3331 0.4653];
-%     CIBMStroke=[0.5228 0.6550];
-    
+    load([matDataDir,'GroupMedianRegressionSpeedMatch'])    
     t=t(t.speedMatch==1,:);
 else
-%     BSControl=0.15568;
-%     BMControl=0.78709;
-%     CIBSControl=[0.1083 0.2031];
-%     CIBMControl=[0.7397 0.8345];
-%        
-%     BSStroke=0.24643;
-%     BMStroke=0.68177;
-%     CIBSStroke=[0.1866 0.3043];
-%     CIBMStroke=[0.6239 0.7396];
-    
+    load([matDataDir,'GroupMedianRegressionFull'])    
     t=t(t.fullGroup==1,:);
 end
-    
+
+%get coeffs from model
+CIdxBS=find(strcmp(CmodelFit2.PredictorNames,'eAnorm'),1,'first');
+CIdxBM=find(strcmp(CmodelFit2.PredictorNames,'eATnorm'),1,'first');
+
+SIdxBS=find(strcmp(SmodelFit2.PredictorNames,'eAnorm'),1,'first');
+SIdxBM=find(strcmp(SmodelFit2.PredictorNames,'eATnorm'),1,'first');
+
+BSControl=CmodelFit2.Coefficients.Estimate(CIdxBS);
+BMControl=CmodelFit2.Coefficients.Estimate(CIdxBM);
+dt=CmodelFit2.coefCI;
+CIBSControl=dt(CIdxBS,:);
+CIBMControl=dt(CIdxBM,:);
+        
+BSStroke=SmodelFit2.Coefficients.Estimate(SIdxBS);
+BMStroke=SmodelFit2.Coefficients.Estimate(SIdxBM);
+dt=SmodelFit2.coefCI;
+CIBSStroke=dt(SIdxBS,:);
+CIBMStroke=dt(SIdxBM,:);
+
 %% Run stats for between group comparison
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
@@ -299,12 +300,14 @@ ph(1,2) = axes('Position',[0.075   0.075   0.35 0.25],'FontSize',12);%Regressors
 hold(ph(1,1))
 bar(ph(1,1),1,nanmedian(TControl.eAMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
 errorbar(ph(1,1),1,nanmedian(TControl.eAMagn),0,iqr(TControl.eAMagn),'Color','k','LineWidth',2)
-bar(ph(1,1),2,nanmedian(TStroke.eAMagn),'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+hs=bar(ph(1,1),2,nanmedian(TStroke.eAMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+hatchfill2(hs)
 errorbar(ph(1,1),2,nanmedian(TStroke.eAMagn),0,iqr(TStroke.eAMagn),'Color','k','LineWidth',2)
 
 bar(ph(1,1),3.5,nanmedian(TControl.ePMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
 errorbar(ph(1,1),3.5,nanmedian(TControl.ePMagn),0,iqr(TControl.ePMagn),'Color','k','LineWidth',2)
-bar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2)
+hs=bar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+hatchfill2(hs)
 errorbar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),0,iqr(TStroke.ePMagn),'Color','k','LineWidth',2)
 
 set(ph(1,1),'XLim',[0.5 5],'XTick',[1.5 4],'YLim',[0 12],'XTickLabel',{'|| FBK_t_i_e_d_-_t_o_-_s_p_l_i_t ||','|| FBK_s_p_l_i_t_-_t_o_-_t_i_e_d ||'},'YTick',[0 5 10])
@@ -315,20 +318,29 @@ ll2=legend(flipud(ll),'Control','Stroke');
 set(ll2,'EdgeColor','none')
 
 hold(ph(1,2))
-bar(ph(1,2),1,BSControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
-bar(ph(1,2),2,BSStroke,'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
-bar(ph(1,2),3.5,BMControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
-bar(ph(1,2),4.5,BMStroke,'BarWidth',0.7,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2);
-errorbar(ph(1,2),[1 2 3.5 4.5],[BSControl,BSStroke BMControl BMStroke],[0 0 0 0],[diff(CIBSControl)/2 diff(CIBSStroke)/2 diff(CIBMControl)/2 diff(CIBMStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
-plot(ph(1,2),[3.5 4.5],[0.9 0.9],'-k','LineWidth',2)
-if speedMatchFlag
-    plot(ph(1,2),[1,2],[0.5 0.5],'-k','LineWidth',2)
+aa=CompareElipses(CmodelFit2,SmodelFit2,5.991,ph(1,2));
+[chi2,p]=CompareRegressors(CmodelFit2,SmodelFit2,0,2);
+if p<0.01 
+    textp=' p<0.01';
+else textp=[' p = ',num2str(round(p,2))];
 end
+    
+% bar(ph(1,2),1,BSControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+% hs=bar(ph(1,2),2,BSStroke,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+% hatchfill2(hs)
+% bar(ph(1,2),3.5,BMControl,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+% hs=bar(ph(1,2),4.5,BMStroke,'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
+% hatchfill2(hs)
+% errorbar(ph(1,2),[1 2 3.5 4.5],[BSControl,BSStroke BMControl BMStroke],[0 0 0 0],[diff(CIBSControl)/2 diff(CIBSStroke)/2 diff(CIBMControl)/2 diff(CIBMStroke)/2],'Color','k','LineStyle','none','LineWidth',2)
+% plot(ph(1,2),[3.5 4.5],[0.9 0.9],'-k','LineWidth',2)
+% if speedMatchFlag
+%     plot(ph(1,2),[1,2],[0.5 0.5],'-k','LineWidth',2)
+% end
 
-set(ph(1,2),'XLim',[0.5 5],'YLim',[0 1],'XTick',[1.5 4],'XTickLabel',{'\beta_S','\beta_M'},'YTick',[0 .5 1])
-ylabel(ph(1,2),'\beta','FontWeight','bold')
-text(ph(1,2),0.7,1,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')
-
+ylabel(ph(1,2),'\betaM','FontWeight','bold')
+xlabel(ph(1,2),'\betaS','FontWeight','bold')
+text(ph(1,2),0.15,0.8,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')
+text(0.35,0.75,['chi^2 = ', round(chi2,2),textp]);
 
 annotation(f1,'textbox',[0.005 0.95 0.026 0.047],'String',{'A'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
 annotation(f1,'textbox',[0.46 0.95 0.026 0.047],'String',{'B'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');

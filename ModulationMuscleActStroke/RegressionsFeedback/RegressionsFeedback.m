@@ -18,8 +18,8 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
-allSubFlag=0;%use this flag to generate the table that includes all subjects
+speedMatchFlag=0;
+allSubFlag=1;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
 groupMedianFlag=1; %do not change
@@ -134,6 +134,12 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     Sr2=uncenteredRsquared(SmodelFit2);
     Sr2=Sr2.uncentered;
     
+    if speedMatchFlag==0
+        save([matDataDir,'GroupMedianRegressionFull.mat'],'CmodelFit2','SmodelFit2');
+    elseif speedMatchFlag==1
+        save([matDataDir,'GroupMedianRegressionSpeedMatch.mat'],'CmodelFit2','SmodelFit2');
+    end
+    
 elseif allSubFlag==1;
     
     
@@ -157,7 +163,9 @@ elseif allSubFlag==1;
         dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
         
         CmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
-        ClearnAll2(c,:)=CmodelFitAll2{c}.Coefficients.Estimate';
+        IdxBM=find(strcmp(CmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
+        IdxBS=find(strcmp(CmodelFitAll2{c}.PredictorNames,'eANorm'),1,'first');
+        ClearnAll2(c,:)=CmodelFitAll2{c}.Coefficients.Estimate([IdxBS,IdxBM],1)';
         aux=uncenteredRsquared(CmodelFitAll2{c});
         Cr2All2(c)=aux.uncentered;
         clear dt
@@ -173,7 +181,9 @@ elseif allSubFlag==1;
         dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
         
         SmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
-        SlearnAll2(c,:)=SmodelFitAll2{c}.Coefficients.Estimate';
+        IdxBM=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
+        IdxBS=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eANorm'),1,'first');
+        SlearnAll2(c,:)=SmodelFitAll2{c}.Coefficients.Estimate([IdxBS,IdxBM],1)';
         aux=uncenteredRsquared(SmodelFitAll2{c});
         Sr2All2(c)=aux.uncentered;
         clear dt

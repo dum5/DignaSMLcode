@@ -5,6 +5,7 @@ close all
 %%
 loadName=[matDataDir,loadName]; 
 load(loadName)
+t=t(t.fullGroup==1,:);
 AddCombinedParamsToTable
 t.group=nominal(t.group);
 TStroke=t(t.group=='Stroke',:);
@@ -12,7 +13,6 @@ TControls=t(t.group=='Control',:);
 
 
 
-Idx=[1:2 4:15]';%exclude pt 3 AND control 3
 
 f1=figure;
 set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 6 10]);
@@ -53,29 +53,29 @@ xlabel(ph(6,2),'EMG_Q_u_a_d LateA')
 xlabel(ph(6,3),'\theta Knee_s_l_o_w LateA')
 
 %correlations with feedforward
-[a]=plotCor(ph(1,1),TStroke.FM(Idx),TStroke.lAMagn(Idx));
-[a]=plotCor(ph(1,2),TStroke.age(Idx)./12,TStroke.lAMagn(Idx),TControls.age(Idx)./12,TControls.lAMagn(Idx));
-[a]=plotCor(ph(1,3),TStroke.vel(Idx),TStroke.lAMagn(Idx),TControls.vel(Idx),TControls.lAMagn(Idx));
+[a]=plotCor(ph(1,1),TStroke.FM,TStroke.lAMagn);
+[a]=plotCor(ph(1,2),TStroke.age./12,TStroke.lAMagn,TControls.age./12,TControls.lAMagn);
+[a]=plotCor(ph(1,3),TStroke.vel,TStroke.lAMagn,TControls.vel,TControls.lAMagn);
 
 %correlations with FBKtied-to-tplit
-[a]=plotCor(ph(2,1),TStroke.FM(Idx),TStroke.eAMagn(Idx));
-[a]=plotCor(ph(2,2),TStroke.age(Idx)./12,TStroke.eAMagn(Idx),TControls.age(Idx)./12,TControls.eAMagn(Idx));
-[a]=plotCor(ph(2,3),TStroke.vel(Idx),TStroke.eAMagn(Idx),TControls.vel(Idx),TControls.eAMagn(Idx));
+[a]=plotCor(ph(2,1),TStroke.FM,TStroke.eAMagn);
+[a]=plotCor(ph(2,2),TStroke.age./12,TStroke.eAMagn,TControls.age./12,TControls.eAMagn);
+[a]=plotCor(ph(2,3),TStroke.vel,TStroke.eAMagn,TControls.vel,TControls.eAMagn);
 
 %correlations with FBKsplit-to-tied
-[a]=plotCor(ph(3,1),TStroke.FM(Idx),TStroke.ePMagn(Idx));
-[a]=plotCor(ph(3,2),TStroke.age(Idx)./12,TStroke.ePMagn(Idx),TControls.age(Idx)./12,TControls.ePMagn(Idx));
-[a]=plotCor(ph(3,3),TStroke.vel(Idx),TStroke.ePMagn(Idx),TControls.vel(Idx),TControls.ePMagn(Idx));
+[a]=plotCor(ph(3,1),TStroke.FM,TStroke.ePMagn);
+[a]=plotCor(ph(3,2),TStroke.age./12,TStroke.ePMagn,TControls.age./12,TControls.ePMagn);
+[a]=plotCor(ph(3,3),TStroke.vel,TStroke.ePMagn,TControls.vel,TControls.ePMagn);
 
 %correlations with after effects
-[a]=plotCor(ph(4,1),TStroke.FM(Idx),TStroke.ePBMagn(Idx));
-[a]=plotCor(ph(4,2),TStroke.age(Idx)./12,TStroke.ePBMagn(Idx),TControls.age(Idx)./12,TControls.ePBMagn(Idx));
-[a]=plotCor(ph(4,3),TStroke.vel(Idx),TStroke.ePBMagn(Idx),TControls.vel(Idx),TControls.ePBMagn(Idx));
+[a]=plotCor(ph(4,1),TStroke.FM,TStroke.ePBMagn);
+[a]=plotCor(ph(4,2),TStroke.age./12,TStroke.ePBMagn,TControls.age./12,TControls.ePBMagn);
+[a]=plotCor(ph(4,3),TStroke.vel,TStroke.ePBMagn,TControls.vel,TControls.ePBMagn);
 
 %correlation with betaM
-[a]=plotCor(ph(5,1),TStroke.FM(Idx),TStroke.BM(Idx));
-[a]=plotCor(ph(5,2),TStroke.age(Idx)./12,TStroke.BM(Idx),TControls.age(Idx)./12,TControls.BM(Idx));
-[a]=plotCor(ph(5,3),TStroke.vel(Idx),TStroke.BM(Idx),TControls.vel(Idx),TControls.BM(Idx));
+[a]=plotCor(ph(5,1),TStroke.FM,TStroke.BM);
+[a]=plotCor(ph(5,2),TStroke.age./12,TStroke.BM,TControls.age./12,TControls.BM);
+[a]=plotCor(ph(5,3),TStroke.vel,TStroke.BM,TControls.vel,TControls.BM);
 
 ll=findobj(ph(1,3),'Type','Line');
 legend(ph(1,3),ll(end:-1:1),{'CONTROL','STROKE'},'box','off','Position',[0.8170    0.9574    0.1815    0.0443])
@@ -83,9 +83,9 @@ text(ph(1,1),15,15,'A','FontSize',14,'FontWeight','bold')
 text(ph(6,2),-1.5,1.2,'B','FontSize',14,'FontWeight','bold')
 
 %correlations between feeback and feedforward adaptation
-%[a]=plotCor(ph(6,1),TStroke.lAMagn(Idx),TStroke.BM(Idx),TControls.lAMagn(Idx),TControls.BM(Idx));
-[a]=plotCor(ph(6,2),TStroke.FF_Quad(Idx),TStroke.BM(Idx),TControls.FF_Quad(Idx),TControls.BM(Idx));
-[a]=plotCor(ph(6,3),TStroke.FF_skneeAngleAtSHS(Idx),TStroke.BM(Idx),TControls.FF_skneeAngleAtSHS(Idx),TControls.BM(Idx));
+%[a]=plotCor(ph(6,1),TStroke.lAMagn,TStroke.BM,TControls.lAMagn,TControls.BM);
+[a]=plotCor(ph(6,2),TStroke.FF_Quad,TStroke.BM,TControls.FF_Quad,TControls.BM);
+[a]=plotCor(ph(6,3),TStroke.FF_skneeAngleAtSHS,TStroke.BM,TControls.FF_skneeAngleAtSHS,TControls.BM);
 
 
 function [a]=plotCor(ax,xDataS,yDataS,xDataC,yDataC)
