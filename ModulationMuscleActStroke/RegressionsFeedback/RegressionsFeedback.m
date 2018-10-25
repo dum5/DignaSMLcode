@@ -18,8 +18,8 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=0;
-allSubFlag=1;%use this flag to generate the table that includes all subjects
+speedMatchFlag=1;
+allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
 groupMedianFlag=1; %do not change

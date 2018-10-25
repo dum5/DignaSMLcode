@@ -96,8 +96,8 @@ nafter=5;%number of strides for after effects
 %eFSlowbase=0;%consider changing strides for ref base (-40), since that is more consistent with code procedures
 
 
-names={'OG_B','TM_B','OG_P','OG_LP','TM_P','lateAdapt','lateReadapt','earlyAdapt','FullSplit','EarlyReadapt','TM_slowref'};
-conds={'OG base','TM base', 'OG post','OG post', 'TM post', 'gradual adaptation', 'readaptation', 'gradual adaptation','gradual adaptation','readaptation','TM slow'};
+names={'OG_B','TM_B','OG_P','OG_LP','TM_P','lateAdapt','lateReadapt','earlyAdapt','FullSplit','EarlyReadapt','TM_LP'};
+conds={'OG base','TM base', 'OG post','OG post', 'TM post', 'gradual adaptation', 'readaptation', 'gradual adaptation','gradual adaptation','readaptation','TM post'};
 strideNo=[nLate,nLate,nEarly,nLate,nEarly,nLate,nLate,nEarly,nEarly,nEarly,nLate];
 %strideNo=[nbase nbase nafter nLateOGp nafter nLateAdap nLateAdap nEA nEA nEA nslow];
 exemptLast=[eL, eL,0,eL,0,eL,eL,0,0,0,eL];
@@ -113,7 +113,7 @@ correctTMbase=1:4;%indices of parameters that need to be corrected for TM base
 correctTMslow=[];%indices of parameters that need to be corrected for TM slow
 
 OGind=[3,4];%epoch associated with OGpost
-TMind=[5:10];%epoch associated with treadmill trials, except the reference trial
+TMind=[5:11];%epoch associated with treadmill trials, except the reference trial
 
 %find lata Adaptation, because this is a different conditionName for
 %distraction people
@@ -170,7 +170,7 @@ for i=1:length(groups)
     %correct for bias
     for ind=TMind
         groupOutcomes{i}(correctTMbase,ind,:) =  groupOutcomes{i}(correctTMbase,ind,:) - groupOutcomes{i}(correctTMbase,TMref,:);
-        groupOutcomes{i}(correctTMslow,ind,:) =  groupOutcomes{i}(correctTMslow,ind,:) - groupOutcomes{i}(correctTMslow,slowref,:);%this is done to correct FyPSmax for TM slow;
+       % groupOutcomes{i}(correctTMslow,ind,:) =  groupOutcomes{i}(correctTMslow,ind,:) - groupOutcomes{i}(correctTMslow,slowref,:);%this is done to correct FyPSmax for TM slow;
     end
     for ind=OGind
         groupOutcomes{i}(:,ind,:) =  groupOutcomes{i}(:,ind,:) - groupOutcomes{i}(:,OGref,:);
@@ -215,11 +215,11 @@ names={names{1:end},'deltaOG','LA_ERA','lOG_ERA','pctGeneralization'};
      
      for p=1:length(params)
          OGbias=squeeze(groupOutcomes{i}(p,OGref,:))';
-         if p==5;
-             TMbias=squeeze(groupOutcomes{i}(p,slowref,:))';             
-         else
-             TMbias=squeeze(groupOutcomes{i}(p,TMref,:))';             
-         end
+%          if p==5;
+%              TMbias=squeeze(groupOutcomes{i}(p,slowref,:))';             
+%          else
+          TMbias=squeeze(groupOutcomes{i}(p,TMref,:))';             
+%          end
          %now subtract bias form all conds for OG and TM separately
          for c=OGind
              %keyboard
@@ -334,7 +334,7 @@ for i=1:length(groups)
     
     %correct for bias
    groupOutcomes{i}(correctTMbase,ind,:) =  groupOutcomes{i}(correctTMbase,ind,:) - groupOutcomes{i}(correctTMbase,TMref,:);
-   groupOutcomes{i}(correctTMslow,ind,:) =  groupOutcomes{i}(correctTMslow,ind,:) - groupOutcomes{i}(correctTMslow,slowref,:);%this is done to correct FyPSmax for TM slow;
+   %groupOutcomes{i}(correctTMslow,ind,:) =  groupOutcomes{i}(correctTMslow,ind,:) - groupOutcomes{i}(correctTMslow,slowref,:);%this is done to correct FyPSmax for TM slow;
    
    %delta catch-resumesplit
    groupOutcomes{i} (:,nEp+1,:)=groupOutcomes{i} (:,nEp-1,:)-groupOutcomes{i} (:,nEp,:);

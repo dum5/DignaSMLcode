@@ -227,8 +227,10 @@ hold(ph(2,2))
 plot(ph(2,2),TControl.FF_Quad,TControl.FF_skneeAngleAtSHS,'ok','MarkerFaceColor',[1 1 1])
 plot(ph(2,2),TStroke.FF_Quad,TStroke.FF_skneeAngleAtSHS,'ok','MarkerFaceColor',[0 0 0])
 ll=findobj(ph(2,2),'Type','Line');
-xdata=[TControl.FF_Quad;TStroke.FF_Quad];xdata=xdata(~isnan(xdata));
-ydata=[TControl.FF_skneeAngleAtSHS;TStroke.FF_skneeAngleAtSHS];ydata=ydata(~isnan(ydata));
+xdata=[TControl.FF_Quad;TStroke.FF_Quad];
+ydata=[TControl.FF_skneeAngleAtSHS;TStroke.FF_skneeAngleAtSHS];
+xdata=xdata(~isnan(ydata));%this needs to be fixed
+ydata=ydata(~isnan(ydata));
 [rho,pval]=corr([xdata ydata],'type', 'Spearman');
 [r,m,b] = regression(xdata,ydata,'one');
 r=num2str(round(r,2));

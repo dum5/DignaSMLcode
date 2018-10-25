@@ -340,7 +340,7 @@ end
 ylabel(ph(1,2),'\betaM','FontWeight','bold')
 xlabel(ph(1,2),'\betaS','FontWeight','bold')
 text(ph(1,2),0.15,0.8,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')
-text(0.35,0.75,['chi^2 = ', round(chi2,2),textp]);
+text(0.35,0.75,['chi^2 = ', num2str(round(chi2,2)),textp]);
 
 annotation(f1,'textbox',[0.005 0.95 0.026 0.047],'String',{'A'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
 annotation(f1,'textbox',[0.46 0.95 0.026 0.047],'String',{'B'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
