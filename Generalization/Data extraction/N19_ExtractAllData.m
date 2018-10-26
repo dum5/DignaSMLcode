@@ -98,7 +98,7 @@ nafter=5;%number of strides for after effects
 
 names={'OG_B','TM_B','OG_P','OG_LP','TM_P','lateAdapt','lateReadapt','earlyAdapt','FullSplit','EarlyReadapt','TM_LP'};
 conds={'OG base','TM base', 'OG post','OG post', 'TM post', 'gradual adaptation', 'readaptation', 'gradual adaptation','gradual adaptation','readaptation','TM post'};
-strideNo=[nLate,nLate,nEarly,nLate,nEarly,nLate,nLate,nEarly,nEarly,nEarly,nLate];
+strideNo=[nLate,nLate,nEarly,-10,nEarly,nLate,nLate,nEarly,nEarly,nEarly,-10];
 %strideNo=[nbase nbase nafter nLateOGp nafter nLateAdap nLateAdap nEA nEA nEA nslow];
 exemptLast=[eL, eL,0,eL,0,eL,eL,0,0,0,eL];
 %exemptLast=[eLBase eLBase 0 eLOGP 0 eLAdap eLAdap 0 0 0 0];

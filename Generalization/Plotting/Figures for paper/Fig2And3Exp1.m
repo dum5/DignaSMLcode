@@ -214,9 +214,9 @@ set(f3,'Color',[1 1 1]','Units','inches','Position',[0 0 3.5 6])
 %timeCourse re-Adaptation
 ax1 = axes('Position',[left  lower+3*delta+0.07 width4 height],'XTickLabel',{''},'Clipping','off','XLim',[0 280],'YLim',[-0.2 0.05],'YTick',[-0.2 0 0.2],'XTick',[0 100 200],'FontSize',12,'FontName','Arial');
 %Errors
-ax2a = axes('Position',[left  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'FontSize',12,'FontName','Arial');
-ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
-ax2c = axes('Position',[left+2*(width2+0.04)  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.2 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2a = axes('Position',[left  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.1 0],'YTick',[-0.2 -0.1 0],'FontSize',12,'FontName','Arial');
+ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.1 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2c = axes('Position',[left+2*(width2+0.04)  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.1 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 
 %timeCourse TM post
 ax3a = axes('Position',[left  lower+delta width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'FontSize',12,'FontName','Arial');
@@ -244,7 +244,7 @@ end
 
 text(ax1,50,-0.075,'Control','Color',colors(1,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 text(ax1,50,-0.105,'Small Explicit','Color',colors(2,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
-text(ax1,50,-0.135,'Small Implicit','Color',colors(3,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
+%text(ax1,50,-0.135,'Small Implicit','Color',colors(3,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 plot(ax1,[100 200],[-0.22 -0.22],'k','LineWidth',2)
 text(ax1,100,-0.18,'100 srides','FontName','Arial','FontSize',10);
 
