@@ -158,9 +158,9 @@ elseif allSubFlag==1;
         dt.eA=-eA_C(:,c);
         dt.eAT=eAT_C(:,c);
         dt.eP_lA=eP_C(:,c)-lA_C(:,c);
-        dt.eANorm=dt.eA./norm(dt.eA);
-        dt.eATNorm=dt.eAT./norm(dt.eAT);
-        dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
+        dt.eANorm=dt.eA;%./norm(dt.eA);
+        dt.eATNorm=dt.eAT;%./norm(dt.eAT);
+        dt.eP_lANorm=dt.eP_lA;%./norm(dt.eP_lA);
         
         CmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
         IdxBM=find(strcmp(CmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
@@ -171,23 +171,23 @@ elseif allSubFlag==1;
         clear dt
     end
     
-    for c=pIdx%1:size(eA_S,2)
-        dt=table;
-        dt.eA=-eA_S(:,c);
-        dt.eAT=eAT_S(:,c);
-        dt.eP_lA=eP_S(:,c)-lA_S(:,c);
-        dt.eANorm=dt.eA./norm(dt.eA);
-        dt.eATNorm=dt.eAT./norm(dt.eAT);
-        dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
-        
-        SmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
-        IdxBM=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
-        IdxBS=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eANorm'),1,'first');
-        SlearnAll2(c,:)=SmodelFitAll2{c}.Coefficients.Estimate([IdxBS,IdxBM],1)';
-        aux=uncenteredRsquared(SmodelFitAll2{c});
-        Sr2All2(c)=aux.uncentered;
-        clear dt
-    end
+%     for c=pIdx%1:size(eA_S,2)
+%         dt=table;
+%         dt.eA=eA_S(:,c);
+%         dt.eAT=eAT_S(:,c);
+%         dt.eP_lA=eP_S(:,c)-lA_S(:,c);
+%         dt.eANorm=dt.eA./norm(dt.eA);
+%         dt.eATNorm=dt.eAT./norm(dt.eAT);
+%         dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
+%         
+%         SmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
+%         IdxBM=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
+%         IdxBS=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eANorm'),1,'first');
+%         SlearnAll2(c,:)=SmodelFitAll2{c}.Coefficients.Estimate([IdxBS,IdxBM],1)';
+%         aux=uncenteredRsquared(SmodelFitAll2{c});
+%         Sr2All2(c)=aux.uncentered;
+%         clear dt
+%     end
     
     %Magnitude analysis
     eAMagnC=NaN(16,1);
