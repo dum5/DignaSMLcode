@@ -87,7 +87,7 @@ ax2c = axes('Position',[left+2*(width2+0.04) lower width2 height],'XTickLabel',{
 ax3a = axes('Position',[left+width4+0.07  lower+delta+0.04 width3 height/0.9],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[0 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
 
 %bar plots OG post
-ax4a = axes('Position',[left+width4+0.07  lower width3 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[0 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
+ax4a = axes('Position',[left+width4+0.07  lower width3 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 4.5],'YLim',[0 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
 
 
 hold(ax1)%control and small errors
@@ -233,12 +233,17 @@ text(ax3a,10,-0.02,'10 srides','FontName','Arial','FontSize',10);
 
 
 hold(ax4a)%control and small errors
-bar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),'FaceColor',[0.2 0.2 1],'BarWidth',0.5);
+bar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
 errorbar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),nanstd(TControl.netContributionNorm2_OG_P)./sqrt(length(TControl.netContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-bar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.5);
+bar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
 errorbar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),nanstd(TCatch.netContributionNorm2_OG_P)./sqrt(length(TCatch.netContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
+bar(ax4a,3,0.1,'FaceColor',[0 0 0],'BarWidth',0.7);
+errorbar(3,0.1,0.025,'Color',[0.5 0.5 0.5],'LineWidth',2);
+bar(ax4a,4,0.05,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'BarWidth',0.7);
+errorbar(4,0.05,0.012,'Color',[0.5 0.5 0.5],'LineWidth',2);
+
 % bar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 % errorbar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),nanstd(TGradualNoCatch.netContributionNorm2_OG_P)./sqrt(length(TGradualNoCatch.netContributionNorm2_OG_P)),...
 %     'Color','k','LineWidth',2)

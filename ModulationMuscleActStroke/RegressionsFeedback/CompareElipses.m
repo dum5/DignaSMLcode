@@ -9,7 +9,7 @@ end
 aa=[];
 dt1=drawEllipse2D((inv(Cmod.CoefficientCovariance))/gamma,Cmod.Coefficients.Estimate,ax);
 %make sure that BM is on the y axis
-if find(startsWith(Cmod.PredictorNames,'eAT'),1,'first')==1
+if find(startsWith(Cmod.PredictorNames,'eAT'),1,'first')==2
     tempx=dt1.YData;tempy=dt1.XData;
     dt1.XData=tempx;dt1.YData=tempy;
 end
@@ -18,7 +18,7 @@ set(dt1,'Color','k','LineWidth',2)
 
 dt2=drawEllipse2D((inv(Smod.CoefficientCovariance))/gamma,Smod.Coefficients.Estimate,ax);
 %dt2=drawEllipse2D((inv(Smod.CoefficientCovariance./gamma)),Smod.Coefficients.Estimate);
-if find(startsWith(Smod.PredictorNames,'eAT'),1,'first')==1
+if find(startsWith(Smod.PredictorNames,'eAT'),1,'first')==2
     tempx=dt2.YData;tempy=dt2.XData;
     dt2.XData=tempx;dt2.YData=tempy;
 end
@@ -27,8 +27,8 @@ set(dt2,'Color','k','LineWidth',2)
 hs=patch(ax,dt2.XData,dt2.YData,[1 1 1]);
 hatchfill2(hs)
 
-xlabel('\betaS')
-ylabel('\betaM')
+ylabel('\betaS')
+xlabel('\betaM')
 %legend('control','stroke')
 % 
 % cci=Cmod.coefCI;
