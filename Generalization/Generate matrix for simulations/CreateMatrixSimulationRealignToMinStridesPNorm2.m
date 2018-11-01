@@ -8,7 +8,7 @@ studyData = rmfield(studyData,GroupsToRemove) ;
 names=fieldnames(studyData);
 wSize=5;
 
-params={'velocityContributionPNorm','netContributionPNorm','spatialContributionPNorm','stepTimeContributionPNorm'};
+params={'velocityContributionPNorm2','netContributionPNorm2','spatialContributionPNorm2','stepTimeContributionPNorm2'};
 
 commonConditions={'OG base','TM slow','TM fast','TM base','OG post','readaptation','TM post'};
 maxn=[300 105 105 155 300 305 605];
@@ -21,10 +21,10 @@ for c=1:length(commonConditions)
     minsj=maxn(c);
     for g=1:length(names)
         %create ss matrix
-        allData{g}{c}.net= squeeze(cell2mat(studyData.(names{g}).getGroupedData('netContributionPNorm',commonConditions{c},0,maxn(c),0,10,1)));
-        allData{g}{c}.vel= squeeze(cell2mat(studyData.(names{g}).getGroupedData('velocityContributionPNorm',commonConditions{c},0,maxn(c),0,10,1)));
-        allData{g}{c}.sp= squeeze(cell2mat(studyData.(names{g}).getGroupedData('spatialContributionPNorm',commonConditions{c},0,maxn(c),0,10,1)));
-        allData{g}{c}.st= squeeze(cell2mat(studyData.(names{g}).getGroupedData('stepTimeContributionPNorm',commonConditions{c},0,maxn(c),0,10,1)));
+        allData{g}{c}.net= squeeze(cell2mat(studyData.(names{g}).getGroupedData('netContributionPNorm2',commonConditions{c},0,maxn(c),0,10,1)));
+        allData{g}{c}.vel= squeeze(cell2mat(studyData.(names{g}).getGroupedData('velocityContributionPNorm2',commonConditions{c},0,maxn(c),0,10,1)));
+        allData{g}{c}.sp= squeeze(cell2mat(studyData.(names{g}).getGroupedData('spatialContributionPNorm2',commonConditions{c},0,maxn(c),0,10,1)));
+        allData{g}{c}.st= squeeze(cell2mat(studyData.(names{g}).getGroupedData('stepTimeContributionPNorm2',commonConditions{c},0,maxn(c),0,10,1)));
        
        
         %Running Avg
@@ -78,16 +78,16 @@ for g=1:length(names)
             spBeforeCatch{sj}=[];spAfterCatch{sj}=[]; stBeforeCatch{sj}=[];stAfterCatch{sj}=[];
             for tr=Adapt
                 if tr<Catch
-                    netBeforeCatch{sj}=[netBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('netContributionPNorm',tr)];
-                    velBeforeCatch{sj}=[velBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('velocityContributionPNorm',tr)];
-                    spBeforeCatch{sj}=[spBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('spatialContributionPNorm',tr)];
-                    stBeforeCatch{sj}=[stBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('stepTimeContributionPNorm',tr)];
+                    netBeforeCatch{sj}=[netBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('netContributionPNorm2',tr)];
+                    velBeforeCatch{sj}=[velBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('velocityContributionPNorm2',tr)];
+                    spBeforeCatch{sj}=[spBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('spatialContributionPNorm2',tr)];
+                    stBeforeCatch{sj}=[stBeforeCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('stepTimeContributionPNorm2',tr)];
                     
                 else
-                    netAfterCatch{sj}=[netAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('netContributionPNorm',tr)];
-                    velAfterCatch{sj}=[velAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('velocityContributionPNorm',tr)];
-                    spAfterCatch{sj}=[spAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('spatialContributionPNorm',tr)];
-                    stAfterCatch{sj}=[stAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('stepTimeContributionPNorm',tr)];
+                    netAfterCatch{sj}=[netAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('netContributionPNorm2',tr)];
+                    velAfterCatch{sj}=[velAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('velocityContributionPNorm2',tr)];
+                    spAfterCatch{sj}=[spAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('spatialContributionPNorm2',tr)];
+                    stAfterCatch{sj}=[stAfterCatch{sj};studyData.Catch.adaptData{sj}.getParamInTrial('stepTimeContributionPNorm2',tr)];
                     
                 end
             end
@@ -145,10 +145,10 @@ for g=1:length(names)
             AfterCatchDataSt(:,sj)= stAfterCatch{sj}(1:naftercatch,:);
         end
         %get catch data
-        CatchDataNet=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('netContributionPNorm','Catch',0,12,0,0,1)))];
-        CatchDataVel=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('velocityContributionPNorm','Catch',0,12,0,0,1)))];
-        CatchDataSp=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('spatialContributionPNorm','Catch',0,12,0,0,1)))];
-        CatchDataSt=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('stepTimeContributionPNorm','Catch',0,12,0,0,1)))];
+        CatchDataNet=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('netContributionPNorm2','Catch',0,12,0,0,1)))];
+        CatchDataVel=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('velocityContributionPNorm2','Catch',0,12,0,0,1)))];
+        CatchDataSp=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('spatialContributionPNorm2','Catch',0,12,0,0,1)))];
+        CatchDataSt=[squeeze(cell2mat(studyData.(names{g}).getGroupedData('stepTimeContributionPNorm2','Catch',0,12,0,0,1)))];
         
         mincatch=10;
         for sj=1:10
@@ -186,10 +186,10 @@ for g=1:length(names)
         end
         
     else
-        allData{g}{8}.net= squeeze(cell2mat(studyData.(names{g}).getGroupedData('netContributionPNorm','gradual adaptation',0,1200,0,10,1)));
-        allData{g}{8}.vel= squeeze(cell2mat(studyData.(names{g}).getGroupedData('velocityContributionPNorm','gradual adaptation',0,1200,0,10,1)));
-        allData{g}{8}.sp= squeeze(cell2mat(studyData.(names{g}).getGroupedData('spatialContributionPNorm','gradual adaptation',0,1200,0,10,1)));
-        allData{g}{8}.st= squeeze(cell2mat(studyData.(names{g}).getGroupedData('stepTimeContributionPNorm','gradual adaptation',0,1200,0,10,1)));
+        allData{g}{8}.net= squeeze(cell2mat(studyData.(names{g}).getGroupedData('netContributionPNorm2','gradual adaptation',0,1200,0,10,1)));
+        allData{g}{8}.vel= squeeze(cell2mat(studyData.(names{g}).getGroupedData('velocityContributionPNorm2','gradual adaptation',0,1200,0,10,1)));
+        allData{g}{8}.sp= squeeze(cell2mat(studyData.(names{g}).getGroupedData('spatialContributionPNorm2','gradual adaptation',0,1200,0,10,1)));
+        allData{g}{8}.st= squeeze(cell2mat(studyData.(names{g}).getGroupedData('stepTimeContributionPNorm2','gradual adaptation',0,1200,0,10,1)));
         if g==2 %fullabrupt
         else
             allData{g}{8}.net=allData{g}{8}.net(151:end,:);

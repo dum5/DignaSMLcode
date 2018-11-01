@@ -54,7 +54,7 @@ axA2 = axes('Position',[0.075   0.7    0.35   0.12],'FontSize',12);%eP-lA schema
 
 %generate data
 condoffset=0.05;
-t1=[zeros(60,1);ones(60,1)];
+t1=[zeros(6000,1);ones(6000,1)];
 t2=flipud(t1);
 v1=[t1+condoffset -1.*t1];
 v2=[t2+condoffset -1.*t2];
@@ -62,24 +62,24 @@ condAlpha=0.2;
 
 %plot them
 hold(axA1)
-patch(axA1,[40 60 60 40],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(1,:),'EdgeColor','none')
-patch(axA1,[60 80 80 60],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(2,:),'EdgeColor','none')
+patch(axA1,[4000 6000 6000 4000],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(1,:),'EdgeColor','none')
+patch(axA1,[6000 8000 8000 6000],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(2,:),'EdgeColor','none')
 h=plot(axA1,v1,'LineWidth',3);
 set(h,{'color'},{ex2; ex1});
-text(axA1,47,0.4,'B','Color',condColors(1,:),'FontSize',14,'FontWeight','bold');
-text(axA1,65,0.4,'EarlyA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
-set(axA1,'XLim',[30 90],'YLim',[-1.5 1.5],'XTick',[0 100],'YTick',[-10 10])
+text(axA1,4700,0.4,'B','Color',condColors(1,:),'FontSize',14,'FontWeight','bold');
+text(axA1,6500,0.4,'EarlyA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
+set(axA1,'XLim',[3000 9000],'YLim',[-1.5 1.5],'XTick',[0 10000],'YTick',[-10 10])
 title(axA1,'TIED-TO-SPLIT')
 ylabel(axA1,'BELT SPEED','FontWeight','bold')
 
 hold(axA2)
-patch(axA2,[40 60 60 40],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(2,:),'EdgeColor','none')
-patch(axA2,[60 80 80 60],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(3,:),'EdgeColor','none')
+patch(axA2,[4000 6000 6000 4000],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(2,:),'EdgeColor','none')
+patch(axA2,[6000 8000 8000 6000],[-1.5 -1.5 1.5 1.5],0,'FaceAlpha',condAlpha,'FaceColor',condColors(3,:),'EdgeColor','none')
 h=plot(axA2,v2,'LineWidth',3);
 set(h,{'color'},{ex2; ex1});
-text(axA2,45,0.4,'LateA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
-text(axA2,65,0.4,'EarlyP','Color',condColors(3,:),'FontSize',14,'FontWeight','bold');
-set(axA2,'XLim',[30 90],'YLim',[-1.5 1.5],'XTick',[0 100],'YTick',[-10 10])
+text(axA2,4500,0.4,'LateA','Color',condColors(2,:),'FontSize',14,'FontWeight','bold');
+text(axA2,6500,0.4,'EarlyP','Color',condColors(3,:),'FontSize',14,'FontWeight','bold');
+set(axA2,'XLim',[3000 9000],'YLim',[-1.5 1.5],'XTick',[0 10000],'YTick',[-10 10])
 title(axA2,'SPLIT-TO-TIED')
 ylabel(axA2,'BELT SPEED','FontWeight','bold')
 
