@@ -94,6 +94,8 @@ a=[];
 yl=get(ax,'YLim');
 xl=get(ax,'XLim');
 if nargin>3
+    yDataC=yDataC(find(~isnan(xDataC)));
+    xDataC=xDataC(find(~isnan(xDataC)));
     plot(ax,xDataC,yDataC,'ok','MarkerFaceColor',[1 1 1])
     [rhoc,pc]=corr([xDataC,yDataC],'Type','Spearman');
     tc=text(ax,xl(1),yl(2)+3*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')
