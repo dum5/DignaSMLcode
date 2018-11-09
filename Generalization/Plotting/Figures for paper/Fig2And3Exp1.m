@@ -21,6 +21,7 @@ colors2=[0.1 0.1 0.5;0.3 0.3 0.3;0.2 0 0.2];
 %Create separate table for each group
 T.ExtAdapt=T.netContributionNorm2_lateAdapt-T.velocityContributionNorm2_lateAdapt;
 T.ExtReadapt=T.netContributionNorm2_lateReadapt-T.velocityContributionNorm2_lateReadapt;
+T.OgAfterCorrected=T.netContributionNorm2_OG_P-T.netContributionNorm2_lateAdapt;
 
 %organize data for bar plots
 TControl=T(T.group=='AbruptNoFeedback',:);
@@ -361,7 +362,7 @@ width=0.2;
 
 ax1a = axes('Position',[left  lower width height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[0 100],'YTick',[0 50 100],'FontSize',12,'FontName','Arial');
 ax1b = axes('Position',[left+width+0.1  lower width height],'Clipping','off','XLim',[0.5 3.5],'YLim',[0 0.12],'FontSize',12,'FontName','Arial');
-ax1c = axes('Position',[left+2*(width+0.1)  lower width height],'Clipping','off','XLim',[-0.3 0],'YLim',[0 0.3],'FontSize',12,'FontName','Arial');
+ax1c = axes('Position',[left+2*(width+0.1)  lower width height],'Clipping','off','XLim',[0.5 3.5],'YLim',[0 0.15],'FontSize',12,'FontName','Arial');
 
 hold(ax1a)
 bar(ax1a,1,nanmean(TControl.netContributionNorm2_pctGeneralization),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
@@ -391,17 +392,29 @@ plot(ax1b,[2 3],[0.105 0.105],'Color','k','LineWidth',2)
 text(ax1b,1,0.12,'LA-earlyReAdap','FontSize',12,'FontName','Arial');
 
 hold(ax1c)
-plot(ax1c,TControl.maxError,TControl.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.2 0.2 1]);
-plot(ax1c,TFeedback.maxError,TFeedback.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0.6 0.6]);
-plot(ax1c,TGradual.maxError,TGradual.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0 0.6]);
-xdata=TExp1.maxError;ydata=TExp1.netContributionNorm2_OG_P;
-[r,m,b] = regression(xdata,ydata,'one');
-rfit=b+xdata.*m;
-%plot(ax1b,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
-[rho,pval]=corr(xdata,ydata,'type','Spearman');
-xpos=get(ax1c,'XLim');ypos=get(ax1b,'YLim');
-text(ax1c,-0.3,0.3,['Rho=',num2str(round(rho,2)),' p=',num2str(round(pval,2))],'FontSize',12,'FontName','Arial');
-xlabel(ax1c,'Max Error')
-ylabel(ax1c,'stepAsym OGp')
+bar(ax1c,1,nanmean(TControl.OgAfterCorrected),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
+errorbar(ax1c,1,nanmean(TControl.OgAfterCorrected),nanstd(TControl.OgAfterCorrected)./sqrt(length(TControl.OgAfterCorrected)),...
+    'Color','k','LineWidth',2)
+bar(ax1c,2,nanmean(TFeedback.OgAfterCorrected),'FaceColor',[0.6 0.6 0.6],'BarWidth',0.7);
+errorbar(ax1c,2,nanmean(TFeedback.OgAfterCorrected),nanstd(TFeedback.OgAfterCorrected)./sqrt(length(TFeedback.OgAfterCorrected)),...
+    'Color','k','LineWidth',2)
+bar(ax1c,3,nanmean(TGradual.OgAfterCorrected),'FaceColor',[0.6 0 0.6],'BarWidth',0.7);
+errorbar(ax1c,3,nanmean(TGradual.OgAfterCorrected),nanstd(TGradual.OgAfterCorrected)./sqrt(length(TGradual.OgAfterCorrected)),...
+    'Color','k','LineWidth',2)
+plot(ax1c,[1 2],[0.14 0.14],'Color','k','LineWidth',2)
+
+
+% plot(ax1c,TControl.maxError,TControl.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.2 0.2 1]);
+% plot(ax1c,TFeedback.maxError,TFeedback.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0.6 0.6]);
+% plot(ax1c,TGradual.maxError,TGradual.netContributionNorm2_OG_P,'ok','MarkerFaceColor',[0.6 0 0.6]);
+% xdata=TExp1.maxError;ydata=TExp1.netContributionNorm2_OG_P;
+% [r,m,b] = regression(xdata,ydata,'one');
+% rfit=b+xdata.*m;
+% %plot(ax1b,xdata,rfit,'LineWidth',2,'Color',[0.5 0.5 0.5])
+% [rho,pval]=corr(xdata,ydata,'type','Spearman');
+% xpos=get(ax1c,'XLim');ypos=get(ax1b,'YLim');
+% text(ax1c,-0.3,0.3,['Rho=',num2str(round(rho,2)),' p=',num2str(round(pval,2))],'FontSize',12,'FontName','Arial');
+% xlabel(ax1c,'Max Error')
+ylabel(ax1c,'corrected OGp')
 
 
