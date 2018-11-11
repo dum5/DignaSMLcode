@@ -35,6 +35,11 @@ for i=1:length(groupsnames)
         %strides with abs(SLA)>2 are also bad;
         Idx=find(startsWith(groups{i}.adaptData{sj}.data.labels,'netContributionNorm2'));
         badIdx=find(abs(groups{i}.adaptData{sj}.data.Data(:,Idx))>2);
+        groups{i}.adaptData{sj}.data.Data(badIdx,4:end)=NaN;
+        clear Idx badIdx
+        %strides with abs(SLA)>2 are also bad;
+        Idx=find(endsWith(groups{i}.adaptData{sj}.data.labels,'netContributionPNorm'));
+        badIdx=find(abs(groups{i}.adaptData{sj}.data.Data(:,Idx))>2);
         %keyboard
         groups{i}.adaptData{sj}.data.Data(badIdx,4:end)=NaN;
         clear Idx badIdx   
@@ -258,4 +263,44 @@ names={names{1:end},'deltaOG','LA_ERA','lOG_ERA','pctGeneralization'};
      
  end
 
+ for g=1:length(groupsnames)
+     ts=struct;
+     tc=timeCourseUnbiased{g};
+     allconds=timeCourse{g}.condNames;
+     
+     %OG base
+     Idx=find(startsWith(allconds,'OG base'));     
+     ts.OGbase.netContribution=tc.param{1}.cond{Idx}';
+     ts.OGbase.velocityContribution=tc.param{2}.cond{Idx}';clear Idx;
+     
+     %TM base
+     Idx=find(startsWith(allconds,'TM base'));     
+     ts.TMbase.netContribution=tc.param{3}.cond{Idx}';
+     ts.TMbase.velocityContribution=tc.param{4}.cond{Idx}';clear Idx;
+     
+     %TM base
+     Idx=find(startsWith(allconds,'gradual'));     
+     ts.Adaptation.netContribution=tc.param{3}.cond{Idx}';
+     ts.Adaptation.velocityContribution=tc.param{4}.cond{Idx}';clear Idx;
+     
+     %OG post
+     Idx=find(startsWith(allconds,'OG post'));     
+     ts.OGpost.netContribution=tc.param{1}.cond{Idx}';
+     ts.OGpost.velocityContribution=tc.param{2}.cond{Idx}';clear Idx;
+     
+     %re-adaptation
+     Idx=find(startsWith(allconds,'readaptation'));     
+     ts.Readaptation.netContribution=tc.param{3}.cond{Idx}';
+     ts.Readaptation.velocityContribution=tc.param{4}.cond{Idx}';clear Idx;
+     
+     %TM post
+     Idx=find(startsWith(allconds,'TM post'));     
+     ts.TMpost.netContribution=tc.param{3}.cond{Idx}';
+     ts.TMpost.velocityContribution=tc.param{4}.cond{Idx}';clear Idx;
+     
+     eval(['Indiv_' groupsnames{g} '=ts;']);
+     clear ts
+     
+     
+ end
  
