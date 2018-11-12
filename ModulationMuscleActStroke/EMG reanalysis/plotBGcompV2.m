@@ -47,13 +47,13 @@ dataEcmed=transpose(squeeze(nanmedian(dataEc,4)));%these values are generated to
 % checkerboards given that x-values in plot go from 1:30
 
 
-[pvalc,hc,alphaAdj_c]=checkerstatsV2(dataEc,[],1,0,fdr,'benhoch',0);%for now I will compare medians against zero
+[pvalc,hc,alphaAdj_c]=checkerstatsV2(dataEc,[],1,0,fdr,'benhoch',0);%mindif has to be zero, since signrank cannot reliably do a two-tail test agains another value
 %-matrices hc and pvalc are in the same format as the checkerboards (see dataEcmed)
 
 get(pc);hold on
 for i=1:size(hc,1)
     for k=1:size(hc,2)
-        if hc(i,k)==1  && abs(dataEcmed(i,k))>mindif      %if we test the medians against a minimum difference there is no need to do that here too;  
+        if hc(i,k)==1  && abs(dataEcmed(i,k))>mindif %since statistical testing was done againts zero, amplitude testing happens here
             plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',16,'Color','k')
            
         end
@@ -73,11 +73,11 @@ title(['Controls ', cell2mat(epoch.Properties.ObsNames),'-',cell2mat(refepoch.Pr
 
 %nonparametric stats
 dataEsmed=transpose(squeeze(nanmedian(dataEs,4)));%these values are generated to assess if effect sizes are larger than threshold value
-[pvals,hs,alphaAdj_s]=checkerstatsV2(dataEs,[],1,0,fdr,'benhoch',0);%for now I will compare medians against zero
+[pvals,hs,alphaAdj_s]=checkerstatsV2(dataEs,[],1,0,fdr,'benhoch',0);%mindif has to be zero, since signrank cannot reliably do a two-tail test agains another value
 get(ps);hold on
 for i=1:size(hs,1)
     for k=1:size(hs,2)
-        if hs(i,k)==1  && abs(dataEsmed(i,k))>mindif      %if we test the medians against a minimum difference there is no need to do that here too;  
+        if hs(i,k)==1  && abs(dataEsmed(i,k))>mindif      %since statistical testing was done againts zero, amplitude testing happens here 
             plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',16,'Color','k')
            
         end
@@ -113,7 +113,7 @@ dataBinarys=zeros(size(dataEs));
 for c=1:size(dataEc,4)%Nphases,Nmuscles,Nepochs,Nsubjects
     for p=1:size(dataEc,1)
         for m=1:size(dataEc,2)
-            if dataEc(p,m,1,c)*allsigns(m,p)>0.1 %now I just count everyone with modulation in same directions with no magnitude threshold
+            if dataEc(p,m,1,c)*allsigns(m,p)>mindif %now I just count everyone with modulation in same directions with no magnitude threshold
                 dataBinaryc(p,m,1,c)=1;
             end
         end
@@ -124,7 +124,7 @@ dataBinarycSum=transpose(nansum(dataBinaryc,4));%matrix in the same form as data
 for c=1:size(dataEs,4)%Nphases,Nmuscles,Nepochs,Nsubjects
     for p=1:size(dataEs,1)
         for m=1:size(dataEs,2)
-            if dataEs(p,m,1,c)*allsigns(m,p)>0.1
+            if dataEs(p,m,1,c)*allsigns(m,p)>mindif
                 dataBinarys(p,m,1,c)=1;
             end
         end
@@ -147,3 +147,4 @@ for i=1:size(hb,1)
         end
     end
 end
+%keyboard

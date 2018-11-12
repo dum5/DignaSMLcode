@@ -151,7 +151,7 @@ colorbar('peer',ax3);
 %set(f1,'ColorMap',map);
 cc=findobj(gcf,'Type','Colorbar');
 cc.Location='southoutside';
-cc.Position=[0.6835    0.0815    0.2237    0.0264];
+cc.Position=[0.6835    0.0415    0.2237    0.0264];
 set(cc,'Ticks',[-0.5 0 0.5],'FontSize',16,'FontWeight','bold');
 set(cc,'TickLabels',{'-50%','0%','+50%'});
 
@@ -280,18 +280,18 @@ TStroke=t(t.group=='Stroke',:);
 TControl=t(t.group=='Control',:);
 
 [p1,h1]=ranksum(TStroke.eAMagn,TControl.eAMagn);
-if p1<0.01
-    p1='<0.01';
-else
-    p1=['=',num2str(round(p1,2))];
-end
+% if p1<0.01
+%     p1='<0.01';
+% else
+%     p1=['=',num2str(round(p1,2))];
+% end
 
 [p2,h2]=ranksum(TStroke.ePMagn,TControl.ePMagn);
-if p2<0.01
-    p2='<0.01';
-else
-    p2=['=',num2str(round(p2,2))];
-end
+% if p2<0.01
+%     p2='<0.01';
+% else
+%     p2=['=',num2str(round(p2,2))];
+% end
 
 
 ph(1,1) = axes('Position',[0.075   0.385   0.35 0.25],'FontSize',12);%Magnitudes
@@ -303,16 +303,22 @@ errorbar(ph(1,1),1,nanmedian(TControl.eAMagn),0,iqr(TControl.eAMagn),'Color','k'
 hs=bar(ph(1,1),2,nanmedian(TStroke.eAMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
 hatchfill2(hs)
 errorbar(ph(1,1),2,nanmedian(TStroke.eAMagn),0,iqr(TStroke.eAMagn),'Color','k','LineWidth',2)
+if p1<0.05
+    plot(ph(1,1),[1 2],[12 12],'-k','LineWidth',2)
+end
 
 bar(ph(1,1),3.5,nanmedian(TControl.ePMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2)
 errorbar(ph(1,1),3.5,nanmedian(TControl.ePMagn),0,iqr(TControl.ePMagn),'Color','k','LineWidth',2)
 hs=bar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),'BarWidth',0.7,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2);
 hatchfill2(hs)
 errorbar(ph(1,1),4.5,nanmedian(TStroke.ePMagn),0,iqr(TStroke.ePMagn),'Color','k','LineWidth',2)
+if p2<0.05
+    plot(ph(1,1),[3.5 4.5],[12 12],'-k','LineWidth',2)
+end
 
-set(ph(1,1),'XLim',[0.5 5],'XTick',[1.5 4],'YLim',[0 12],'XTickLabel',{'|| FBK_t_i_e_d_-_t_o_-_s_p_l_i_t ||','|| FBK_s_p_l_i_t_-_t_o_-_t_i_e_d ||'},'YTick',[0 5 10])
+set(ph(1,1),'XLim',[0.5 5],'XTick',[1.5 4],'YLim',[0 15],'XTickLabel',{'|| FBK_t_i_e_d_-_t_o_-_s_p_l_i_t ||','|| FBK_s_p_l_i_t_-_t_o_-_t_i_e_d ||'},'YTick',[0 5 10 15])
 ylabel(ph(1,1),'Response magnitude','FontWeight','bold')
-text(ph(1,1),1,12,'Feedback response magnitudes ','FontSize',14,'FontWeight','bold')
+text(ph(1,1),1,15,'Feedback response magnitudes ','FontSize',14,'FontWeight','bold')
 ll=findobj(ph(1,1),'Type','Bar');
 ll2=legend(flipud(ll),'Control','Stroke');
 set(ll2,'EdgeColor','none')
@@ -337,10 +343,11 @@ end
 %     plot(ph(1,2),[1,2],[0.5 0.5],'-k','LineWidth',2)
 % end
 
-ylabel(ph(1,2),'\betaM','FontWeight','bold')
-xlabel(ph(1,2),'\betaS','FontWeight','bold')
-text(ph(1,2),0.15,0.8,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')
-text(0.35,0.75,['chi^2 = ', num2str(round(chi2,2)),textp]);
+xlabel(ph(1,2),'\betaA','FontWeight','bold')
+ylabel(ph(1,2),'\betaE','FontWeight','bold')
+set(ph(1,2),'XLim',[0.5 0.9],'XTick',[0.5 0.6 0.7 0.8 0.9],'YLim',[0.1 0.5],'YTick',[0.1 0.2 0.3 0.4 0.5])
+text(ph(1,2),0.55,0.5,'Feedback response adaptation ','FontSize',14,'FontWeight','bold')
+text(ph(1,2),0.75,0.35,['chi^2 = ', num2str(round(chi2,2)),textp]);
 
 annotation(f1,'textbox',[0.005 0.95 0.026 0.047],'String',{'A'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');
 annotation(f1,'textbox',[0.46 0.95 0.026 0.047],'String',{'B'},'LineStyle','none','FontWeight','bold','FontSize',18,'FitBoxToText','off');

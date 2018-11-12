@@ -37,7 +37,7 @@ for i=1:size(p,1)
         elseif wsflag==1%perform within subject stats    
             if parflag==0         
                % p(i,k)=signtest(squeeze(data1(k,i,:)),0); 
-               p(i,k)=signrank(squeeze(data1(k,i,:)),mindif);   
+               p(i,k)=signrank(squeeze(data1(k,i,:)),mindif); %mindif has to be zero for two-tailed test  
                 
                %pR(i,k)=signrank(squeeze(data1(k,i,:)),mindif,'tail','right','method','exact');         
                %pL(i,k)=signrank(squeeze(data1(k,i,:)),-mindif,'tail','left','method','exact');     

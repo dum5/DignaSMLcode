@@ -7,8 +7,9 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %settings
-matchSpeedFlag=1;
-removeP07Flag=1;
+speedMatchFlag=0;
+groupMedianFlag=1;
+allSubFlag=0;
 binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
 faceCols=[1 1 1;0 0 0];
@@ -22,9 +23,9 @@ eF=1;
 eL=1;
 
 %strides for group epoch bars
-eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 15 -40 15],...
+eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 5 -40 5],...
     [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
-statEps=defineEpochs({'eA','lA','eP'},{'Adaptation','Adaptation','Washout'},[15 -40 15],...
+statEps=defineEpochs({'eA','lA','eP'},{'Adaptation','Adaptation','Washout'},[5 -40 5],...
     [eF,eF,eF],[eL,eL,eL],'nanmean');
 %strides for time courses
 eps2=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 500 -40 200],...
@@ -38,23 +39,10 @@ figuresColorMap;
 condAlpha=0.2;
 
 %generate grouAdaptationData and remove bias
-patientFastList=strcat('P00',{'01','02','05','08','09','10','13','14','15'});%P016 removed %Patients above .72m/s, which is the group mean. N=10. Mean speed=.88m/s. Mean FM=29.5 (vs 28.8 overall)
-controlsSlowList=strcat('C00',{'01','02','04','05','06','09','10','12','16'}); %C07 removed%Controls below 1.1m/s (chosen to match pop size), N=10. Mean speed=.9495m/s
-
-if removeP07Flag
-    patients2=patients.removeSubs({'P0007'});
-    controls2=controls.removeSubs({'C0007'});   
-end
-switch matchSpeedFlag
-    case 1 %Speed matched groups   
-        patients2=patients2.getSubGroup(patientFastList);
-        controls2=controls2.getSubGroup(controlsSlowList);       
-    case 0 %Full groups
-       %no action required
-end
-
-groups{1}=controls2;
-groups{2}=patients2;
+SubjectSelection
+%define groups
+groups{1}=controls.getSubGroup(controlsNames);
+groups{2}=patients.getSubGroup(strokesNames);
 
 %groupsUnbiased{1}=groups{1}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
 %groupsUnbiased{2}=groups{2}.removeBadStrides.removeBaselineEpoch(eps(1,:),[]);
@@ -140,8 +128,18 @@ for i=1:M
             end
             
             %get data
+       
             dt=getGroupedData(groupsUnbiased{g}.removeBadStrides,labels{i},eps2.Condition{E},0,numberOfStrides,eps2.ExemptFirst(E),eps2.ExemptLast(E),1);
             dt=squeeze(dt{1});
+            if g==2 && E==2 %&& i==3
+             % keyboard 
+                dt(411,2)=NaN;
+            end
+            
+            if g==2 && E==1 && speedMatchFlag==0
+              %keyboard 
+                dt([13 14],9)=NaN;
+            end
             dt2=smoothData(dt,binWidth,'nanmean');
 
             if Inds(1)==0
@@ -180,14 +178,14 @@ for i=1:length(groups)
 end
 contrastnames={'eA_B','lA_B','eP_lA','eP_B'};
 
-spatialDataControls=NaN(length(controls2.adaptData),4);
-spatialDataStroke=NaN(length(patients2.adaptData),4);
-temporalDataControls=NaN(length(controls2.adaptData),4);
-temporalDataStroke=NaN(length(patients2.adaptData),4);
-velocityDataControls=NaN(length(controls2.adaptData),4);
-velocityDataStroke=NaN(length(patients2.adaptData),4);
-netDataControls=NaN(length(controls2.adaptData),4);
-netDataStroke=NaN(length(patients2.adaptData),4);
+spatialDataControls=NaN(length(groups{1}.adaptData),4);
+spatialDataStroke=NaN(length(groups{2}.adaptData),4);
+temporalDataControls=NaN(length(groups{1}.adaptData),4);
+temporalDataStroke=NaN(length(groups{2}.adaptData),4);
+velocityDataControls=NaN(length(groups{1}.adaptData),4);
+velocityDataStroke=NaN(length(groups{2}.adaptData),4);
+netDataControls=NaN(length(groups{1}.adaptData),4);
+netDataStroke=NaN(length(groups{2}.adaptData),4);
 
 for c=1:length(contrastnames)
     spatialDataControls(:,c)=contrasts{1}.([contrastnames{c},'_','spatialContributionNorm2']);
@@ -263,15 +261,15 @@ set(ph(4,2),'XTickLabel',{'EarlyA','LateA','EarlyP-LateA','EarlyP'})
 set(ph(:,1),'XTick',[20 365 700],'XTickLabel',{''},'XLim',[1 804])
 set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
 
-set(ph(1,1),'YLim',[-0.1 0.2],'YTick',[-0.1 0 0.1 0.2])
-set(ph(2,1),'YLim',[-0.05 0.2],'YTick',[0 0.1 0.2])
-set(ph(3,1),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
-set(ph(4,1),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
+set(ph(1,1),'YLim',[-0.1 0.15],'YTick',[-0.1 0 0.1 0.2])
+set(ph(2,1),'YLim',[-0.025 0.15],'YTick',[0 0.1 0.2])
+set(ph(3,1),'YLim',[-0.32 0.05],'YTick',[-0.3 -0.2 -0.1 0])
+set(ph(4,1),'YLim',[-0.3 0.2],'YTick',[-0.4 -0.2 0 0.2])
 
-set(ph(1,2),'YLim',[-0.2 0.2],'YTick',[-0.2 0 0.2])
-set(ph(2,2),'YLim',[-0.2 0.2],'YTick',[-0.2 0 0.2])
+set(ph(1,2),'YLim',[-0.1 0.15],'YTick',[-0.1 0 0.1])
+set(ph(2,2),'YLim',[-0.1 0.15],'YTick',[-0.2 0 0.2])
 set(ph(3,2),'YLim',[-0.4 0.4],'YTick',[-0.4 -0.2 0 0.2 0.4])
-set(ph(4,2),'YLim',[-0.4 0.2],'YTick',[-0.4 -0.2 0 0.2])
+set(ph(4,2),'YLim',[-0.3 0.3],'YTick',[-0.4 -0.2 0 0.2])
 
 title(ph(1,1),'StepPosition')
 title(ph(2,1),'StepTime')

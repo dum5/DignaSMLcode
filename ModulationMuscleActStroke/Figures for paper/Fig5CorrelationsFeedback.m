@@ -43,8 +43,8 @@ ylabel(ph(1,1),'|| LateA ||')
 ylabel(ph(2,1),'FBK_t_i_e_d_-_t_o_-_s_p_l_i_t')
 ylabel(ph(3,1),'FBK_s_p_l_i_t_-_t_o_-_t_i_e_d')
 ylabel(ph(4,1)','|| EarlyP ||')
-ylabel(ph(5,1)','\beta_M')
-ylabel(ph(6,2)','\beta_M')
+ylabel(ph(5,1)','\beta_A')
+ylabel(ph(6,2)','\beta_A')
 
 set(ph(:,2:3),'YTickLabel',{''})
 set(ph(1:4,:),'XTickLabel',{''})
@@ -94,8 +94,8 @@ a=[];
 yl=get(ax,'YLim');
 xl=get(ax,'XLim');
 if nargin>3
-    yDataC=yDataC(find(~isnan(xDataC)));
-    xDataC=xDataC(find(~isnan(xDataC)));
+   % yDataC=yDataC(find(~isnan(xDataC)));
+   % xDataC=xDataC(find(~isnan(xDataC)));
     plot(ax,xDataC,yDataC,'ok','MarkerFaceColor',[1 1 1])
     [rhoc,pc]=corr([xDataC,yDataC],'Type','Spearman');
     tc=text(ax,xl(1),yl(2)+3*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')

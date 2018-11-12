@@ -27,8 +27,8 @@ set(dt2,'Color','k','LineWidth',2)
 hs=patch(ax,dt2.XData,dt2.YData,[1 1 1]);
 hatchfill2(hs)
 
-ylabel('\betaS')
-xlabel('\betaM')
+ylabel('\betaE')
+xlabel('\betaA')
 %legend('control','stroke')
 % 
 % cci=Cmod.coefCI;
