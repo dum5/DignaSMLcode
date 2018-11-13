@@ -23,7 +23,7 @@ eF=1;
 eL=1;
 
 eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 5 -40 5],...
-    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
+    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmedian');
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2','alphaFast','alphaSlow','xFast','xSlow'};
 
 t=table;
@@ -101,7 +101,7 @@ fileName='groupParamsWithAngles';
 loadName=[matDataDir,fileName]; 
 load(loadName)
 
-eps2=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 5 -40 5],...
+%eps2=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 5 -40 5],...
     [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmedian');
 for e=1:length(eps)
             t.([cell2mat(eps(e,:).Properties.ObsNames),'_skneeAngleAtSHS'])=[squeeze(controls.getEpochData(eps(e,:),'skneeAngleAtSHS'));...

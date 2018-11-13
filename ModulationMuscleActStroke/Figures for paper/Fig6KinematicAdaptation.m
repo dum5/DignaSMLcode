@@ -8,7 +8,6 @@ close all
 
 %settings
 speedMatchFlag=0;
-groupMedianFlag=1;
 allSubFlag=0;
 binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
@@ -16,20 +15,18 @@ faceCols=[1 1 1;0 0 0];
 patchCols=[0.7 0.7 0.7;1 1 1];
 edgeCols=[0.7 0.7 0.7;0 0 0 ];
 
-
-
 %epoch settings
 eF=1;
 eL=1;
 
 %strides for group epoch bars
 eps=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 5 -40 5],...
-    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
+    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmedian');
 statEps=defineEpochs({'eA','lA','eP'},{'Adaptation','Adaptation','Washout'},[5 -40 5],...
-    [eF,eF,eF],[eL,eL,eL],'nanmean');
+    [eF,eF,eF],[eL,eL,eL],'nanmedian');
 %strides for time courses
 eps2=defineEpochs({'Base','eA','lA','eP'},{'TM base','Adaptation','Adaptation','Washout'},[-40 500 -40 200],...
-    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmean');
+    [eF,eF,eF,eF],[eL,eL,eL,eL],'nanmedian');
 
 %load data
 [Name,matDataDir]=uigetfile('*.mat');
@@ -50,6 +47,8 @@ groups{2}=patients.getSubGroup(strokesNames);
 groupsUnbiased{1}=groups{1}.removeBaselineEpoch(eps(1,:),[]);
 groupsUnbiased{2}=groups{2}.removeBaselineEpoch(eps(1,:),[]);
 
+%groupsNoBadStrides{1}=groupsUnbiased{1}.removeBadStrides;
+%groupsNoBadStrides{2}=groupsUnbiased{2}.removeBadStrides;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% run stats using rm model%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,9 +104,9 @@ for i=1:M
     
      %patches to indicate epochs of interest.
      pt=patch(ph(i,1),[1:31 fliplr(1:31)],[-1*ones(1,31) ones(1,31)],condColors(1,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
-     pt=patch(ph(i,1),[52:66 fliplr(52:66)],[-1*ones(1,15) ones(1,15)],condColors(2,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
+     pt=patch(ph(i,1),[52:56 fliplr(52:56)],[-1*ones(1,5) ones(1,5)],condColors(2,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
      pt=patch(ph(i,1),[563:593 fliplr(563:593)],[-1*ones(1,31) ones(1,31)],condColors(2,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
-     pt=patch(ph(i,1),[614:628 fliplr(614:628)],[-1*ones(1,15) ones(1,15)],condColors(3,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
+     pt=patch(ph(i,1),[614:618 fliplr(614:618)],[-1*ones(1,5) ones(1,5)],condColors(3,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
      if i==1
          text(ph(i,1),10,0.17,'B','FontSize',16,'Color',condColors(1,:),'FontWeight','bold');
          text(ph(i,1),52,0.17,'EarlyA','FontSize',16,'Color',condColors(2,:),'FontWeight','bold');
@@ -140,7 +139,7 @@ for i=1:M
               %keyboard 
                 dt([13 14],9)=NaN;
             end
-            dt2=smoothData(dt,binWidth,'nanmean');
+            dt2=smoothData(dt,binWidth,'nanmedian');
 
             if Inds(1)==0
                 Inds=1:size(dt2,1);
@@ -231,7 +230,7 @@ bar(ph(1,2),xval(:,1),nanmean(spatialDataControls),'FaceColor',faceCols(1,:),'Ba
 errorbar(ph(1,2),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',faceCols(2,:),'BarWidth',0.2)
 errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
+%plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
 ll=findobj(ph(1,2),'Type','Bar');
 legend(ll(end:-1:1),{'Control','Stroke'},'box','off','Position',[0.6800 0.9135 0.0762 0.0569]);
  text(ph(1,2),-1,0.25,'B','FontSize',16,'FontWeight','bold')
@@ -253,7 +252,7 @@ bar(ph(4,2),xval(:,1),nanmean(netDataControls),'FaceColor',faceCols(1,:),'BarWid
 errorbar(ph(4,2),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
 bar(ph(4,2),xval(:,2),nanmean(netDataStroke),'FaceColor',faceCols(2,:),'BarWidth',0.2)
 errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
-plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
+%plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
 
 %set titles and labels
 set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
@@ -267,7 +266,7 @@ set(ph(3,1),'YLim',[-0.32 0.05],'YTick',[-0.3 -0.2 -0.1 0])
 set(ph(4,1),'YLim',[-0.3 0.2],'YTick',[-0.4 -0.2 0 0.2])
 
 set(ph(1,2),'YLim',[-0.1 0.15],'YTick',[-0.1 0 0.1])
-set(ph(2,2),'YLim',[-0.1 0.15],'YTick',[-0.2 0 0.2])
+set(ph(2,2),'YLim',[-0.1 0.15],'YTick',[-0.1 0 0.1])
 set(ph(3,2),'YLim',[-0.4 0.4],'YTick',[-0.4 -0.2 0 0.2 0.4])
 set(ph(4,2),'YLim',[-0.3 0.3],'YTick',[-0.4 -0.2 0 0.2])
 

@@ -8,7 +8,7 @@ for n=1:size(data,2)
     for binNum=1:length(start)
         if strcmp(summethod,'nanmean')
             smoothedData(binNum,n)=nanmean(data(start(binNum):stop(binNum),n));
-        elseif strmp(summethod,'nanmedian')
+        elseif strcmp(summethod,'nanmedian')
             smoothedData(binNum,n)=nanmedian(data(start(binNum):stop(binNum),n));
         end
     end
