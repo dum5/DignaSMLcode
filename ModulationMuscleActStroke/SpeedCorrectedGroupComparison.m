@@ -17,9 +17,9 @@ loadName=[matDataDir,loadName];
 load(loadName)
 
 AddCombinedParamsToTable;
-rob='off';
+rob='on';
 t.group=nominal(t.group);
-
+t=t(t.fullGroup==1,:);
 
 
 logfile='VelocityCorrectedBetweenGroupRobust';
