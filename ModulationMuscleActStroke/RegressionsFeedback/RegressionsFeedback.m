@@ -18,8 +18,8 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
-allSubFlag=1;%use this flag to generate the table that includes all subjects
+speedMatchFlag=0;
+allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
 groupMedianFlag=1; %do not change
@@ -120,6 +120,20 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     ttS.eP_lAnorm=ttS.eP_lA./norm(ttS.eP_lA);
     ttS.eAnorm=ttS.eA./norm(ttS.eA);
     
+%      %control regression on Normalized vectors only BS
+%     CmodelFit1=fitlm(ttC,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
+%     Clearn1=CmodelFit1.Coefficients.Estimate;
+%     Clearn1CI=CmodelFit1.coefCI;
+%     Cr1=uncenteredRsquared(CmodelFit1);
+%     Cr1=Cr1.uncentered;
+%     
+%     %stroke regression on Normalized vectors only BS
+%     SmodelFit1=fitlm(ttS,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
+%     Slearn1=SmodelFit1.Coefficients.Estimate;
+%     Slearn1CI=SmodelFit1.coefCI;
+%     Sr1=uncenteredRsquared(SmodelFit1);
+%     Sr1=Sr1.uncentered;
+    
     %control regression on Normalized vectors
     CmodelFit2=fitlm(ttC,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
     Clearn2=CmodelFit2.Coefficients.Estimate;
@@ -133,6 +147,8 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     Slearn2CI=SmodelFit2.coefCI;
     Sr2=uncenteredRsquared(SmodelFit2);
     Sr2=Sr2.uncentered;
+    
+    
     
     if speedMatchFlag==0
         save([matDataDir,'GroupMedianRegressionFull.mat'],'CmodelFit2','SmodelFit2');

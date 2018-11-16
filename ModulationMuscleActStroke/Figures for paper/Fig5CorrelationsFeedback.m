@@ -87,6 +87,10 @@ text(ph(6,2),-1.5,1.2,'B','FontSize',14,'FontWeight','bold')
 [a]=plotCor(ph(6,2),TStroke.FF_Quad,TStroke.BM,TControls.FF_Quad,TControls.BM);
 [a]=plotCor(ph(6,3),TStroke.FF_skneeAngleAtSHS,TStroke.BM,TControls.FF_skneeAngleAtSHS,TControls.BM);
 
+figure
+sp=subplot(2,2,3);
+set(sp,'XLim',[0 10],'YLim',[0 1]);
+[a]=plotCor(sp,TStroke.lAMagn,TStroke.BM,TControls.lAMagn,TControls.BM)
 
 function [a]=plotCor(ax,xDataS,yDataS,xDataC,yDataC)
 hold(ax)
