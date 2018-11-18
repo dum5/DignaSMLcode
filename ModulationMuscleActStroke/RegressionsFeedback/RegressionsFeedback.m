@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -148,6 +148,18 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     Sr2=uncenteredRsquared(SmodelFit2);
     Sr2=Sr2.uncentered;
     
+%     figure
+%     hold on
+%     bar([1 3.5],[CmodelFit2.Coefficients.Estimate(2) CmodelFit1.Coefficients.Estimate(1)],'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+%     bar([2 4.5],[SmodelFit2.Coefficients.Estimate(2) SmodelFit1.Coefficients.Estimate(1)],'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
+%     dt=CmodelFit2.coefCI;plot([1 1],dt(2,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
+%     dt=CmodelFit1.coefCI;plot([3.5 3.5],dt(1,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
+%     dt=SmodelFit2.coefCI;plot([2 2],dt(2,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
+%     dt=SmodelFit1.coefCI;plot([4.5 4.5],dt(1,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
+%     set(gca,'XLim',[0.5 5],'XTick',[1.5 4],'XTickLabel',{'Full','Single'})
+%     ylabel('beta_E')
+%     title('N=10 per group')
+%     
     
     
     if speedMatchFlag==0
