@@ -1,15 +1,15 @@
 
 clear all
-close all
+%close all
 clc
 
 %load data
 matDataDir='C:\Users\did35\OneDrive - University of Pittsburgh\Projects\Modulation of muscle activity in stroke\GroupData\';
 
-load([matDataDir,'GroupMedianRegressionFastLegSpeedMatchNoNorm'])   
+load([matDataDir,'GroupMedianRegressionSpeedMatch'])   
 Cmod=CmodelFit2;Smod=SmodelFit2;
-%load([matDataDir,'GroupMedianRegressionSpeedMatchNoNormFlipped'])    
-Cmod2=CmodelFit3;Smod2=SmodelFit3;
+load([matDataDir,'GroupMedianRegressionSpeedMatchFlipped'])    
+Cmod2=CmodelFit2;Smod2=SmodelFit2;
 gamma=5.991;
 
 figure 
