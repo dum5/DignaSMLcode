@@ -90,7 +90,7 @@ text(ph(6,2),-1.5,1.2,'B','FontSize',14,'FontWeight','bold')
 figure
 sp=subplot(2,2,3);
 set(sp,'XLim',[0 10],'YLim',[0 1]);
-[a]=plotCor(sp,TStroke.lAMagn,TStroke.BM,TControls.lAMagn,TControls.BM)
+[a]=plotCor(sp,TStroke.vel,TStroke.BM,TControls.vel,TControls.BM)
 
 function [a]=plotCor(ax,xDataS,yDataS,xDataC,yDataC)
 hold(ax)
