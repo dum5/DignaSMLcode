@@ -8,7 +8,7 @@ matDataDir='C:\Users\did35\OneDrive - University of Pittsburgh\Projects\Modulati
 
 load([matDataDir,'GroupMedianRegressionSpeedMatch'])   
 Cmod=CmodelFit2;Smod=SmodelFit2;
-load([matDataDir,'GroupMedianRegressionSpeedMatchFlipped'])    
+load([matDataDir,'GroupMedianRegressionHalfFlippedSpeedMatch'])    
 Cmod2=CmodelFit2;Smod2=SmodelFit2;
 gamma=5.991;
 
