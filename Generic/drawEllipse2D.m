@@ -12,6 +12,6 @@ th=0:.1:2*pi;
 x=sin(th);
 y=cos(th);
 a=sqrt(1./sum([x;y].*(M*[x;y])));
-%eh=plot(ax,B(1)+a.*x,B(2)+a.*y);
-eh=plot(ax,B(1)+[a.*x a.*x(1)],B(2)+[a.*y a.*y(1)]);%plot command used to close the circle
+eh=plot(ax,B(1)+a.*x,B(2)+a.*y);
+%eh=plot(ax,B(1)+[a.*x a.*x(1)],B(2)+[a.*y a.*y(1)]);%plot command used to close the circle
 end
