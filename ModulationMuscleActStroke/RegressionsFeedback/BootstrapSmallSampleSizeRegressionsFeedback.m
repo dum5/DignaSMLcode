@@ -109,7 +109,9 @@ for it=1:nIt
     
     %Step 2: generate table with flipped data
     ttC=table(-median(eA_C(:,csubs),2), median(eAT_C(:,csubs),2), median(eP_C(:,csubs),2)-median(lA_C(:,csubs),2),'VariableNames',{'eA','eAT','eP_lA'});
-    ttS=table(-median(eA_S(:,ssubs),2), median(eAT_S(:,ssubs),2), median(eP_S(:,ssubs),2)-median(lA_S(:,ssubs),2),'VariableNames',{'eA','eAT','eP_lA'});
+    %ttS=table(-median(eA_S(:,ssubs),2), median(eAT_S(:,ssubs),2), median(eP_S(:,ssubs),2)-median(lA_S(:,ssubs),2),'VariableNames',{'eA','eAT','eP_lA'});
+    
+    ttS=table(-median(eA_C(:,ssubs),2), median(eAT_C(:,ssubs),2), median(eP_S(:,ssubs),2)-median(lA_S(:,ssubs),2),'VariableNames',{'eA','eAT','eP_lA'});
     
     %% Do regression analysis:
     rob='off';

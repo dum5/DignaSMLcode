@@ -21,7 +21,7 @@ elseif singleComp==1
 end
 
 if tail==1
-    p=p/2;
+   % p=p/2;
 end
 
 end

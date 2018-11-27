@@ -25,8 +25,8 @@ allSubFlag=0;%use this flag to generate the table that includes all subjects
 groupMedianFlag=1; %do not change
 nstrides=5;% do not change
 summethod='nanmedian';% do not change
-nIt=10000
-mIdx=1:360;
+nIt=10000;
+mIdx=1:180;
 
 SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
 
@@ -109,9 +109,9 @@ ttS.eATnorm=ttS.eAT./norm(ttS.eAT);
 ttS.eP_lAnorm=ttS.eP_lA./norm(ttS.eP_lA);
 ttS.eAnorm=ttS.eA./norm(ttS.eA);
 
-refcosine=cosine(ttC.eAnorm(mIdx,1),ttS.eAnorm(mIdx,1));
+refcosine=cosine(ttC.eA(mIdx,1),ttS.eA(mIdx,1));
 
-cosineVals=nan(nIt,1);
+cosineVals=nan(nIt,2);
 for it=1:nIt
     %Select subjects
     %Step 1: divide group in 2
@@ -128,24 +128,27 @@ for it=1:nIt
     %Step 3: generate table with flipped data
     ttC1=table(-median(eA_C(:,refsubs14),2), median(eAT_C(:,refsubs14),2), median(eP_C(:,refsubs14),2)-median(lA_C(:,refsubs14),2),'VariableNames',{'eA','eAT','eP_lA'});
     ttC2=table(-median(eA_C(:,othersubs14),2), median(eAT_C(:,othersubs14),2), median(eP_C(:,othersubs14),2)-median(lA_C(:,othersubs14),2),'VariableNames',{'eA','eAT','eP_lA'});
+    ttS1=table(-median(eA_S(:,refsubs14),2), median(eAT_S(:,refsubs14),2), median(eP_S(:,refsubs14),2)-median(lA_S(:,refsubs14),2),'VariableNames',{'eA','eAT','eP_lA'});
+    
     
     %% Do regression analysis:
     rob='off';
     %normalizing vectors
     ttC1.eAnorm=ttC1.eA./norm(ttC1.eA);
     ttC2.eAnorm=ttC2.eA./norm(ttC2.eA);
+    ttS1.eAnorm=ttS1.eA./norm(ttS1.eA);
    
-    cosineVals(it,1)=cosine(ttC1.eAnorm(mIdx,1),ttC2.eAnorm(mIdx,1));
+    cosineVals(it,1)=cosine(ttC1.eA(mIdx,1),ttC2.eA(mIdx,1));
+    cosineVals(it,2)=cosine(ttS1.eA(mIdx,1),ttC2.eA(mIdx,1));
     
-    clear ttC1 ttC2 CmodelFit2 dt refsubs refsubs14 othersubs othersubs14
+    clear ttC1 ttC2 ttS1 CmodelFit2 dt refsubs refsubs14 othersubs othersubs14
 end
 
 figure
 hold on
-histfit(cosineVals)
+histfit(cosineVals(:,1))
+histfit(cosineVals(:,2))
 plot([refcosine refcosine],[0 600],'Color','g','LineWidth',2)
-pt=prctile(cosineVals,5);
-plot([pt pt],[0 600],'Color','k','LineWidth',2)
 ylabel('number of observations')
 xlabel('cosine between vectors')
-
+legend({'ControlCosine','DistControl','StrokeCosine','DistStroke','strokeControl14'})

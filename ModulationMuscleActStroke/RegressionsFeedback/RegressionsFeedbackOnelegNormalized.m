@@ -221,7 +221,9 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
 %     Slearn2CI=SmodelFit2.coefCI;
 %     Sr2=uncenteredRsquared(SmodelFit2);
 %     Sr2=Sr2.uncentered;
-    
+     CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+     SmodelFit4=fitlm(ttSFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+     
 %     figure
 %     hold on
 %     bar([1 3.5],[CmodelFit2.Coefficients.Estimate(2) CmodelFit1.Coefficients.Estimate(1)],'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
@@ -236,11 +238,11 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
 %     
     
     
-    if speedMatchFlag==0
-        save([matDataDir,'GroupMedianRegressionFastLegFull.mat'],'CmodelFit2','SmodelFit2','CmodelFit3','SmodelFit3');
-    elseif speedMatchFlag==1
-        save([matDataDir,'GroupMedianRegressionFastLegSpeedMatch.mat'],'CmodelFit2','SmodelFit2','CmodelFit3','SmodelFit3');
-    end
+%     if speedMatchFlag==0
+%         save([matDataDir,'GroupMedianRegressionFastLegFull.mat'],'CmodelFit2','SmodelFit2','CmodelFit3','SmodelFit3');
+%     elseif speedMatchFlag==1
+%         save([matDataDir,'GroupMedianRegressionFastLegSpeedMatch.mat'],'CmodelFit2','SmodelFit2','CmodelFit3','SmodelFit3');
+%     end
     
 elseif allSubFlag==1;
     

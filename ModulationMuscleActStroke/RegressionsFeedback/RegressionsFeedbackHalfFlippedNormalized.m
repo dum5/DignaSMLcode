@@ -136,6 +136,8 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
    ttCHalfFlippedFast=ttCHalfFlipped(fIds,:);
    ttSHalfFlippedFast=ttSHalfFlipped(fIds,:);
    
+   ttSHalfFlippedSlow=ttSHalfFlipped(sIds,:);
+   
     %normalizing vectors
     ttC.eATnorm=ttC.eAT./norm(ttC.eAT);
     ttC.eP_lAnorm=ttC.eP_lA./norm(ttC.eP_lA);
@@ -202,6 +204,13 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     ttSHalfFlipped.eP_lAnorm=ttSHalfFlipped.eP_lA./norm(ttSHalfFlipped.eP_lA);
     ttSHalfFlipped.eAnorm=ttSHalfFlipped.eA./norm(ttSHalfFlipped.eA);
     
+    ttSHalfFlippedSlow.eATnorm=ttSHalfFlippedSlow.eAT./norm(ttSHalfFlippedSlow.eAT);
+    ttSHalfFlippedSlow.eP_lAnorm=ttSHalfFlippedSlow.eP_lA./norm(ttSHalfFlippedSlow.eP_lA);
+    ttSHalfFlippedSlow.eAnorm=ttSHalfFlippedSlow.eA./norm(ttSHalfFlippedSlow.eA);
+    
+    
+    CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+     SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
 %      %control regression on Normalized vectors only BS
 %     CmodelFit1=fitlm(ttC,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
 %     Clearn1=CmodelFit1.Coefficients.Estimate;
