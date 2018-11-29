@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -116,55 +116,49 @@ ePlA_S=eP_S-lA_S;
 [Bdata.ePs]=VectorSimBootstrap(eP_C(slowIdx,:),eP_S(slowIdx,:),nIt);
 
 
+binWidth=0.01;BinRange=[-0.5 1];
 
 figure
 fullscreen
 subplot(2,4,1)
 hold on
-histfit(Bdata.eAf(:,1))
-histfit(Bdata.eAf(:,2))
+CompareOverlap(Bdata.eAf,binWidth,BinRange);
 title('FBK_t_i_e_d_-_t_o_-_s_p_l_i_t')
 ylabel('fast')
 
 subplot(2,4,2)
 hold on
-histfit(Bdata.ePlAf(:,1))
-histfit(Bdata.ePlAf(:,2))
+CompareOverlap(Bdata.ePlAf,binWidth,BinRange);
 title('FBK_s_p_l_i_t_-_t_o_-_t_i_e_d')
 
 subplot(2,4,3)
 hold on
-histfit(Bdata.lAf(:,1))
-histfit(Bdata.lAf(:,2))
+CompareOverlap(Bdata.lAf,binWidth,BinRange);
 title('steady state')
 
 subplot(2,4,4)
 hold on
-histfit(Bdata.ePf(:,1))
-histfit(Bdata.ePf(:,2))
+CompareOverlap(Bdata.ePf,binWidth,BinRange);
 title('after effect')
-legend({'ControlCosine','DistControl','StrokeCosine','DistStroke','strokeControl14'})
+legend({'Controls','Stroke'})
 
 subplot(2,4,5)
 hold on
-histfit(Bdata.eAs(:,1))
-histfit(Bdata.eAs(:,2))
+CompareOverlap(Bdata.eAs,binWidth,BinRange);
 ylabel('slow')
 
 subplot(2,4,6)
 hold on
-histfit(Bdata.ePlAs(:,1))
-histfit(Bdata.ePlAs(:,2))
+CompareOverlap(Bdata.ePlAs,binWidth,BinRange);
 
 subplot(2,4,7)
 hold on
-histfit(Bdata.lAs(:,1))
-histfit(Bdata.lAs(:,2))
+CompareOverlap(Bdata.lAs,binWidth,BinRange);
 
 subplot(2,4,8)
 hold on
-histfit(Bdata.ePs(:,1))
-histfit(Bdata.ePs(:,2))
+CompareOverlap(Bdata.ePs,binWidth,BinRange);
+
 
 % 
 % %plot([refcosine refcosine],[0 600],'Color','g','LineWidth',2)

@@ -8,7 +8,7 @@ if nargin<3
     ax=gca;
 end
 
-th=0:.1:2*pi;
+th=[0:.1:2*pi 0];
 x=sin(th);
 y=cos(th);
 a=sqrt(1./sum([x;y].*(M*[x;y])));

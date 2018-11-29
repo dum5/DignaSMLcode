@@ -1,4 +1,4 @@
-function aa=CompareElipses(Cmod,Smod,gamma,ax);
+function aa=CompareElipses(Cmod,Smod,ax);
 
 if nargin<4
     ax=gca;
@@ -7,7 +7,7 @@ end
 %check divide by gamma before or after inverse
 
 aa=[];
-dt1=drawEllipse2D((inv(Cmod.CoefficientCovariance))/gamma,Cmod.Coefficients.Estimate,ax);
+dt1=draw2Dci(Cmod.Coefficients.Estimate,Cmod.CoefficientCovariance,0.95,Cmod.NumObservations-1);
 %make sure that BM is on the y axis
 if find(startsWith(Cmod.PredictorNames,'eAT'),1,'first')==2
     tempx=dt1.YData;tempy=dt1.XData;
@@ -16,7 +16,7 @@ end
 %dt1=drawEllipse2D((inv(Cmod.CoefficientCovariance./gamma)),Cmod.Coefficients.Estimate);
 set(dt1,'Color','k','LineWidth',2)
 
-dt2=drawEllipse2D((inv(Smod.CoefficientCovariance))/gamma,Smod.Coefficients.Estimate,ax);
+dt2=draw2Dci(Smod.Coefficients.Estimate,Smod.CoefficientCovariance,0.95,Smod.NumObservations-1);
 %dt2=drawEllipse2D((inv(Smod.CoefficientCovariance./gamma)),Smod.Coefficients.Estimate);
 if find(startsWith(Smod.PredictorNames,'eAT'),1,'first')==2
     tempx=dt2.YData;tempy=dt2.XData;
@@ -29,6 +29,11 @@ hatchfill2(hs)
 
 ylabel('\betaE')
 xlabel('\betaA')
+
+xv=mean(get(ax,'XLim'));
+yv=mean(get(ax,'YLim'));
+[pValue,stat] = multivarTtest([Cmod.Coefficients.Estimate-Smod.Coefficients.Estimate],[Cmod.CoefficientCovariance+Smod.CoefficientCovariance],Cmod.NumObservations-1);
+text(ax,xv,yv,['stat= ',num2str(round(stat,2)),'p= ',num2str(round(pValue,4))]);
 %legend('control','stroke')
 % 
 % cci=Cmod.coefCI;

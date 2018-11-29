@@ -224,7 +224,24 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
      CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
      SmodelFit4=fitlm(ttSFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
      
-%     figure
+figure
+p1=subplot(2,2,1)
+hold on
+title('slow leg')
+aa=CompareElipses(CmodelFit4,SmodelFit4,gca);
+axis equal
+%[pValue,stat] = multivarTtest(v,S,dof)
+
+
+p2=subplot(2,2,2)
+hold on
+title('fast leg')
+aa=CompareElipses(CmodelFit2,SmodelFit3,gca);
+axis equal
+linkaxes([p1 p2],'xy')
+
+     
+     %     figure
 %     hold on
 %     bar([1 3.5],[CmodelFit2.Coefficients.Estimate(2) CmodelFit1.Coefficients.Estimate(1)],'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
 %     bar([2 4.5],[SmodelFit2.Coefficients.Estimate(2) SmodelFit1.Coefficients.Estimate(1)],'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
