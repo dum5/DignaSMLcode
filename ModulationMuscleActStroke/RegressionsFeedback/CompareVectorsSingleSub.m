@@ -172,7 +172,7 @@ errorbar(2,nanmedian(Data(:,2)),iqr(Data(:,2)),'Color',[0.5 0.5 0.5],'LineWidth'
 set(gca,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'Control','Stroke'})
 [p,h]=ranksum(Data(:,1),Data(:,2));
 yl=get(gca,'YLim');
-text(0.5,yl(2),['p= ',num2str(round(p,2))]);
+text(0.5,yl(2),['p= ',num2str(round(p,3))]);
 
 end
 
