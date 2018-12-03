@@ -208,71 +208,18 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     ttSHalfFlippedSlow.eP_lAnorm=ttSHalfFlippedSlow.eP_lA./norm(ttSHalfFlippedSlow.eP_lA);
     ttSHalfFlippedSlow.eAnorm=ttSHalfFlippedSlow.eA./norm(ttSHalfFlippedSlow.eA);
     
-    
-    CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-     SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-%      %control regression on Normalized vectors only BS
-%     CmodelFit1=fitlm(ttC,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
-%     Clearn1=CmodelFit1.Coefficients.Estimate;
-%     Clearn1CI=CmodelFit1.coefCI;
-%     Cr1=uncenteredRsquared(CmodelFit1);
-%     Cr1=Cr1.uncentered;
-%     
-%     %stroke regression on Normalized vectors only BS
-%     SmodelFit1=fitlm(ttS,'eP_lAnorm~eAnorm-1','RobustOpts',rob);
-%     Slearn1=SmodelFit1.Coefficients.Estimate;
-%     Slearn1CI=SmodelFit1.coefCI;
-%     Sr1=uncenteredRsquared(SmodelFit1);
-%     Sr1=Sr1.uncentered;
-    
-    %control regression on Normalized vectors
-    CmodelFit2=fitlm(ttCHalfFlipped,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-%     Clearn2=CmodelFit2.Coefficients.Estimate;
-%     Clearn2CI=CmodelFit2.coefCI;
-%     Cr2=uncenteredRsquared(CmodelFit2);
-%     Cr2=Cr2.uncentered;
-    
-    %stroke regression on Normalized vectors
-    SmodelFit2=fitlm(ttSHalfFlipped,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-%     Slearn2=SmodelFit2.Coefficients.Estimate;
-%     Slearn2CI=SmodelFit2.coefCI;
-%     Sr2=uncenteredRsquared(SmodelFit2);
-%     Sr2=Sr2.uncentered;
-    
-     %control regression on Normalized vectors
-    CmodelFit3=fitlm(ttCHalfFlippedFast,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-%     Clearn2=CmodelFit2.Coefficients.Estimate;
-%     Clearn2CI=CmodelFit2.coefCI;
-%     Cr2=uncenteredRsquared(CmodelFit2);
-%     Cr2=Cr2.uncentered;
-    
-    %stroke regression on Normalized vectors
-    SmodelFit3=fitlm(ttSHalfFlippedFast,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-%     Slearn2=SmodelFit2.Coefficients.Estimate;
-%     Slearn2CI=SmodelFit2.coefCI;
-%     Sr2=uncenteredRsquared(SmodelFit2);
-%     Sr2=Sr2.uncentered;
-    
-%     figure
-%     hold on
-%     bar([1 3.5],[CmodelFit2.Coefficients.Estimate(2) CmodelFit1.Coefficients.Estimate(1)],'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
-%     bar([2 4.5],[SmodelFit2.Coefficients.Estimate(2) SmodelFit1.Coefficients.Estimate(1)],'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.3)
-%     dt=CmodelFit2.coefCI;plot([1 1],dt(2,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
-%     dt=CmodelFit1.coefCI;plot([3.5 3.5],dt(1,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
-%     dt=SmodelFit2.coefCI;plot([2 2],dt(2,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
-%     dt=SmodelFit1.coefCI;plot([4.5 4.5],dt(1,:),'-k','LineWidth',2,'Color',[0.5 0.5 0.5]);
-%     set(gca,'XLim',[0.5 5],'XTick',[1.5 4],'XTickLabel',{'Full','Single'})
-%     ylabel('beta_E')
-%     title('N=10 per group')
-%     
-    
-    
-    if speedMatchFlag==0
-        save([matDataDir,'GroupMedianRegressionHalfFlippedFull.mat'],'CmodelFit2','SmodelFit2','CmodelFit3','SmodelFit3');
-    elseif speedMatchFlag==1
-        save([matDataDir,'GroupMedianRegressionHalfFlippedSpeedMatch.mat'],'CmodelFit2','SmodelFit2','CmodelFit3','SmodelFit3');
+    if speedMatchFlag == 0
+        %For the full group we only do the slow leg and use the control
+        %fast leg as a reference. This is because the non-paretic leg's
+        %responses are atypical.
+        CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+    elseif speedMatchFlag == 1
+         CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+         SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        
     end
-    
+    figure;hold on;aa=CompareElipses(CmodelFit4,SmodelFit4);
 elseif allSubFlag==1;
     
     

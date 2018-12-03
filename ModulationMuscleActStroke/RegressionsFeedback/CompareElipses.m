@@ -32,7 +32,7 @@ xlabel('\betaA')
 
 xv=mean(get(ax,'XLim'));
 yv=mean(get(ax,'YLim'));
-[pValue,stat] = multivarTtest([Cmod.Coefficients.Estimate-Smod.Coefficients.Estimate],[Cmod.CoefficientCovariance+Smod.CoefficientCovariance],Cmod.NumObservations-1);
+[pValue,stat] = multivarTtest([Cmod.Coefficients.Estimate-Smod.Coefficients.Estimate],[Cmod.CoefficientCovariance+Smod.CoefficientCovariance]);
 text(ax,xv,yv,['stat= ',num2str(round(stat,2)),'p= ',num2str(round(pValue,4))]);
 %legend('control','stroke')
 % 
