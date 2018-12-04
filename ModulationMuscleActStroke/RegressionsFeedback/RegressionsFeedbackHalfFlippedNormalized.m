@@ -114,9 +114,9 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
         ttCHalfFlipped=table(-median(eA_C(:,pIdx),2), median(eAT_S(:,pIdx),2), -median(lA_S(:,pIdx),2), median(eP_C(:,pIdx),2)-median(lA_C(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
     
     else
-        ttC=table(-mean(eA_C(:,cIdx),2), mean(eAT_C(:,cIdx),2), -mean(lA_C(:,cIdx),2), mean(eP_C(:,cIdx),2)-mean(lA_C(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
-        %patients that are don't have good data will be removed
-        ttS=table(-mean(eA_S(:,pIdx),2), mean(eAT_S(:,pIdx),2), -mean(lA_S(:,pIdx),2), mean(eP_S(:,pIdx),2)-mean(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+%         ttC=table(-mean(eA_C(:,cIdx),2), mean(eAT_C(:,cIdx),2), -mean(lA_C(:,cIdx),2), mean(eP_C(:,cIdx),2)-mean(lA_C(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+%         %patients that are don't have good data will be removed
+%         ttS=table(-mean(eA_S(:,pIdx),2), mean(eAT_S(:,pIdx),2), -mean(lA_S(:,pIdx),2), mean(eP_S(:,pIdx),2)-mean(lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
     end
     
   
@@ -208,17 +208,13 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     ttSHalfFlippedSlow.eP_lAnorm=ttSHalfFlippedSlow.eP_lA./norm(ttSHalfFlippedSlow.eP_lA);
     ttSHalfFlippedSlow.eAnorm=ttSHalfFlippedSlow.eA./norm(ttSHalfFlippedSlow.eA);
     
-    if speedMatchFlag == 0
+   
         %For the full group we only do the slow leg and use the control
         %fast leg as a reference. This is because the non-paretic leg's
         %responses are atypical.
         CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
         SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-    elseif speedMatchFlag == 1
-         CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-         SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-        
-    end
+   
     figure;hold on;aa=CompareElipses(CmodelFit4,SmodelFit4);
 elseif allSubFlag==1;
     

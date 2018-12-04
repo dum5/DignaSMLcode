@@ -120,61 +120,109 @@ ePlA_S=eP_S-lA_S;
 
 figure
 fullscreen
-subplot(2,4,1)
+set(gcf,'Color',[1 1 1])
+subplot(2,3,1)
 hold on
 [aa]=plotCosines(Bdata.eAf);
-title('FBK_t_i_e_d_-_t_o_-_s_p_l_i_t')
+title('\DeltaEMG_U_P')
 ylabel('fast')
 
-subplot(2,4,2)
-hold on
-[aa]=plotCosines(Bdata.ePlAf);
-title('FBK_s_p_l_i_t_-_t_o_-_t_i_e_d')
+% subplot(2,4,2)
+% hold on
+% [aa]=plotCosines(Bdata.ePlAf);
+% title('FBK_s_p_l_i_t_-_t_o_-_t_i_e_d')
 
-subplot(2,4,3)
+subplot(2,3,2)
 hold on
 [aa]=plotCosines(Bdata.lAf);
 title('steady state')
 
-subplot(2,4,4)
+subplot(2,3,3)
 hold on
 [aa]=plotCosines(Bdata.ePf);
 title('after effect')
 legend({'Controls','Stroke'})
 
-subplot(2,4,5)
+subplot(2,3,4)
 hold on
 [aa]=plotCosines(Bdata.eAs);
 ylabel('slow')
 
-subplot(2,4,6)
-hold on
-[aa]=plotCosines(Bdata.ePlAs);
+% subplot(2,4,6)
+% hold on
+% [aa]=plotCosines(Bdata.ePlAs);
 
 
-subplot(2,4,7)
+subplot(2,3,5)
 hold on
 [aa]=plotCosines(Bdata.lAs);
 
 
-subplot(2,4,8)
+subplot(2,3,6)
 hold on
 [aa]=plotCosines(Bdata.ePs);
 
+names=strokesNames;
+load([matDataDir,'bioData'])
+fmSelect=NaN(length(names),1);
+for s=1:length(names)
+    temp = str2num(names{s}(2:end));
+    fmSelect(s)=FM(temp);
+    clear temp
+end
+
+figure
+subplot(1,1,1)
+set(gca,'XLim',[20 35],'YLim',[0 0.5])
+plotCor(gca,fmSelect,Bdata.lAs(:,2))
 
 function [aa]=plotCosines(Data);
 aa=[];
-bar(1,nanmedian(Data(:,1)),'Facecolor',[0 0.4470 0.7410]);
-bar(2,nanmedian(Data(:,2)),'Facecolor',[0.8500 0.3250 0.0980]);
-
-errorbar(1,nanmedian(Data(:,1)),iqr(Data(:,1)),'Color',[0.5 0.5 0.5],'LineWidth',2);
-errorbar(2,nanmedian(Data(:,2)),iqr(Data(:,2)),'Color',[0.5 0.5 0.5],'LineWidth',2);
-set(gca,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'Control','Stroke'})
+bar(1,nanmean(Data(:,1)),'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.6);
+hs=bar(2,nanmean(Data(:,2)),'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.6);
+hatchfill2(hs);
+errorbar(1,nanmean(Data(:,1)),std(Data(:,1))./size(Data,2),'Color',[0 0 0],'LineWidth',2);
+errorbar(2,nanmean(Data(:,2)),std(Data(:,2))./size(Data,2),'Color',[0 0 0],'LineWidth',2);
+set(gca,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'Control','Stroke'},'FontSize',14,'FontWeight','bold')
 [p,h]=ranksum(Data(:,1),Data(:,2));
 yl=get(gca,'YLim');
-text(0.5,yl(2),['p= ',num2str(round(p,3))]);
+text(0.5,yl(2),['p= ',num2str(round(p,3))],'FontSize',14);
 
 end
+
+function [a]=plotCor(ax,xDataS,yDataS,xDataC,yDataC)
+hold(ax)
+a=[];
+yl=get(ax,'YLim');
+xl=get(ax,'XLim');
+if nargin>3
+   % yDataC=yDataC(find(~isnan(xDataC)));
+   % xDataC=xDataC(find(~isnan(xDataC)));
+    plot(ax,xDataC,yDataC,'ok','MarkerFaceColor',[1 1 1])
+    [rhoc,pc]=corr([xDataC,yDataC],'Type','Spearman');
+    tc=text(ax,xl(1),yl(2)+3*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')
+    if pc(2)<0.05
+    [r,slope,intercept] = regression(xDataC,yDataC,'one');
+    x=get(ax,'XLim');
+    pred=intercept+slope.*x;
+    plot(ax,x,pred,'-k','LineWidth',2','Color',[0.7 0.7 0.7])
+    clear r slope intercept x pred
+    end
+end
+plot(ax,xDataS,yDataS,'ok','MarkerFaceColor',[0 0 0])
+[rhos,ps]=corr([xDataS,yDataS],'Type','Spearman');
+ts=text(ax,xl(1),yl(2)+diff(yl)/10,['rho= ',num2str(round(rhos(2),2)),' p=',num2str(round(ps(2),3))]);set(ts,'Color',[0 0 0],'FontSize',12,'FontWeight','bold')
+if ps(2)<0.05
+    [r,slope,intercept] = regression(xDataS,yDataS,'one');
+    x=get(ax,'XLim');
+    pred=intercept+slope.*x;
+    plot(ax,x,pred,'-k','LineWidth',2')
+    clear r slope intercept x pred
+end
+
+
+end
+
 
 % 
 % %plot([refcosine refcosine],[0 600],'Color','g','LineWidth',2)
