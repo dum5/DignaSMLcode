@@ -18,12 +18,12 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
-allSubFlag=0;%use this flag to generate the table that includes all subjects
+speedMatchFlag=0;
+allSubFlag=0;%Needed to run SubjectSelection script
 %this needs to happen separately, since indices will be messed up ohterwise
 
 groupMedianFlag=1; %do not change
-nstrides=5;% do not change
+nstrides=5;% do not change for early epochs
 summethod='nanmedian';% do not change
 
 SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
@@ -98,7 +98,6 @@ eAT_S=fftshift(eA_S,1);
 %% Do group analysis:
 rob='off';
 
-if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so don't run the group analysis
     
     if groupMedianFlag
         ttC=table(-median(eA_C(:,cIdx),2), median(eAT_C(:,cIdx),2), -median(lA_C(:,cIdx),2), median(eP_C(:,cIdx),2)-median(lA_C(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
@@ -208,143 +207,152 @@ if allSubFlag==0; %if this is set to 1, the bad subjects are in the analysis, so
     ttSHalfFlippedSlow.eP_lAnorm=ttSHalfFlippedSlow.eP_lA./norm(ttSHalfFlippedSlow.eP_lA);
     ttSHalfFlippedSlow.eAnorm=ttSHalfFlippedSlow.eA./norm(ttSHalfFlippedSlow.eA);
     
-   
-        %For the full group we only do the slow leg and use the control
-        %fast leg as a reference. This is because the non-paretic leg's
-        %responses are atypical.
-        CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-        SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-   
-    figure;hold on;aa=CompareElipses(CmodelFit4,SmodelFit4);
-elseif allSubFlag==1;
     
+  
+    %For the full group we only do the slow leg and use the control
+    %fast leg as a reference. This is because the non-paretic leg's
+    %responses are atypical.
+    CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+    SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+    
+    figure;hold on;aa=CompareElipses(CmodelFit4,SmodelFit4);
+    nsub=length(controlsNames);
+    emptycol=NaN(2*nsub,1);
+    emptycol2=cell(size(emptycol));
+    IndRegressions=table(emptycol2,emptycol2,emptycol,emptycol,'VariableNames',{'group','sub','BE','BA'});
     
     %% Individual models::
     rob='off'; %These models can't be fit robustly (doesn't converge)
     %First: repeat the model(s) above on each subject:
-    clear CmodelFitAll* ClearnAll* SmodelFitAll* SlearnAll*
-    ClearnAll2=NaN(16,2);
-    SlearnAll2=NaN(16,2);
-    Cr2All2=NaN(16,1);
-    Sr2All2=NaN(16,1);
+%     clear CmodelFitAll* ClearnAll* SmodelFitAll* SlearnAll*
+%     ClearnAll4=NaN(16,2);
+%     SlearnAll4=NaN(16,2);
+%     Cr2All2=NaN(16,1);
+%     Sr2All2=NaN(16,1);
   
    % 
-    for c=cIdx%1:size(eA_C,2)
+    for sj=1:nsub
+        IndRegressions.group(sj)={'Control'};
+        sjcode = controlsNames(sj);
+        IndRegressions.sub(sj)=sjcode;
         dt=table;
-        dt.eA=-eA_C(:,c);
-        dt.eAT=eAT_C(:,c);
-        dt.eP_lA=eP_C(:,c)-lA_C(:,c);
-        dt.eANorm=dt.eA./norm(dt.eA);
-        dt.eATNorm=dt.eAT./norm(dt.eAT);
-        dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
+        dt.eA=-eA_C(sIds,sj);
+        dt.eAT=ttC.eAT(sIds);%I use the same reference for controls as for the stroke
+        dt.eP_lA=eP_C(sIds,sj)-lA_C(sIds,sj);
+        dt.eAnorm=dt.eA./norm(dt.eA);
+        dt.eATnorm=dt.eAT./norm(dt.eAT);
+        dt.eP_lAnorm=dt.eP_lA./norm(dt.eP_lA);
         
-        CmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
-        IdxBM=find(strcmp(CmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
-        IdxBS=find(strcmp(CmodelFitAll2{c}.PredictorNames,'eANorm'),1,'first');
-        ClearnAll2(c,:)=CmodelFitAll2{c}.Coefficients.Estimate([IdxBS,IdxBM],1)';
-        aux=uncenteredRsquared(CmodelFitAll2{c});
-        Cr2All2(c)=aux.uncentered;
-        clear dt
+        tmod=fitlm(dt,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
+        IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.BE(sj)=tmod.Coefficients.Estimate(IdxBS);
+        IndRegressions.BA(sj)=tmod.Coefficients.Estimate(IdxBM);
+        
+        clear dt c sjcode tmod IdxBM IdxBS
     end
     
-    for c=pIdx%1:size(eA_S,2)
+    for sj=1:nsub
+        IndRegressions.group(sj+nsub)={'Stroke'};
+        sjcode = strokesNames(sj);
+        IndRegressions.sub(sj+nsub)=sjcode;
         dt=table;
-        dt.eA=-eA_S(:,c);
-        dt.eAT=eAT_S(:,c);
-        dt.eP_lA=eP_S(:,c)-lA_S(:,c);
-        dt.eANorm=dt.eA./norm(dt.eA);
-        dt.eATNorm=dt.eAT./norm(dt.eAT);
-        dt.eP_lANorm=dt.eP_lA./norm(dt.eP_lA);
+        dt.eA=-eA_S(sIds,sj);
+        dt.eAT=ttC.eAT(sIds);%ref of controls
+        dt.eP_lA=eP_S(sIds,sj)-lA_S(sIds,sj);
+        dt.eAnorm=dt.eA./norm(dt.eA);
+        dt.eATnorm=dt.eAT./norm(dt.eAT);
+        dt.eP_lAnorm=dt.eP_lA./norm(dt.eP_lA);
         
-        SmodelFitAll2{c}=fitlm(dt,'eP_lANorm~eANorm+eATNorm-1','RobustOpts',rob);
-        IdxBM=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eATNorm'),1,'first');
-        IdxBS=find(strcmp(SmodelFitAll2{c}.PredictorNames,'eANorm'),1,'first');
-        SlearnAll2(c,:)=SmodelFitAll2{c}.Coefficients.Estimate([IdxBS,IdxBM],1)';
-        aux=uncenteredRsquared(SmodelFitAll2{c});
-        Sr2All2(c)=aux.uncentered;
-        clear dt
-    end
-    
-    %Magnitude analysis
-    eAMagnC=NaN(16,1);
-    ePMagnC=NaN(16,1);
-    eAMagnS=NaN(16,1);
-    ePMagnS=NaN(16,1);
-    ePBMagnC=NaN(16,1);
-    ePBMagnS=NaN(16,1);
-    lAMagnC=NaN(16,1);
-    lAMagnS=NaN(16,1);
-    
-    
-    for i=cIdx%1:size(eA_C,2)
-        eAMagnC(i,1)=norm(eA_C(:,i));
-        ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
-        ePBMagnC(i,1)=norm(eP_C(:,i));
-        lAMagnC(i,1)=norm(lA_C(:,i));
-    end
+        tmod=fitlm(dt,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
+        IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.BE(sj+nsub)=tmod.Coefficients.Estimate(IdxBS);
+        IndRegressions.BA(sj+nsub)=tmod.Coefficients.Estimate(IdxBM);
         
-    for i=pIdx%1:size(eA_S,2)
-        eAMagnS(i,1)=norm(eA_S(:,i));
-        ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
-        ePBMagnS(i,1)=norm(eP_S(:,i));
-        lAMagnS(i,1)=norm(lA_S(:,i));
+        clear dt c sjcode tmod IdxBM IdxBS
     end
     
-     
-    
-    load([matDataDir,'bioData'])
-    clear ageC ageS;
-    for c=1:length(groups{1}.adaptData)
-        ageC(c,1)=groups{1}.adaptData{c}.getSubjectAgeAtExperimentDate;
-        genderC{c}=groups{1}.adaptData{c}.subData.sex;       
-    end
-    
-    for c=1:length(groups{2}.adaptData)
-        ageS(c,1)=groups{2}.adaptData{c}.getSubjectAgeAtExperimentDate;
-        genderS{c}=groups{2}.adaptData{c}.subData.sex;
-        affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
-    end
-    
-    %Selection of subjects removed
-    FMselect=FM;
-    velSselect=velsS;
-    velCselect=velsC;
-    
-    tALL=table;
-    %tALL.group=cell(32,1);
-    tALL.aff=cell(32,1);tALL.sens=NaN(32,1);
-    %tALL.group(1:16,1)={'control'};
-    %tALL.group(17:32,1)={'stroke'};
-    %tALL.group=nominal(tALL.group);
-    tALL.speedMatch=speedMatch;
-    tALL.fullGroup=fullGroup;
-    tALL.gender=[genderC';genderS'];
-    tALL.age=[ageC; ageS];
-    tALL.aff(17:32)=affSide';
-    tALL.vel=[velCselect';velSselect'];
-    tALL.FM=[repmat(34,16,1);FMselect'];
-    tALL.BS=[ClearnAll2(:,1);SlearnAll2(:,1)];
-    tALL.BM=[ClearnAll2(:,2);SlearnAll2(:,2)];
-    tALL.R2=[Cr2All2;Sr2All2];
-    tALL.sens(17:32)=[3.61 3.61 2.83 2.83 6.65 3.61 NaN 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
-    tALL.eAMagn=[eAMagnC;eAMagnS];
-    tALL.ePMagn=[ePMagnC;ePMagnS];
-    tALL.ePBMagn=[ePBMagnC;ePBMagnS];
-    tALL.lAMagn=[lAMagnC;lAMagnS];
-    %tALL.cs=[csc;css];
-    %tALL.cm=[cmc;cms];
-    
-    
-    answer = questdlg('Save results to mat file?');
-    switch answer
-        case 'Yes'
-            save([matDataDir,'RegressionResults.mat'],'tALL');
-            disp('matfile saved')
-        case 'No'
-            disp('data not saved')
-    end
-    
-end
+%     %Magnitude analysis
+%     eAMagnC=NaN(16,1);
+%     ePMagnC=NaN(16,1);
+%     eAMagnS=NaN(16,1);
+%     ePMagnS=NaN(16,1);
+%     ePBMagnC=NaN(16,1);
+%     ePBMagnS=NaN(16,1);
+%     lAMagnC=NaN(16,1);
+%     lAMagnS=NaN(16,1);
+%     
+%     
+%     for i=cIdx%1:size(eA_C,2)
+%         eAMagnC(i,1)=norm(eA_C(:,i));
+%         ePMagnC(i,1)=norm([eP_C(:,i)-lA_C(:,i)]);
+%         ePBMagnC(i,1)=norm(eP_C(:,i));
+%         lAMagnC(i,1)=norm(lA_C(:,i));
+%     end
+%         
+%     for i=pIdx%1:size(eA_S,2)
+%         eAMagnS(i,1)=norm(eA_S(:,i));
+%         ePMagnS(i,1)=norm([eP_S(:,i)-lA_S(:,i)]);
+%         ePBMagnS(i,1)=norm(eP_S(:,i));
+%         lAMagnS(i,1)=norm(lA_S(:,i));
+%     end
+%     
+%      
+%     
+%     load([matDataDir,'bioData'])
+%     clear ageC ageS;
+%     for c=1:length(groups{1}.adaptData)
+%         ageC(c,1)=groups{1}.adaptData{c}.getSubjectAgeAtExperimentDate;
+%         genderC{c}=groups{1}.adaptData{c}.subData.sex;       
+%     end
+%     
+%     for c=1:length(groups{2}.adaptData)
+%         ageS(c,1)=groups{2}.adaptData{c}.getSubjectAgeAtExperimentDate;
+%         genderS{c}=groups{2}.adaptData{c}.subData.sex;
+%         affSide{c}=groups{2}.adaptData{c}.subData.affectedSide;
+%     end
+%     
+%     %Selection of subjects removed
+%     FMselect=FM;
+%     velSselect=velsS;
+%     velCselect=velsC;
+%     
+%     tALL=table;
+%     %tALL.group=cell(32,1);
+%     tALL.aff=cell(32,1);tALL.sens=NaN(32,1);
+%     %tALL.group(1:16,1)={'control'};
+%     %tALL.group(17:32,1)={'stroke'};
+%     %tALL.group=nominal(tALL.group);
+%     tALL.speedMatch=speedMatch;
+%     tALL.fullGroup=fullGroup;
+%     tALL.gender=[genderC';genderS'];
+%     tALL.age=[ageC; ageS];
+%     tALL.aff(17:32)=affSide';
+%     tALL.vel=[velCselect';velSselect'];
+%     tALL.FM=[repmat(34,16,1);FMselect'];
+%     tALL.BS=[ClearnAll2(:,1);SlearnAll2(:,1)];
+%     tALL.BM=[ClearnAll2(:,2);SlearnAll2(:,2)];
+%     tALL.R2=[Cr2All2;Sr2All2];
+%     tALL.sens(17:32)=[3.61 3.61 2.83 2.83 6.65 3.61 NaN 3.61 6.65 2.83 6.65 4.56 3.61 3.61 3.61 6.65]';
+%     tALL.eAMagn=[eAMagnC;eAMagnS];
+%     tALL.ePMagn=[ePMagnC;ePMagnS];
+%     tALL.ePBMagn=[ePBMagnC;ePBMagnS];
+%     tALL.lAMagn=[lAMagnC;lAMagnS];
+%     %tALL.cs=[csc;css];
+%     %tALL.cm=[cmc;cms];
+%     
+%     
+%     answer = questdlg('Save results to mat file?');
+%     switch answer
+%         case 'Yes'
+%             save([matDataDir,'RegressionResults.mat'],'tALL');
+%             disp('matfile saved')
+%         case 'No'
+%             disp('data not saved')
+%     end
+%     
+
 
 %
 % figure

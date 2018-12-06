@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -163,18 +163,50 @@ hold on
 [aa]=plotCosines(Bdata.ePs);
 
 names=strokesNames;
+names2=controlsNames;
 load([matDataDir,'bioData'])
 fmSelect=NaN(length(names),1);
+sSpeeds=NaN(length(names),1);
+cSpeeds=NaN(length(names2),1);
 for s=1:length(names)
     temp = str2num(names{s}(2:end));
     fmSelect(s)=FM(temp);
+    sSpeeds(s)= velsS(temp);
     clear temp
 end
 
+for s=1:length(names2)
+    temp = str2num(names2{s}(2:end));
+    cSpeeds(s)= velsC(temp);
+    clear temp
+end
+
+load([matDataDir,'/IndRegressions'])
+
+IndRegressions.BA_BE=IndRegressions.BA-IndRegressions.BE;
+
 figure
-subplot(1,1,1)
+subplot(2,3,1)
+set(gca,'XLim',[0 1],'YLim',[0 1])
+plotCor(gca,IndRegressions.BA(15:28),Bdata.lAs(:,2),IndRegressions.BA(1:14),Bdata.lAs(:,1))
+ylabel('structure late adap')
+xlabel('\Beta_A')
+
+subplot(2,3,2)
+set(gca,'XLim',[-0.5 1],'YLim',[0 1])
+plotCor(gca,IndRegressions.BE(15:28),Bdata.lAs(:,2),IndRegressions.BE(1:14),Bdata.lAs(:,1))
+xlabel('\Beta_E')
+
+subplot(2,3,3)
+set(gca,'XLim',[0 1],'YLim',[0 1])
+plotCor(gca,IndRegressions.BA_BE(15:28),Bdata.lAs(:,2),IndRegressions.BA_BE(1:14),Bdata.lAs(:,1))
+xlabel('Diff\Beta')
+
+subplot(2,3,4)
 set(gca,'XLim',[20 35],'YLim',[0 0.5])
 plotCor(gca,fmSelect,Bdata.lAs(:,2))
+
+load([matDataDir,'/IndRegressions'])
 
 function [aa]=plotCosines(Data);
 aa=[];
@@ -200,7 +232,7 @@ if nargin>3
    % xDataC=xDataC(find(~isnan(xDataC)));
     plot(ax,xDataC,yDataC,'ok','MarkerFaceColor',[1 1 1])
     [rhoc,pc]=corr([xDataC,yDataC],'Type','Spearman');
-    tc=text(ax,xl(1),yl(2)+3*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')
+    tc=text(ax,xl(1),yl(2)+2*diff(yl)/10,['rho= ',num2str(round(rhoc(2),2)),' p=',num2str(round(pc(2),3))]);set(tc,'Color',[0.7 0.7 0.7],'FontSize',12,'FontWeight','bold')
     if pc(2)<0.05
     [r,slope,intercept] = regression(xDataC,yDataC,'one');
     x=get(ax,'XLim');
