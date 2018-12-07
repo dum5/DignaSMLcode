@@ -238,6 +238,7 @@ rob='off';
         dt=table;
         dt.eA=-eA_C(sIds,sj);
         dt.eAT=ttC.eAT(sIds);%I use the same reference for controls as for the stroke
+        %dt.eAT=eAT_C(sIds,sj);
         dt.eP_lA=eP_C(sIds,sj)-lA_C(sIds,sj);
         dt.eAnorm=dt.eA./norm(dt.eA);
         dt.eATnorm=dt.eAT./norm(dt.eAT);
