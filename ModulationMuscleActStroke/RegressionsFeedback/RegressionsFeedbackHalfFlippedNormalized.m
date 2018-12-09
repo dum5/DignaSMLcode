@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 allSubFlag=0;%Needed to run SubjectSelection script
 %this needs to happen separately, since indices will be messed up ohterwise
 

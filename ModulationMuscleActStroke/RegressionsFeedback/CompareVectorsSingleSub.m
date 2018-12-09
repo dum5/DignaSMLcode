@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=0;
+speedMatchFlag=1;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -188,18 +188,18 @@ IndRegressions.BA_BE=IndRegressions.BA-IndRegressions.BE;
 figure
 subplot(2,3,1)
 set(gca,'XLim',[0 1],'YLim',[0 1])
-plotCor(gca,IndRegressions.BA(15:28),Bdata.lAs(:,2),IndRegressions.BA(1:14),Bdata.lAs(:,1))
+plotCor(gca,IndRegressions.BA(11:20),Bdata.lAs(:,2),IndRegressions.BA(1:10),Bdata.lAs(:,1))
 ylabel('structure late adap')
 xlabel('\beta_A')
 
 subplot(2,3,2)
 set(gca,'XLim',[-0.5 1],'YLim',[0 1])
-plotCor(gca,IndRegressions.BE(15:28),Bdata.lAs(:,2),IndRegressions.BE(1:14),Bdata.lAs(:,1))
+plotCor(gca,IndRegressions.BE(11:20),Bdata.lAs(:,2),IndRegressions.BE(1:10),Bdata.lAs(:,1))
 xlabel('\beta_E')
 
 subplot(2,3,3)
 set(gca,'XLim',[0 1],'YLim',[0 1])
-plotCor(gca,IndRegressions.BA_BE(15:28),Bdata.lAs(:,2),IndRegressions.BA_BE(1:14),Bdata.lAs(:,1))
+plotCor(gca,IndRegressions.BA_BE(11:20),Bdata.lAs(:,2),IndRegressions.BA_BE(1:10),Bdata.lAs(:,1))
 xlabel('Diff\beta')
 
 subplot(2,3,4)
