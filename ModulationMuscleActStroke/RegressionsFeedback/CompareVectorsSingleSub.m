@@ -188,35 +188,44 @@ IndRegressions.BA_BE=IndRegressions.BA-IndRegressions.BE;
 figure
 subplot(2,3,1)
 set(gca,'XLim',[0 1],'YLim',[0 1])
-plotCor(gca,IndRegressions.BA(11:20),Bdata.lAs(:,2),IndRegressions.BA(1:10),Bdata.lAs(:,1))
+plotCor(gca,IndRegressions.BA(15:28),Bdata.lAs(:,2),IndRegressions.BA(1:14),Bdata.lAs(:,1))
 ylabel('structure late adap')
 xlabel('\beta_A')
 
 subplot(2,3,2)
 set(gca,'XLim',[-0.5 1],'YLim',[0 1])
-plotCor(gca,IndRegressions.BE(11:20),Bdata.lAs(:,2),IndRegressions.BE(1:10),Bdata.lAs(:,1))
+plotCor(gca,IndRegressions.BE(15:28),Bdata.lAs(:,2),IndRegressions.BE(1:14),Bdata.lAs(:,1))
 xlabel('\beta_E')
 
 subplot(2,3,3)
 set(gca,'XLim',[0 1],'YLim',[0 1])
-plotCor(gca,IndRegressions.BA_BE(11:20),Bdata.lAs(:,2),IndRegressions.BA_BE(1:10),Bdata.lAs(:,1))
+plotCor(gca,IndRegressions.BA_BE(15:28),Bdata.lAs(:,2),IndRegressions.BA_BE(1:14),Bdata.lAs(:,1))
 xlabel('Diff\beta')
 
 subplot(2,3,4)
-set(gca,'XLim',[20 35],'YLim',[0 0.5])
-plotCor(gca,fmSelect,Bdata.lAs(:,2))
-xlabel('Fugl-Meyer')
-ylabel('structure readap')
+set(gca,'YLim',[20 35],'XLim',[0 0.5])
+plotCor(gca,Bdata.lAs(:,2),fmSelect)
+ylabel('Fugl-Meyer')
+xlabel('\DeltaEMG_S_S')
+
+subplot(2,3,5)
+set(gca,'YLim',[20 35],'XLim',[0 0.7])
+plotCor(gca,IndRegressions.BA(15:28),fmSelect)
+ylabel('Fugl-Meyer')
+xlabel('\beta_A')
+
 
 load([matDataDir,'/IndRegressions'])
 
 function [aa]=plotCosines(Data);
 aa=[];
-bar(1,nanmean(Data(:,1)),'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.6);
-hs=bar(2,nanmean(Data(:,2)),'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.6);
+bar(1,nanmedian(Data(:,1)),'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.6);
+hs=bar(2,nanmedian(Data(:,2)),'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',2,'BarWidth',0.6);
 hatchfill2(hs);
-errorbar(1,nanmean(Data(:,1)),std(Data(:,1))./size(Data,2),'Color',[0 0 0],'LineWidth',2);
-errorbar(2,nanmean(Data(:,2)),std(Data(:,2))./size(Data,2),'Color',[0 0 0],'LineWidth',2);
+errorbar(1,nanmedian(Data(:,1)),iqr(Data(:,1)),'Color',[0 0 0],'LineWidth',2);
+errorbar(2,nanmedian(Data(:,2)),iqr(Data(:,2)),'Color',[0 0 0],'LineWidth',2);
+plot(1,Data(:,1),'ok');
+plot(2,Data(:,2),'ok');
 set(gca,'XLim',[0.5 2.5],'XTick',[1 2],'XTickLabel',{'Control','Stroke'},'FontSize',14,'FontWeight','bold')
 [p,h]=ranksum(Data(:,1),Data(:,2));
 yl=get(gca,'YLim');
