@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -208,7 +208,17 @@ plotCor(gca,fmSelect,Bdata.lAs(:,2))
 xlabel('Fugl-Meyer')
 ylabel('structure readap')
 
-load([matDataDir,'/IndRegressions'])
+if speedMatchFlag==0;
+    BdataFull=Bdata;
+    save([matDataDir,'vectorSimFull'],'BdataFull','fmSelect');
+elseif speedMatchFlag==1
+    BdataSpM=Bdata;
+    save([matDataDir,'vectorSimSpM.mat'],'BdataSpM','fmSelect');
+end
+
+
+
+
 
 function [aa]=plotCosines(Data);
 aa=[];
