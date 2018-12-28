@@ -149,8 +149,10 @@ for i=1:M
            %plot here directly, ohterwise patches mess up
             %plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',2,'MarkerFaceColor',faceCols(g,:),'MarkerEdgeColor',faceCols(g,:))
             plot(ph(i,1),Inds,nanmean(dt2,2),'-k','Color',faceCols(g,:),'LineWidth',2)
-            patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],patchCols(g,:),'FaceAlpha',0.7,'EdgeColor','k');
-            
+            hs=patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],patchCols(g,:),'FaceAlpha',0.7,'EdgeColor','k');
+            if g==2
+                hatchfill2(hs)
+            end
 %            
         end
         pa=findobj(ph(i,1),'Type','Patch');
