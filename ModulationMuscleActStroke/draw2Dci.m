@@ -1,4 +1,4 @@
-function eh=draw2Dci(c,M,prc,Mdof)
+function eh=draw2Dci(ax,c,M,prc,Mdof)
 %Draws a 2D ellipse representing the prc(%) CI of a multivariate random
 %variable x when x ~ N(c,Sigma) and M ~ W(Sigma,Mdof). If Mdof is not
 %given, it is assumed to be infinity so M=Sigma (Sigma known). The ellipse 
@@ -35,10 +35,10 @@ function eh=draw2Dci(c,M,prc,Mdof)
 %Otherwise, it is distributed as Hotelling's T^2 with p,Mdof degrees of freedom
 p=size(M,1);
 
-if nargin<4 || isempty(Mdof) %No degrees of freedom given, assuming covariance is known exactly
+if nargin<5 || isempty(Mdof) %No degrees of freedom given, assuming covariance is known exactly
     gamma = chi2inv(prc,p);
 else
     gamma = (Mdof*p/(Mdof+1-p))*finv(prc,p,Mdof+1-p);
 end
-eh=drawEllipse2D(inv(M)/gamma,c);
+eh=drawEllipse2D(inv(M)/gamma,c,ax);
 end
