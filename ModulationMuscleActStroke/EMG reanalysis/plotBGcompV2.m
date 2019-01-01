@@ -49,12 +49,12 @@ dataEcmed=transpose(squeeze(nanmedian(dataEc,4)));%these values are generated to
 
 [pvalc,hc,alphaAdj_c]=checkerstatsV2(dataEc,[],1,0,fdr,'benhoch',0);%mindif has to be zero, since signrank cannot reliably do a two-tail test agains another value
 %-matrices hc and pvalc are in the same format as the checkerboards (see dataEcmed)
-
+disp(['p-threshold controls = ',num2str(alphaAdj_c)])
 get(pc);hold on
 for i=1:size(hc,1)
     for k=1:size(hc,2)
         if hc(i,k)==1  && abs(dataEcmed(i,k))>mindif %since statistical testing was done againts zero, amplitude testing happens here
-            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',16,'Color','k')
+            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',10,'Color','k')
            
         end
     end
@@ -74,11 +74,13 @@ title(['Controls ', cell2mat(epoch.Properties.ObsNames),'-',cell2mat(refepoch.Pr
 %nonparametric stats
 dataEsmed=transpose(squeeze(nanmedian(dataEs,4)));%these values are generated to assess if effect sizes are larger than threshold value
 [pvals,hs,alphaAdj_s]=checkerstatsV2(dataEs,[],1,0,fdr,'benhoch',0);%mindif has to be zero, since signrank cannot reliably do a two-tail test agains another value
+disp(['p-threshold stroke = ',num2str(alphaAdj_s)])
+
 get(ps);hold on
 for i=1:size(hs,1)
     for k=1:size(hs,2)
         if hs(i,k)==1  && abs(dataEsmed(i,k))>mindif      %since statistical testing was done againts zero, amplitude testing happens here 
-            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',16,'Color','k')
+            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',10,'Color','k')
            
         end
     end
@@ -136,15 +138,16 @@ groupMedDiff=transpose(squeeze(nanmedian(dataEc,4)-nanmedian(dataEs,4)));
 
 
 %Perform stats on counts
-[pvalb,hb,alphaAdj_b]=checkerCountstatsV2(dataBinaryc,dataBinarys,allsigns,fdr,'benhoch');
-%plot3(pc,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
-%plot3(ps,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
-for i=1:size(hb,1)
-    for k=1:size(hb,2)
-        if hb(i,k)==1 %&& abs(groupMedDiff(i,k))>0.1
-            plot3(pc,(k-0.7)/12,i-0.5,1,'*','MarkerSize',11,'Color','k')
-            plot3(ps,(k-0.7)/12,i-0.5,1,'*','MarkerSize',11,'Color','k')           
-        end
-    end
-end
-%keyboard
+% [pvalb,hb,alphaAdj_b]=checkerCountstatsV2(dataBinaryc,dataBinarys,allsigns,fdr,'benhoch');
+% %plot3(pc,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
+% %plot3(ps,[0 1],[size(hb,1)/2,size(hb,1)/2],[1 1],'--k','Color',[0.5 0.5 0.5],'LineWidth',2)
+% for i=1:size(hb,1)
+%     for k=1:size(hb,2)
+%         if hb(i,k)==1 %&& abs(groupMedDiff(i,k))>0.1
+%             plot3(pc,(k-0.7)/12,i-0.5,1,'*','MarkerSize',11,'Color','k')
+%             plot3(ps,(k-0.7)/12,i-0.5,1,'*','MarkerSize',11,'Color','k')           
+%         end
+%     end
+% end
+% %keyboard
+pvalb=NaN;hb=NaN;

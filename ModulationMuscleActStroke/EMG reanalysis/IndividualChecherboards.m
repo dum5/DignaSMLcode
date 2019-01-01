@@ -22,7 +22,7 @@ eE=1;
 eL=1;
 ep=defineEpochs({'BASE','eA','lA','eP','lP'},{'TM base','Adaptation','Adaptation','Washout','Washout'},[-40 15 -40 15 -40],[eE eE eE eE eE],[eL eL eL eL eL],'nanmean');
 %refEp=defineEpochs({'Base'},{'TM Base'}',[15],[eE],[eL],'nanmean');
-refEp=defineEpochs({'lP'},{'Washout'}',[-40],[eE],[eL],'nanmean');
+refEp=defineEpochs({'BASE'},{'TM base'}',[-40],[eE],[eL],'nanmean');
 
 nMusc=length(mOrder);
 type='s';
@@ -31,16 +31,12 @@ labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
 
 
 
-for i = 3%1:n_subjects
+for i = 11%1:n_subjects
     adaptDataSubject = groups{2}.adaptData{1, i}; 
     
-    %Alt Normalization
+    %
+    
     ll=adaptDataSubject.data.getLabelsThatMatch('^Norm');
-    l2=regexprep(regexprep(ll,'^Norm',''),'_s','m');
-    adaptDataSubject=adaptDataSubject.renameParams(ll,l2);%replace old normalized parameters with random name to avoid collision of names
-    clear ll l2
-    adaptDataSubject=normalizeToBaselineEpoch(adaptDataSubject,labelPrefixLong,refEp,1);%normalize to alt baseline
-     ll=adaptDataSubject.data.getLabelsThatMatch('^Norm');
      l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
      adaptDataSubject=adaptDataSubject.renameParams(ll,l2);
      newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
@@ -56,7 +52,7 @@ for i = 3%1:n_subjects
     [~,~,labels,dataE{1},dataRef{1}]=adaptDataSubject.plotCheckerboards(newLabelPrefix,ep,fh,ph(2,:),refEp,flip);%Second, the rest:
 
     set(ph(:,1),'CLim',[-1 1]);
-    set(ph(:,2:end),'YTickLabels',{},'CLim',[-1 1]);
+    set(ph(:,2:end),'YTickLabels',{},'CLim',[-0.5 0.5]);
     set(ph,'FontSize',8)
     pos=get(ph(1,end),'Position');
     axes(ph(1,end))

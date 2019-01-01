@@ -12,7 +12,7 @@ allSubFlag=0;
 binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
 faceCols=[1 1 1;0 0 0];
-patchCols=[0.7 0.7 0.7;1 1 1];
+patchCols=[0.4 0.4 0.4;1 1 1];
 edgeCols=[0.7 0.7 0.7;0 0 0 ];
 
 %epoch settings
@@ -81,9 +81,9 @@ groupsUnbiased{2}=groups{2}.removeBaselineEpoch(eps(1,:),[]);
 %%Do the plotting%%
 %%%%%%%%%%%%%%%%%%%
 
-fh=figure;
-fullscreen
-set(fh,'Color',[1 1 1])
+f1=figure;
+set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 6 6]);
+%set(fh,'Color',[1 1 1])
 xpos=[0.05 0.72];
 ypos=[0.7722 0.5370 0.3017 0.0665];
 w=[0.6 0.2310];
@@ -92,9 +92,9 @@ h=0.1820;
 M=length(labels);
 for i=1:M
     ph(i,1)=subplot(M,3,[1:2]+3*(i-1));
-    set(ph(i,1),'Position',[xpos(1),ypos(i),w(1),h])
+    set(ph(i,1),'Position',[xpos(1),ypos(i),w(1),h],'FontSize',6)
     ph(i,2)=subplot(M,3,[3]+3*(i-1));
-    set(ph(i,2),'Position',[xpos(2),ypos(i),w(2),h])
+    set(ph(i,2),'Position',[xpos(2),ypos(i),w(2),h],'FontSize',6)
 end
 
 
@@ -102,18 +102,16 @@ end
 for i=1:M
     hold(ph(i,1))
     
-     %patches to indicate epochs of interest.
-     pt=patch(ph(i,1),[1:31 fliplr(1:31)],[-1*ones(1,31) ones(1,31)],condColors(1,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
-     pt=patch(ph(i,1),[52:56 fliplr(52:56)],[-1*ones(1,5) ones(1,5)],condColors(2,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
-     pt=patch(ph(i,1),[563:593 fliplr(563:593)],[-1*ones(1,31) ones(1,31)],condColors(2,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
-     pt=patch(ph(i,1),[614:618 fliplr(614:618)],[-1*ones(1,5) ones(1,5)],condColors(3,:),'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
-     if i==1
-         text(ph(i,1),10,0.17,'B','FontSize',16,'Color',condColors(1,:),'FontWeight','bold');
-         text(ph(i,1),52,0.17,'EarlyA','FontSize',16,'Color',condColors(2,:),'FontWeight','bold');
-         text(ph(i,1),563,0.17,'LateA','FontSize',16,'Color',condColors(2,:),'FontWeight','bold');
-         text(ph(i,1),614,0.17,'EarlyP','FontSize',16,'Color',condColors(3,:),'FontWeight','bold');
-         text(ph(i,1),-40,0.25,'A','FontSize',16,'FontWeight','bold')
-     end
+     %patches to indicate adaptation
+    pt=patch(ph(i,1),[52 593 593 52],[-1 -1 1 1],[0.75 0.75 0.75],'FaceAlpha',condAlpha,'EdgeColor','none');uistack(pt,'bottom') 
+     
+%      if i==1
+%          text(ph(i,1),10,0.17,'Base','FontSize',6,'Color','k');
+%          text(ph(i,1),52,0.17,'Early Adapt.','FontSize',6,'Color','k');
+%          text(ph(i,1),563,0.17,'Late Adapt.','FontSize',6,'Color','k');
+%          text(ph(i,1),614,0.17,'Early Post-Adapt.','FontSize',6,'Color','k');
+%          %text(ph(i,1),-40,0.25,'A','FontSize',16,'FontWeight','bold')
+%      end
      
     for g=1:length(groupsUnbiased);
         Inds=0;
@@ -148,11 +146,11 @@ for i=1:M
             end
            %plot here directly, ohterwise patches mess up
             %plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',2,'MarkerFaceColor',faceCols(g,:),'MarkerEdgeColor',faceCols(g,:))
-            plot(ph(i,1),Inds,nanmean(dt2,2),'-k','Color',faceCols(g,:),'LineWidth',2)
+            plot(ph(i,1),Inds,nanmean(dt2,2),'-k','Color',faceCols(g,:),'LineWidth',1)
             hs=patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],patchCols(g,:),'FaceAlpha',0.7,'EdgeColor','k');
-            if g==2
-                hatchfill2(hs)
-            end
+%             if g==2
+%                 hatchfill2(hs)
+%             end
 %            
         end
         pa=findobj(ph(i,1),'Type','Patch');
@@ -220,7 +218,7 @@ for l=1:length(labels)
     end
 end
 
-set(ph(:,:),'FontSize',16,'TitleFontSizeMultiplier',1.1,'box','off');
+set(ph(:,:),'FontSize',6,'TitleFontSizeMultiplier',1.3333333,'box','off');
 
 
 %generate plots for between epoch measures
@@ -228,37 +226,41 @@ xval=[1 2;4 5;7 8;10 11];
 nc=size(spatialDataControls,1);
 ns=size(spatialDataStroke,1);
 hold(ph(1,2));
-bar(ph(1,2),xval(:,1),nanmean(spatialDataControls),'FaceColor',faceCols(1,:),'BarWidth',0.2)
-errorbar(ph(1,2),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',faceCols(2,:),'BarWidth',0.2)
-errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(1,2),xval(:,1),nanmean(spatialDataControls),'FaceColor',[1 1 1],'BarWidth',0.2)
+errorbar(ph(1,2),xval(:,1),nanmean(spatialDataControls),nanstd(spatialDataControls)./sqrt(nc),'Color','k','LineWidth',1,'LineStyle','none')
+hs=bar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),'FaceColor',[1 1 1],'BarWidth',0.2);
+hatchfill2(hs)
+errorbar(ph(1,2),xval(:,2),nanmean(spatialDataStroke),nanstd(spatialDataStroke)./sqrt(ns),'Color','k','LineWidth',1,'LineStyle','none')
 %plot(ph(1,2),xval(1,:),[0.15 0.15],'-k','LineWidth',2)
-ll=findobj(ph(1,2),'Type','Bar');
-legend(ll(end:-1:1),{'Control','Stroke'},'box','off','Position',[0.6800 0.9135 0.0762 0.0569]);
- text(ph(1,2),-1,0.25,'B','FontSize',16,'FontWeight','bold')
+%ll=findobj(ph(1,2),'Type','Bar');
+%legend(ll(end:-1:1),{'Control','Stroke'},'box','off','Position',[0.6800 0.9135 0.0762 0.0569]);
+ %text(ph(1,2),-1,0.25,'B','FontSize',16,'FontWeight','bold')
 
 hold(ph(2,2));
-bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',faceCols(1,:),'BarWidth',0.2)
-errorbar(ph(2,2),xval(:,1),nanmean(temporalDataControls),nanstd(temporalDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),'FaceColor',faceCols(2,:),'BarWidth',0.2)
-errorbar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),nanstd(temporalDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(2,2),xval(:,1),nanmean(temporalDataControls),'FaceColor',[1 1 1],'BarWidth',0.2)
+errorbar(ph(2,2),xval(:,1),nanmean(temporalDataControls),nanstd(temporalDataControls)./sqrt(nc),'Color','k','LineWidth',1,'LineStyle','none')
+hs=bar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),'FaceColor',[1 1 1],'BarWidth',0.2);
+hatchfill2(hs)
+errorbar(ph(2,2),xval(:,2),nanmean(temporalDataStroke),nanstd(temporalDataStroke)./sqrt(ns),'Color','k','LineWidth',1,'LineStyle','none')
 
 hold(ph(3,2));
-bar(ph(3,2),xval(:,1),nanmean(velocityDataControls),'FaceColor',faceCols(1,:),'BarWidth',0.2)
-errorbar(ph(3,2),xval(:,1),nanmean(velocityDataControls),nanstd(velocityDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),'FaceColor',faceCols(2,:),'BarWidth',0.2)
-errorbar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),nanstd(velocityDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(3,2),xval(:,1),nanmean(velocityDataControls),'FaceColor',[1 1 1],'BarWidth',0.2)
+errorbar(ph(3,2),xval(:,1),nanmean(velocityDataControls),nanstd(velocityDataControls)./sqrt(nc),'Color','k','LineWidth',1,'LineStyle','none')
+hs=bar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),'FaceColor',[1 1 1],'BarWidth',0.2);
+hatchfill2(hs)
+errorbar(ph(3,2),xval(:,2),nanmean(velocityDataStroke),nanstd(velocityDataStroke)./sqrt(ns),'Color','k','LineWidth',1,'LineStyle','none')
 
 hold(ph(4,2));
-bar(ph(4,2),xval(:,1),nanmean(netDataControls),'FaceColor',faceCols(1,:),'BarWidth',0.2)
-errorbar(ph(4,2),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',2,'LineStyle','none')
-bar(ph(4,2),xval(:,2),nanmean(netDataStroke),'FaceColor',faceCols(2,:),'BarWidth',0.2)
-errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',2,'LineStyle','none')
+bar(ph(4,2),xval(:,1),nanmean(netDataControls),'FaceColor',[1 1 1],'BarWidth',0.2)
+errorbar(ph(4,2),xval(:,1),nanmean(netDataControls),nanstd(netDataControls)./sqrt(nc),'Color','k','LineWidth',1,'LineStyle','none')
+hs=bar(ph(4,2),xval(:,2),nanmean(netDataStroke),'FaceColor',[1 1 1],'BarWidth',0.2);
+hatchfill2(hs)
+errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',1,'LineStyle','none')
 %plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
 
 %set titles and labels
 set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
-set(ph(4,2),'XTickLabel',{'EarlyA','LateA','EarlyP-LateA','EarlyP'})
+set(ph(4,2),'XTickLabel',{'\DeltaKIN_U_P','\DeltaKIN_S_S','\DeltaKIN_P','\DeltaKIN_A_F_T_E_R'})
 set(ph(:,1),'XTick',[20 365 700],'XTickLabel',{''},'XLim',[1 804])
 set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
 
@@ -272,14 +274,22 @@ set(ph(2,2),'YLim',[-0.1 0.15],'YTick',[-0.1 0 0.1])
 set(ph(3,2),'YLim',[-0.4 0.4],'YTick',[-0.4 -0.2 0 0.2 0.4])
 set(ph(4,2),'YLim',[-0.3 0.3],'YTick',[-0.4 -0.2 0 0.2])
 
-title(ph(1,1),'StepPosition')
-title(ph(2,1),'StepTime')
-title(ph(3,1),'StepVelocity')
-title(ph(4,1),'StepAsym')
-title(ph(1,2),'StepPosition')
-title(ph(2,2),'StepTime')
-title(ph(3,2),'StepVelocity')
-title(ph(4,2),'StepAsym')
+title(ph(1,1),'STEP POSITION')
+title(ph(2,1),'STEP TIME')
+title(ph(3,1),'STEP VELOCITY')
+title(ph(4,1),'STEP ASYM')
+title(ph(1,2),'STEP POSITION')
+title(ph(2,2),'STEP TIME')
+title(ph(3,2),'STEP VELOCITY')
+title(ph(4,2),'STEP ASYM')
+
+for i=1:4
+    yl=get(ph(i,1),'YLim');
+ pt=patch(ph(i,1),[1 31 31 1],[yl(1) yl(1) yl(2) yl(2)],[0 0 0],'FaceColor','none','EdgeColor',[0.2 0.2 0.2],'LineWidth',1) 
+ pt=patch(ph(i,1),[52 56 56 52],[yl(1) yl(1) yl(2) yl(2)],[0 0 0],'FaceColor','none','EdgeColor',[0.2 0.2 0.2],'LineWidth',1) 
+ pt=patch(ph(i,1),[563 593 593 563],[yl(1) yl(1) yl(2) yl(2)],[0 0 0],'FaceColor','none','EdgeColor',[0.2 0.2 0.2],'LineWidth',1) 
+ pt=patch(ph(i,1),[614 618 618 614],[yl(1) yl(1) yl(2) yl(2)],[0 0 0],'FaceColor','none','EdgeColor',[0.2 0.2 0.2],'LineWidth',1) 
+end
 
 set(gcf,'Renderer','painters');
 

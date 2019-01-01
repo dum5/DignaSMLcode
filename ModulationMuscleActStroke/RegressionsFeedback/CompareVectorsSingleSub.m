@@ -215,12 +215,16 @@ ylabel('Fugl-Meyer')
 xlabel('\beta_A')
 
 
-figure
-subplot(2,2,1)
-set(gca,'XLim',[20 35],'YLim',[0 0.7])
-plotCor(gca,fmSelect,IndRegressions.BA(15:28))
-xlabel('Fugl-Meyer')
-ylabel('\beta_A')
+if speedMatchFlag==0;
+    BdataFull=Bdata;
+    save([matDataDir,'vectorSimFull'],'BdataFull','fmSelect');
+elseif speedMatchFlag==1
+    BdataSpM=Bdata;
+    save([matDataDir,'vectorSimSpM.mat'],'BdataSpM','fmSelect');
+end
+
+
+
 
 
 function [aa]=plotCosines(Data);

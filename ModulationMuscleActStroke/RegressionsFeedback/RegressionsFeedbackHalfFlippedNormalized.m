@@ -34,6 +34,8 @@ cIdx=1:length(controlsNames);
 %define groups
 groups{1}=controls.getSubGroup(controlsNames);
 groups{2}=patients.getSubGroup(strokesNames);
+sNames=strokesNames;
+cNames=controlsNames;
 
 %% Get normalized parameters:
 %Define parameters we care about:
@@ -219,8 +221,8 @@ rob='off';
     nsub=length(controlsNames);
     emptycol=NaN(2*nsub,1);
     emptycol2=cell(size(emptycol));
-    IndRegressions=table(emptycol2,emptycol2,emptycol,emptycol,'VariableNames',{'group','sub','BE','BA'});
-    
+    IndRegressions=table(emptycol2,emptycol2,emptycol,emptycol,emptycol,'VariableNames',{'group','sub','BE','BA','FM'});
+    load bioData ;
     %% Individual models::
     rob='off'; %These models can't be fit robustly (doesn't converge)
     %First: repeat the model(s) above on each subject:
@@ -233,7 +235,7 @@ rob='off';
    % 
     for sj=1:nsub
         IndRegressions.group(sj)={'Control'};
-        sjcode = controlsNames(sj);
+        sjcode = cNames(sj);
         IndRegressions.sub(sj)=sjcode;
         dt=table;
         dt.eA=-eA_C(sIds,sj);
@@ -255,7 +257,7 @@ rob='off';
     
     for sj=1:nsub
         IndRegressions.group(sj+nsub)={'Stroke'};
-        sjcode = strokesNames(sj);
+        sjcode = sNames(sj);
         IndRegressions.sub(sj+nsub)=sjcode;
         dt=table;
         dt.eA=-eA_S(sIds,sj);
@@ -270,8 +272,9 @@ rob='off';
         IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
         IndRegressions.BE(sj+nsub)=tmod.Coefficients.Estimate(IdxBS);
         IndRegressions.BA(sj+nsub)=tmod.Coefficients.Estimate(IdxBM);
-        
-        clear dt c sjcode tmod IdxBM IdxBS
+        tempCode=cell2mat(sjcode);
+        IndRegressions.FM(sj+nsub)=FM(str2num(tempCode(end-2:end)));
+        clear dt c sjcode tmod IdxBM IdxBS tempCode
     end
     
 %     %Magnitude analysis
