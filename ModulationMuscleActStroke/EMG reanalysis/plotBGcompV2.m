@@ -49,7 +49,7 @@ dataEcmed=transpose(squeeze(nanmedian(dataEc,4)));%these values are generated to
 
 [pvalc,hc,alphaAdj_c]=checkerstatsV2(dataEc,[],1,0,fdr,'benhoch',0);%mindif has to be zero, since signrank cannot reliably do a two-tail test agains another value
 %-matrices hc and pvalc are in the same format as the checkerboards (see dataEcmed)
-
+disp(['p-threshold controls = ',num2str(alphaAdj_c)])
 get(pc);hold on
 for i=1:size(hc,1)
     for k=1:size(hc,2)
@@ -74,6 +74,8 @@ title(['Controls ', cell2mat(epoch.Properties.ObsNames),'-',cell2mat(refepoch.Pr
 %nonparametric stats
 dataEsmed=transpose(squeeze(nanmedian(dataEs,4)));%these values are generated to assess if effect sizes are larger than threshold value
 [pvals,hs,alphaAdj_s]=checkerstatsV2(dataEs,[],1,0,fdr,'benhoch',0);%mindif has to be zero, since signrank cannot reliably do a two-tail test agains another value
+disp(['p-threshold stroke = ',num2str(alphaAdj_s)])
+
 get(ps);hold on
 for i=1:size(hs,1)
     for k=1:size(hs,2)
