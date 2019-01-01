@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -215,7 +215,13 @@ ylabel('Fugl-Meyer')
 xlabel('\beta_A')
 
 
-load([matDataDir,'/IndRegressions'])
+figure
+subplot(2,2,1)
+set(gca,'XLim',[20 35],'YLim',[0 0.7])
+plotCor(gca,fmSelect,IndRegressions.BA(15:28))
+xlabel('Fugl-Meyer')
+ylabel('\beta_A')
+
 
 function [aa]=plotCosines(Data);
 aa=[];

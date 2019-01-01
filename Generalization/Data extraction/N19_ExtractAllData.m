@@ -96,13 +96,13 @@ nafter=5;%number of strides for after effects
 %eFSlowbase=0;%consider changing strides for ref base (-40), since that is more consistent with code procedures
 
 
-names={'OG_B','TM_B','OG_P','OG_LP','TM_P','lateAdapt','lateReadapt','earlyAdapt','FullSplit','EarlyReadapt','TM_LP'};
-conds={'OG base','TM base', 'OG post','OG post', 'TM post', 'gradual adaptation', 'readaptation', 'gradual adaptation','gradual adaptation','readaptation','TM post'};
-strideNo=[nLate,nLate,nEarly,-10,nEarly,nLate,nLate,nEarly,nEarly,nEarly,-10];
+names={'OG_B','TM_B','OG_P','OG_EP_1_5','OG_LP','TM_P','lateAdapt','lateReadapt','earlyAdapt','FullSplit','EarlyReadapt','TM_LP'};
+conds={'OG base','TM base', 'OG post','OG post','OG post', 'TM post', 'gradual adaptation', 'readaptation', 'gradual adaptation','gradual adaptation','readaptation','TM post'};
+strideNo=[nLate,nLate,nEarly,nafter,-10,nEarly,nLate,nLate,nEarly,nEarly,nEarly,-10];
 %strideNo=[nbase nbase nafter nLateOGp nafter nLateAdap nLateAdap nEA nEA nEA nslow];
-exemptLast=[eL, eL,0,eL,0,eL,eL,0,0,0,eL];
+exemptLast=[eL, eL,0,0,eL,0,eL,eL,0,0,0,eL];
 %exemptLast=[eLBase eLBase 0 eLOGP 0 eLAdap eLAdap 0 0 0 0];
-summethods=({'nanmedian','nanmedian','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean'});
+summethods=({'nanmedian','nanmedian','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean','nanmean'});
 
 %extract data for epochs and subtract reference condition and remove
 %appropriate bias
@@ -112,8 +112,8 @@ summethods=({'nanmedian','nanmedian','nanmean','nanmean','nanmean','nanmean','na
 correctTMbase=1:4;%indices of parameters that need to be corrected for TM base
 correctTMslow=[];%indices of parameters that need to be corrected for TM slow
 
-OGind=[3,4];%epoch associated with OGpost
-TMind=[5:11];%epoch associated with treadmill trials, except the reference trial
+OGind=[3:5];%epoch associated with OGpost
+TMind=[6:12];%epoch associated with treadmill trials, except the reference trial
 
 %find lata Adaptation, because this is a different conditionName for
 %distraction people
@@ -121,7 +121,7 @@ Index = find(contains(names,'lateAdap'));
 for i=1:length(groups)
      nsub=length(groups{i}.adaptData);
     %exemptFirst=[eFbase eFbase eF 0 eF 0 0 startsplit(i) fullsplit(i) 0 eFSlowbase];
-    exemptFirst=[0 0 eF 0 eF 0 0 startsplit(i), fullsplit(i), eF, 0]; 
+    exemptFirst=[0 0 eF 0 0 eF 0 0 startsplit(i), fullsplit(i), eF, 0]; 
     [epsData{i}] = defineEpochs(names,conds,strideNo, exemptFirst,exemptLast,summethods);%this will be used to compute the baseline bias manually, since predefined function performs poorly for OG trials
     groupOutcomes{i}=NaN(length(params),length(names)+20,nsub);
    if  i>7
