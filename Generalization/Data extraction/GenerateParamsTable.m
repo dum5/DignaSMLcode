@@ -9,7 +9,7 @@
 N19_ExtractAllData
 
 
-groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
+groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback','ControlCatch'};
 %groupOrder={'FullAbrupt','AbruptNoFeedback','AbruptFeedback','Gradual','Catch','TMFullAbrupt','TMAbruptNoFeedback'};
 
 %groupOrder={'AbruptNoFeedback','Catch'};
@@ -27,14 +27,19 @@ for i=1:length(groupOrder)
     nsub=length(groups{groupInd(i)}.adaptData);
     if i==1
         subcodes=cellstr(repmat(groupsnames{groupInd(i)},nsub,1));
+        IndSubCodes=groups{groupInd(i)}.ID';
     else
     subcodes=[subcodes;cellstr(repmat(groupsnames{groupInd(i)},nsub,1))];
+    IndSubCodes=[IndSubCodes;groups{groupInd(i)}.ID'];
+    
     end
 end
 
 %generate table
 T=table;
 T.group=nominal(subcodes);
+T.sub=nominal(IndSubCodes);
+
 
 for e=1:length(names)
     for p=1:length(params)

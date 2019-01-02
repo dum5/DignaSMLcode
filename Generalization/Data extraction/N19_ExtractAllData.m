@@ -74,6 +74,9 @@ for i=1:length(groups)
     elseif strcmp(groupsnames{i},'GradualCatch')
         startsplit(i)=300;
         fullsplit(i)=900;
+    elseif strcmp(groupsnames{i},'ControlCatch')
+        startsplit(i)=150;
+        fullsplit(i)=190;
     end 
 end
 
@@ -305,7 +308,7 @@ clear tcInd tpInd cInd ParInd
 %create extra params for the Catch group
 names(length(names)+1:length(names)+3)={'beforeCatch','catch','resumeSplit'};
 nEp=length(names);%number of epochs
-CatchEp=defineEpochs({'Catch'},{'Catch'},nCatch,eF,eL,'nanmean');
+CatchEp=defineEpochs({'Catch'},{'Catch'},nCatch,eF,1,'nanmean');
 ind=length(names)-2:length(names);
 for i=1:length(groups)
     if strcmp(groupsnames{i},'Catch')
