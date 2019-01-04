@@ -1,4 +1,4 @@
-%clear all
+clear all
 close all
 
 
@@ -13,8 +13,8 @@ loadName=[matDataDir,loadName];
 load(loadName)
 
 %colors=[0.2 0.2 1;0.67 0.85 0.30;0.2 0.2 1;0.67 0.85 0.30];
-colors=[0.2 0.2 1;0.67 0.85 0.30;0.6 0 0.6;0.67 0.85 0.30];
-colors2=[0.1 0.1 0.5;0.37 0.55 0.0;0.1 0.1 0.5;0.37 0.55 0.0];
+colors=[0.2 0.2 1;0.67 0.85 0.30;0.6 0 0.6;0.67 0.85 0.30;0.93 0.69 0.12];
+colors2=[0.1 0.1 0.5;0.37 0.55 0.0;0.1 0.1 0.5;0.37 0.55 0.0;0.7 0.5 0];
 
 %Create separate table for each group
 T.ExtAdapt=T.netContributionNorm2_lateAdapt-T.velocityContributionNorm2_lateAdapt;
@@ -23,27 +23,28 @@ T.ExtReadapt=T.netContributionNorm2_lateReadapt-T.velocityContributionNorm2_late
 %organize data for bar plots
 TControl=T(T.group=='AbruptNoFeedback',:);
 TCatch=T(T.group=='Catch',:);
+TCatchControl=T(T.group=='CatchControl',:);
 %TGradualNoCatch=T(T.group=='GradualNoCatch',:);
 %TGradualCatch=T(T.group=='GradualCatch',:);
 
 %organize data for timeCourses
 binWidth=5;sumMethod='nanmean';
-Inds=[3,5,9,8];%control,catch,gradual no catch, gradual catch
+Inds=[3,5,8];%control,catch,gradual no catch, gradual catch
 prepertIdx=[1:150;1:150;1:150]';
 startAdapt=[151 151 151];
 
-for g=1:2
+for g=1:3
     TC{g}.prepertNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(prepertIdx(:,g),:),binWidth,sumMethod)';%preperturbation
-    if g==4
-%         TC{g}.adaptNet=[smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+744,:),binWidth,sumMethod)
-%             smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'Catch'))}(1:10,:),binWidth,sumMethod)
-%             smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'Re-adaptation'))}(1:150,:),binWidth,sumMethod)]';
-    elseif g==2
+    
+    if g>1
         TC{g}.adaptNet=[smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+599,:),binWidth,sumMethod)
             smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'catch'))}(1:10,:),binWidth,sumMethod)
             smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g)+600:startAdapt(g)+900,:),binWidth,sumMethod)]';
     
+    
     else
+
+        
         TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+899,:),binWidth,sumMethod)';%adaptation
     end
     TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost
@@ -97,21 +98,15 @@ patch(ax1,[91 105 105 91],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor
 %patch(ax1,[91+560 105+560 105+560 91+560],[l(1) l(1) l(2) l(2)],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
 %text(ax1,-100,l(2)+0.03,'A','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax1,200,l(2)+0.03,'Adaptation Errors','FontSize',14,'FontName','Arial')
-for g=1:2
+for g=1:3
     ns=size(TC{g}.prepertNet,1);
     dt=TC{g}.prepertNet(:,end-49:end);
     dt2=TC{g}.adaptNet(:,1:880);
-    if g<3
         patch(ax1,[1:50 fliplr(1:50)],[nanmean(dt)+(nanstd(dt)./sqrt(ns)) fliplr(nanmean(dt)-(nanstd(dt)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
         patch(ax1,[51:930 fliplr(51:930)],[nanmean(dt2)+(nanstd(dt2)./sqrt(ns)) fliplr(nanmean(dt2)-(nanstd(dt2)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
         plot(ax1,1:50,nanmean(dt),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
         plot(ax1,51:930,nanmean(dt2),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
-    else
-        patch(ax1,[1:50 fliplr(1:50)],[nanmean(dt)+(nanstd(dt)./sqrt(ns)) fliplr(nanmean(dt)-(nanstd(dt)./sqrt(ns)))],colors(g,:),'FaceAlpha',0)
-        patch(ax1,[51:930 fliplr(51:930)],[nanmean(dt2)+(nanstd(dt2)./sqrt(ns)) fliplr(nanmean(dt2)-(nanstd(dt2)./sqrt(ns)))],colors(g,:),'FaceAlpha',0)
-        plot(ax1,1:50,nanmean(dt),'ok','MarkerFaceColor',[1 1 1],'MarkerEdgeColor',colors(g,:),'MarkerSize',4)
-        plot(ax1,51:930,nanmean(dt2),'ok','MarkerFaceColor',[1 1 1],'MarkerEdgeColor',colors(g,:),'MarkerSize',4) 
-    end
+   
     clear ns dt dt2
 end
 lines=findobj(ax1,'Type','Line');
@@ -129,11 +124,14 @@ annotation(f2,'textbox',[0.416666666666667 0.785458334212912 0.244047615144931 0
     'String','after catch','LineStyle','none','FitBoxToText','off');
 
 hold(ax2a)%
-bar(ax2a,1,nanmean(TControl.maxError),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
+bar(ax2a,1,nanmean(TControl.maxError),'FaceColor',colors(1,:),'BarWidth',0.7);
 errorbar(ax2a,1,nanmean(TControl.maxError),nanstd(TControl.maxError)./sqrt(length(TControl.maxError)),...
     'Color','k','LineWidth',2)
-bar(ax2a,2,nanmean(TCatch.maxError),'FaceColor',[0.67 0.85 0.3],'BarWidth',0.7);
+bar(ax2a,2,nanmean(TCatch.maxError),'FaceColor',colors(2,:),'BarWidth',0.7);
 errorbar(ax2a,2,nanmean(TCatch.maxError),nanstd(TCatch.maxError)./sqrt(length(TCatch.maxError)),...
+    'Color','k','LineWidth',2)
+bar(ax2a,3,nanmean(TCatchControl.maxError),'FaceColor',colors(3,:),'BarWidth',0.7);
+errorbar(ax2a,3,nanmean(TCatch.maxError),nanstd(TCatch.maxError)./sqrt(length(TCatch.maxError)),...
     'Color','k','LineWidth',2)
 % bar(ax2a,3,nanmean(TGradualNoCatch.maxError),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 % errorbar(ax2a,3,nanmean(TGradualNoCatch.maxError),nanstd(TGradualNoCatch.maxError)./sqrt(length(TGradualNoCatch.maxError)),...
@@ -147,19 +145,31 @@ text(ax2a,0.5,0.3,'Max Error','FontSize',12,'FontName','Arial');
 
 
 hold(ax2b)%control and small errors
-bar(ax2b,1,nanmean(TCatch.netContributionNorm2_catch),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
+bar(ax2b,1,nanmean(TCatch.netContributionNorm2_catch),'FaceColor',colors(2,:),'BarWidth',0.7);
 errorbar(ax2b,1,nanmean(TCatch.netContributionNorm2_catch),nanstd(TCatch.netContributionNorm2_catch)./sqrt(length(TCatch.netContributionNorm2_catch)),...
+    'Color','k','LineWidth',2)
+
+bar(ax2b,2,nanmean(TCatchControl.netContributionNorm2_catch),'FaceColor',colors(3,:),'BarWidth',0.7);
+errorbar(ax2b,2,nanmean(TCatchControl.netContributionNorm2_catch),nanstd(TCatchControl.netContributionNorm2_catch)./sqrt(length(TCatchControl.netContributionNorm2_catch)),...
     'Color','k','LineWidth',2)
 
 %bar(ax2b,1,0.2032,'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
 %errorbar(ax2b,1,0.2032,0.027,'Color','k','LineWidth',2)
-bar(ax2b,2,nanmean(TCatch.netContributionNorm2_beforeCatch),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
-errorbar(ax2b,2,nanmean(TCatch.netContributionNorm2_beforeCatch),nanstd(TCatch.netContributionNorm2_beforeCatch)./sqrt(length(TCatch.netContributionNorm2_beforeCatch)),...
+bar(ax2b,4.5,nanmean(TCatch.netContributionNorm2_beforeCatch),'FaceColor',colors(2,:),'BarWidth',0.7);
+errorbar(ax2b,4.5,nanmean(TCatch.netContributionNorm2_beforeCatch),nanstd(TCatch.netContributionNorm2_beforeCatch)./sqrt(length(TCatch.netContributionNorm2_beforeCatch)),...
     'Color','k','LineWidth',2)
-bar(ax2b,3,nanmean(TCatch.netContributionNorm2_resumeSplit),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
-errorbar(ax2b,3,nanmean(TCatch.netContributionNorm2_resumeSplit),nanstd(TCatch.netContributionNorm2_resumeSplit)./sqrt(length(TCatch.netContributionNorm2_resumeSplit)),...
+
+bar(ax2b,5.5,nanmean(TCatchControl.netContributionNorm2_beforeCatch),'FaceColor',colors(3,:),'BarWidth',0.7);
+errorbar(ax2b,5.5,nanmean(TCatchControl.netContributionNorm2_beforeCatch),nanstd(TCatchControl.netContributionNorm2_beforeCatch)./sqrt(length(TCatchControl.netContributionNorm2_beforeCatch)),...
     'Color','k','LineWidth',2)
-% 
+
+bar(ax2b,7,nanmean(TCatch.netContributionNorm2_resumeSplit),'FaceColor',colors(2,:),'BarWidth',0.7);
+errorbar(ax2b,7,nanmean(TCatch.netContributionNorm2_resumeSplit),nanstd(TCatch.netContributionNorm2_resumeSplit)./sqrt(length(TCatch.netContributionNorm2_resumeSplit)),...
+    'Color','k','LineWidth',2)
+bar(ax2b,8,nanmean(TCatchControl.netContributionNorm2_resumeSplit),'FaceColor',colors(3,:),'BarWidth',0.7);
+errorbar(ax2b,8,nanmean(TCatchControl.netContributionNorm2_resumeSplit),nanstd(TCatchControl.netContributionNorm2_resumeSplit)./sqrt(length(TCatchControl.netContributionNorm2_resumeSplit)),...
+    'Color','k','LineWidth',2)
+
 % bar(ax2b,2,nanmean(TGradualCatch.netContributionNorm2_catch),'EdgeColor',[0.67 0.85 0.30],'FaceColor',[1 1 1],'BarWidth',0.7);
 % errorbar(ax2b,2,nanmean(TGradualCatch.netContributionNorm2_catch),nanstd(TGradualCatch.netContributionNorm2_catch)./sqrt(length(TGradualCatch.netContributionNorm2_catch)),...
 %     'Color','k','LineWidth',2)
@@ -201,7 +211,7 @@ text(ax2c,0.5,0.3,'Late Error','FontSize',12,'FontName','Arial');
 hold(ax3a)%;hold(ax3b);hold(ax3c)
 for g=1:2
      ns=size(TC{g}.prepertNet,1);
-    if g<3
+    
         dt1=TC{g}.OGpNet(:,1:20);
         %dt2=TC{g}.OGpSP(:,1:20);
         %dt3=TC{g}.OGpST(:,1:20);
@@ -211,17 +221,7 @@ for g=1:2
         plot(ax3a,1:20,nanmean(dt1),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
         %plot(ax3b,1:20,nanmean(dt2),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)
         %plot(ax3c,1:20,nanmean(dt3),'ok','MarkerFaceColor',colors(g,:),'MarkerEdgeColor',colors2(g,:),'MarkerSize',4)  
-    else
-%         dt1=TC{g}.TMpNet(:,1:20);
-%         dt2=TC{g}.TMpSP(:,1:20);
-%         dt3=TC{g}.TMpST(:,1:20);
-%         patch(ax3a,[1:20 fliplr(1:20)],[nanmean(dt1)+(nanstd(dt1)./sqrt(ns)) fliplr(nanmean(dt1)-(nanstd(dt1)./sqrt(ns)))],[1 1 1],'FaceAlpha',0,'EdgeColor',colors(g,:))
-%         patch(ax3b,[1:20 fliplr(1:20)],[nanmean(dt2)+(nanstd(dt2)./sqrt(ns)) fliplr(nanmean(dt2)-(nanstd(dt2)./sqrt(ns)))],[1 1 1],'FaceAlpha',0,'EdgeColor',colors(g,:))
-%         patch(ax3c,[1:20 fliplr(1:20)],[nanmean(dt3)+(nanstd(dt3)./sqrt(ns)) fliplr(nanmean(dt3)-(nanstd(dt3)./sqrt(ns)))],[1 1 1],'FaceAlpha',0,'EdgeColor',colors(g,:))
-%         plot(ax3a,1:20,nanmean(dt1),'ok','MarkerFaceColor',[1 1 1],'MarkerEdgeColor',colors(g,:),'MarkerSize',4)  
-%         plot(ax3b,1:20,nanmean(dt2),'ok','MarkerFaceColor',[1 1 1],'MarkerEdgeColor',colors(g,:),'MarkerSize',4)
-%         plot(ax3c,1:20,nanmean(dt3),'ok','MarkerFaceColor',[1 1 1],'MarkerEdgeColor',colors(g,:),'MarkerSize',4) 
-    end
+
 end
 %text(ax3a,-9,0.22,'B','FontSize',20,'FontName','Arial','FontWeight','Bold')
 %text(ax3a,7.5,0.22,'Overground Aftereffects','FontSize',14,'FontName','Arial')

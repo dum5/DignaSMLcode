@@ -127,7 +127,7 @@ for i=1:length(groups)
     exemptFirst=[0 0 eF 0 0 eF 0 0 startsplit(i), fullsplit(i), eF, 0]; 
     [epsData{i}] = defineEpochs(names,conds,strideNo, exemptFirst,exemptLast,summethods);%this will be used to compute the baseline bias manually, since predefined function performs poorly for OG trials
     groupOutcomes{i}=NaN(length(params),length(names)+20,nsub);
-   if  i>7
+   if  i>8
        epsData{i}.Condition{Index}='Re-adaptation';
    end
        
@@ -261,7 +261,7 @@ for i=1:length(groups)
     
     %first get gradualAdaptation and readaptation
     tempdata=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(1,1)));%gradual adaptation
-    if i<8
+    if i<9
         tempdata2=cell2mat(timeCourseUnbiased{i}.param{ParInd}.cond(cInd(2,1)));%readaptation
     else tempdata2=NaN(20,length(groups{i}.adaptData));
     end
@@ -311,7 +311,7 @@ nEp=length(names);%number of epochs
 CatchEp=defineEpochs({'Catch'},{'Catch'},nCatch,eF,1,'nanmean');
 ind=length(names)-2:length(names);
 for i=1:length(groups)
-    if strcmp(groupsnames{i},'Catch')
+    if strcmp(groupsnames{i},'Catch') || strcmp(groupsnames{i},'ControlCatch')
         groupOutcomes{i}(1:length(params),length(names)-1,1:10)=groups{i}.getEpochData(CatchEp,params);% nLabels x nEpochs x nSubjects
         for sj=1:10
             dt=groups{i}.adaptData{sj};
