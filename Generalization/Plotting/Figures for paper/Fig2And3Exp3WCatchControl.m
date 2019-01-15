@@ -13,8 +13,8 @@ loadName=[matDataDir,loadName];
 load(loadName)
 
 %colors=[0.2 0.2 1;0.67 0.85 0.30;0.2 0.2 1;0.67 0.85 0.30];
-colors=[0.2 0.2 1;0.67 0.85 0.30;0.6 0 0.6;0.67 0.85 0.30;0.93 0.69 0.12];
-colors2=[0.1 0.1 0.5;0.37 0.55 0.0;0.1 0.1 0.5;0.37 0.55 0.0;0.7 0.5 0];
+colors=[0.2 0.2 1;0.67 0.85 0.30;0.93 0.69 0.12];
+colors2=[0.1 0.1 0.5;0.37 0.55 0.0;0.7 0.5 0];
 
 %Create separate table for each group
 T.ExtAdapt=T.netContributionNorm2_lateAdapt-T.velocityContributionNorm2_lateAdapt;
@@ -23,7 +23,7 @@ T.ExtReadapt=T.netContributionNorm2_lateReadapt-T.velocityContributionNorm2_late
 %organize data for bar plots
 TControl=T(T.group=='AbruptNoFeedback',:);
 TCatch=T(T.group=='Catch',:);
-TCatchControl=T(T.group=='CatchControl',:);
+TCatchControl=T(T.group=='ControlCatch',:);
 %TGradualNoCatch=T(T.group=='GradualNoCatch',:);
 %TGradualCatch=T(T.group=='GradualCatch',:);
 
@@ -48,7 +48,7 @@ for g=1:3
         TC{g}.adaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'radual'))}(startAdapt(g):startAdapt(g)+899,:),binWidth,sumMethod)';%adaptation
     end
     TC{g}.OGpNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'OG post'))}(1:100,:),binWidth,sumMethod)';%ogPost
-    if g<3
+    if g<4
         TC{g}.readaptNet=smoothData(timeCourseUnbiased{Inds(g)}.param{4}.cond{find(contains(timeCourse{Inds(g)}.condNames,'readaptation'))}(1:600,:),binWidth,sumMethod)';%reAdaptation
     end
     
@@ -80,15 +80,15 @@ yaxmin=-0.35;
 %timeCourse Adaptation
 ax1 = axes('Position',[left  lower+delta+0.04 width4 height/0.9],'XTickLabel',{''},'Clipping','off','XLim',[0 930],'YLim',[-0.2 0.3],'YTick',[-0.2 0 0.2],'XTick',[0 100 200 300 400 500 600 700 800 900],'FontSize',12,'FontName','Arial');
 %Errors
-ax2a = axes('Position',[left  lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.2 0.25],'YTick',[-0.2 0 0.2],'FontSize',12,'FontName','Arial');
-ax2b = axes('Position',[left+width2+0.04 lower  width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.2 0.25],'YTick',[-0.2 0 0.2 ],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
-ax2c = axes('Position',[left+2*(width2+0.04) lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.2 0.25],'YTick',[-0.2 0 0.2],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2a = axes('Position',[left  lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.25 0.25],'YTick',[-0.2 0 0.2],'FontSize',12,'FontName','Arial');
+ax2b = axes('Position',[left+width2+0.04 lower  width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 8.5],'YLim',[-0.25 0.25],'YTick',[-0.2 0 0.2 ],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2c = axes('Position',[left+2*(width2+0.04) lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.25 0.25],'YTick',[-0.2 0 0.2],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 
 %timeCourse OG post
 ax3a = axes('Position',[left+width4+0.07  lower+delta+0.04 width3 height/0.9],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[0 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
 
 %bar plots OG post
-ax4a = axes('Position',[left+width4+0.07  lower width3 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 4.5],'YLim',[0 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
+ax4a = axes('Position',[left+width4+0.07  lower width3 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 5.5],'YLim',[0 0.15],'YTick',[0 0.1],'FontSize',12,'FontName','Arial');
 
 
 hold(ax1)%control and small errors
@@ -112,6 +112,7 @@ end
 lines=findobj(ax1,'Type','Line');
 text(ax1,200,0.15,'Control','Color',colors(1,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 text(ax1,200,0.08,'Catch','Color',colors(2,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
+text(ax1,200,0.01,'CatchControl','Color',colors(3,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 plot(ax1,[700 800],[-0.22 -0.22],'k','LineWidth',2)
 %h=legend(ax1,lines([7 5 3 1]),{'Control','Catch'},'box','off','FontSize',10,'FontName','Arial');
 text(ax1,700,-0.15,'100 srides','FontName','Arial','FontSize',10);
@@ -131,7 +132,7 @@ bar(ax2a,2,nanmean(TCatch.maxError),'FaceColor',colors(2,:),'BarWidth',0.7);
 errorbar(ax2a,2,nanmean(TCatch.maxError),nanstd(TCatch.maxError)./sqrt(length(TCatch.maxError)),...
     'Color','k','LineWidth',2)
 bar(ax2a,3,nanmean(TCatchControl.maxError),'FaceColor',colors(3,:),'BarWidth',0.7);
-errorbar(ax2a,3,nanmean(TCatch.maxError),nanstd(TCatch.maxError)./sqrt(length(TCatch.maxError)),...
+errorbar(ax2a,3,nanmean(TCatchControl.maxError),nanstd(TCatchControl.maxError)./sqrt(length(TCatchControl.maxError)),...
     'Color','k','LineWidth',2)
 % bar(ax2a,3,nanmean(TGradualNoCatch.maxError),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 % errorbar(ax2a,3,nanmean(TGradualNoCatch.maxError),nanstd(TGradualNoCatch.maxError)./sqrt(length(TGradualNoCatch.maxError)),...
@@ -180,24 +181,29 @@ errorbar(ax2b,8,nanmean(TCatchControl.netContributionNorm2_resumeSplit),nanstd(T
 % errorbar(ax2b,6,nanmean(TGradualCatch.netContributionNorm2_resumeSplit),nanstd(TGradualCatch.netContributionNorm2_resumeSplit)./sqrt(length(TGradualCatch.netContributionNorm2_resumeSplit)),...
 %     'Color','k','LineWidth',2)
 
-plot(ax2b,[2 3],[0.025 0.025],'-k','LineWidth',2)
+%plot(ax2b,[2 3],[0.025 0.025],'-k','LineWidth',2)
 %plot(ax2b,[4 6],[0.05 0.05],'-k','LineWidth',2)
-text(ax2b,0.5,0.3,'Catch Error','FontSize',12,'FontName','Arial');
-text(ax2b,0.5,-0.25,'Catch','FontSize',10,'FontName','Arial');
-text(ax2b,1,-0.25,{'Before','Catch'},'FontSize',10,'FontName','Arial');
-text(ax2b,1.5,-0.27,{'After','Catch'},'FontSize',10,'FontName','Arial')
-text(ax2b,0.75,0.23,{'*'},'FontSize',16,'FontWeight','bold','FontName','Arial')
+text(ax2b,2.5,0.3,'Catch Error','FontSize',12,'FontName','Arial');
+text(ax2b,1,-0.25,'Catch','FontSize',10,'FontName','Arial');
+text(ax2b,3.5,-0.25,{'Before','Catch'},'FontSize',10,'FontName','Arial');
+text(ax2b,7,-0.27,{'After','Catch'},'FontSize',10,'FontName','Arial')
+%text(ax2b,0.75,0.23,{'*'},'FontSize',16,'FontWeight','bold','FontName','Arial')
 %text(ax2b,1.75,0.23,{'*'},'FontSize',16,'FontWeight','bold','FontName','Arial')
 %set(ax2b,'XTick',[1 2],'XTickLabel',{'Catch','After Catch'})
 
 hold(ax2c)%control and small errors
-bar(ax2c,1,nanmean(TControl.netContributionNorm2_lateAdapt),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
+bar(ax2c,1,nanmean(TControl.netContributionNorm2_lateAdapt),'FaceColor',colors(1,:),'BarWidth',0.7);
 errorbar(ax2c,1,nanmean(TControl.netContributionNorm2_lateAdapt),nanstd(TControl.netContributionNorm2_lateAdapt)./sqrt(length(TControl.netContributionNorm2_lateAdapt)),...
     'Color','k','LineWidth',2)
-bar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),'FaceColor',[0.37 0.55 0.0],'BarWidth',0.7);
+bar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),'FaceColor',colors(2,:),'BarWidth',0.7);
 errorbar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),nanstd(TCatch.netContributionNorm2_lateAdapt)./sqrt(length(TCatch.netContributionNorm2_lateAdapt)),...
     'Color','k','LineWidth',2)
-
+bar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),'FaceColor',colors(2,:),'BarWidth',0.7);
+errorbar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateAdapt),nanstd(TCatch.netContributionNorm2_lateAdapt)./sqrt(length(TCatch.netContributionNorm2_lateAdapt)),...
+    'Color','k','LineWidth',2)
+bar(ax2c,3,nanmean(TCatchControl.netContributionNorm2_lateAdapt),'FaceColor',colors(3,:),'BarWidth',0.7);
+errorbar(ax2c,3,nanmean(TCatchControl.netContributionNorm2_lateAdapt),nanstd(TCatchControl.netContributionNorm2_lateAdapt)./sqrt(length(TCatchControl.netContributionNorm2_lateAdapt)),...
+    'Color','k','LineWidth',2)
 % bar(ax2c,3,nanmean(TGradualNoCatch.netContributionNorm2_lateAdapt),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 % errorbar(ax2c,3,nanmean(TGradualNoCatch.netContributionNorm2_lateAdapt),nanstd(TGradualNoCatch.netContributionNorm2_lateAdapt)./sqrt(length(TGradualNoCatch.netContributionNorm2_lateAdapt)),...
 %     'Color','k','LineWidth',2)
@@ -209,7 +215,7 @@ text(ax2c,0.5,0.3,'Late Error','FontSize',12,'FontName','Arial');
 
 
 hold(ax3a)%;hold(ax3b);hold(ax3c)
-for g=1:2
+for g=1:3
      ns=size(TC{g}.prepertNet,1);
     
         dt1=TC{g}.OGpNet(:,1:20);
@@ -233,16 +239,19 @@ text(ax3a,10,-0.02,'10 srides','FontName','Arial','FontSize',10);
 
 
 hold(ax4a)%control and small errors
-bar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),'FaceColor',[0.2 0.2 1],'BarWidth',0.7);
+bar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),'FaceColor',colors(1,:),'BarWidth',0.7);
 errorbar(ax4a,1,nanmean(TControl.netContributionNorm2_OG_P),nanstd(TControl.netContributionNorm2_OG_P)./sqrt(length(TControl.netContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-bar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.7);
+bar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),'FaceColor',colors(2,:),'BarWidth',0.7);
 errorbar(ax4a,2,nanmean(TCatch.netContributionNorm2_OG_P),nanstd(TCatch.netContributionNorm2_OG_P)./sqrt(length(TCatch.netContributionNorm2_OG_P)),...
     'Color','k','LineWidth',2)
-bar(ax4a,3,0.1,'FaceColor',[0 0 0],'BarWidth',0.7);
-errorbar(3,0.1,0.025,'Color',[0.5 0.5 0.5],'LineWidth',2);
-bar(ax4a,4,0.05,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'BarWidth',0.7);
-errorbar(4,0.05,0.012,'Color',[0.5 0.5 0.5],'LineWidth',2);
+bar(ax4a,3,nanmean(TCatchControl.netContributionNorm2_OG_P),'FaceColor',colors(3,:),'BarWidth',0.7);
+errorbar(ax4a,3,nanmean(TCatchControl.netContributionNorm2_OG_P),nanstd(TCatchControl.netContributionNorm2_OG_P)./sqrt(length(TCatchControl.netContributionNorm2_OG_P)),...
+    'Color','k','LineWidth',2)
+bar(ax4a,4,0.1,'FaceColor',[0 0 0],'BarWidth',0.7);
+errorbar(4,0.1,0.025,'Color',[0.5 0.5 0.5],'LineWidth',2);
+bar(ax4a,5,0.05,'FaceColor',[1 1 1],'EdgeColor',[0 0 0],'BarWidth',0.7);
+errorbar(5,0.05,0.012,'Color',[0.5 0.5 0.5],'LineWidth',2);
 
 % bar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),'EdgeColor',[0.6 0 0.6],'FaceColor',[1 1 1],'BarWidth',0.7);
 % errorbar(ax4a,3,nanmean(TGradualNoCatch.netContributionNorm2_OG_P),nanstd(TGradualNoCatch.netContributionNorm2_OG_P)./sqrt(length(TGradualNoCatch.netContributionNorm2_OG_P)),...
@@ -299,9 +308,9 @@ set(f3,'Color',[1 1 1]','Units','inches','Position',[0 0 7 2.7])
 %timeCourse re-Adaptation
 ax1 = axes('Position',[left  lower+delta+0.04 width4-0.08 height/0.9],'XTickLabel',{''},'Clipping','off','XLim',[0 280],'YLim',[-0.2 0.05],'YTick',[-0.2 0 0.2],'XTick',[0 100 200],'FontSize',12,'FontName','Arial');
 %Errors
-ax2a = axes('Position',[left  lower width2*1.25 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.12 0],'YTick',[-0.2 -0.1 0],'FontSize',12,'FontName','Arial');
+ax2a = axes('Position',[left  lower width2*1.25 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.12 0],'YTick',[-0.2 -0.1 0],'FontSize',12,'FontName','Arial');
 %ax2b = axes('Position',[left+width2+0.04  lower+2*delta+0.07 width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.12 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
-ax2c = axes('Position',[left+(width2*1.2+0.08)  lower width2*1.25 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[-0.12 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
+ax2c = axes('Position',[left+(width2*1.2+0.08)  lower width2*1.25 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[-0.12 0],'YTick',[-0.2 -0.1 0],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 
 %timeCourse TM post
 ax3a = axes('Position',[left+width4-0.01  lower+delta+0.04 width3+0.08 height/0.9],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'FontSize',12,'FontName','Arial');
@@ -309,7 +318,7 @@ ax3a = axes('Position',[left+width4-0.01  lower+delta+0.04 width3+0.08 height/0.
 %ax3c = axes('Position',[left+2*(width2+0.04)  lower+delta width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0 20],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 
 %bar plots TM post
-ax4a = axes('Position',[left+width4-0.01  lower width3+0.08 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'FontSize',12,'FontName','Arial');
+ax4a = axes('Position',[left+width4-0.01  lower width3+0.08 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 3.5],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'FontSize',12,'FontName','Arial');
 %ax4b = axes('Position',[left+width2+0.04  lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 %ax4c = axes('Position',[left+2*(width2+0.04)  lower width2 height],'XTickLabel',{''},'Clipping','off','XLim',[0.5 2.5],'YLim',[0 0.25],'YTick',[0 0.1 0.2],'YTickLabel',{''},'FontSize',12,'FontName','Arial');
 
@@ -317,7 +326,7 @@ hold(ax1)%control and small errors
 %text(ax1,-30,0.05+0.03,'A','FontSize',20,'FontName','Arial','FontWeight','Bold')
 text(ax1,50,0.05+0.03,'Re-adaptation Errors','FontSize',14,'FontName','Arial')
 patch(ax1,[1 15 15 1],[l(1) l(1) 0.05 0.05],[1 1 1],'FaceAlpha',0,'EdgeColor','k');
-for g=1:2
+for g=1:3
     ns=size(TC{g}.prepertNet,1);
     dt=TC{g}.readaptNet(:,1:280);
     patch(ax1,[1:280 fliplr(1:280)],[nanmean(dt)+(nanstd(dt)./sqrt(ns)) fliplr(nanmean(dt)-(nanstd(dt)./sqrt(ns)))],colors(g,:),'FaceAlpha',0.5,'LineStyle','none')
@@ -327,16 +336,21 @@ end
 
 text(ax1,50,-0.075,'Control','Color',colors(1,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 text(ax1,50,-0.105,'Catch','Color',colors(2,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
+text(ax1,50,-0.135,'CatchControl','Color',colors(3,:),'FontName','Arial','FontSize',10,'FontWeight','bold')
 plot(ax1,[100 200],[-0.22 -0.22],'k','LineWidth',2)
 text(ax1,100,-0.18,'100 srides','FontName','Arial','FontSize',10);
 
 hold(ax2a)%control and small errors
-bar(ax2a,1,nanmean(TControl.maxErrorReadapt),'FaceColor',[0.2 0.2 1],'BarWidth',0.5);
+bar(ax2a,1,nanmean(TControl.maxErrorReadapt),'FaceColor',colors(1,:),'BarWidth',0.5);
 errorbar(ax2a,1,nanmean(TControl.maxErrorReadapt),nanstd(TControl.maxErrorReadapt)./sqrt(length(TControl.maxErrorReadapt)),...
     'Color','k','LineWidth',2)
-bar(ax2a,2,nanmean(TCatch.maxErrorReadapt),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.5);
+bar(ax2a,2,nanmean(TCatch.maxErrorReadapt),'FaceColor',colors(2,:),'BarWidth',0.5);
 errorbar(ax2a,2,nanmean(TCatch.maxErrorReadapt),nanstd(TCatch.maxErrorReadapt)./sqrt(length(TCatch.maxErrorReadapt)),...
     'Color','k','LineWidth',2)
+bar(ax2a,3,nanmean(TCatchControl.maxErrorReadapt),'FaceColor',colors(3,:),'BarWidth',0.5);
+errorbar(ax2a,3,nanmean(TCatchControl.maxErrorReadapt),nanstd(TCatchControl.maxErrorReadapt)./sqrt(length(TCatchControl.maxErrorReadapt)),...
+    'Color','k','LineWidth',2)
+
 text(ax2a,0.5,0.025,'Max Error','FontSize',12,'FontName','Arial');
 % 
 % hold(ax2b)%control and small errors
@@ -350,18 +364,21 @@ text(ax2a,0.5,0.025,'Max Error','FontSize',12,'FontName','Arial');
 
 
 hold(ax2c)%control and small errors
-bar(ax2c,1,nanmean(TControl.netContributionNorm2_lateReadapt),'FaceColor',[0.2 0.2 1],'BarWidth',0.5);
+bar(ax2c,1,nanmean(TControl.netContributionNorm2_lateReadapt),'FaceColor',colors(1,:),'BarWidth',0.5);
 errorbar(ax2c,1,nanmean(TControl.netContributionNorm2_lateReadapt),nanstd(TControl.netContributionNorm2_lateReadapt)./sqrt(length(TControl.netContributionNorm2_lateReadapt)),...
     'Color','k','LineWidth',2)
-bar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateReadapt),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.5);
+bar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateReadapt),'FaceColor',colors(2,:),'BarWidth',0.5);
 errorbar(ax2c,2,nanmean(TCatch.netContributionNorm2_lateReadapt),nanstd(TCatch.netContributionNorm2_lateReadapt)./sqrt(length(TCatch.netContributionNorm2_lateReadapt)),...
+    'Color','k','LineWidth',2)
+bar(ax2c,3,nanmean(TCatchControl.netContributionNorm2_lateReadapt),'FaceColor',colors(3,:),'BarWidth',0.5);
+errorbar(ax2c,3,nanmean(TCatchControl.netContributionNorm2_lateReadapt),nanstd(TCatchControl.netContributionNorm2_lateReadapt)./sqrt(length(TCatchControl.netContributionNorm2_lateReadapt)),...
     'Color','k','LineWidth',2)
 text(ax2c,0.5,0.025,'Late Error','FontSize',12,'FontName','Arial');
 
 
 hold(ax3a)%;hold(ax3b);hold(ax3c)
 
-for g=1:2
+for g=1:3
     ns=size(TC{g}.prepertNet,1);
     dt1=TC{g}.TMpNet(:,1:20);
     dt2=TC{g}.TMpSP(:,1:20);
@@ -382,11 +399,14 @@ plot(ax3a,[10 20],[-0.02 -0.02],'k','LineWidth',2)
 text(ax3a,10,-0.04,'10 srides','FontName','Arial','FontSize',10);
 
 hold(ax4a)%control and small errors
-bar(ax4a,1,nanmean(TControl.netContributionNorm2_TM_P),'FaceColor',[0.2 0.2 1],'BarWidth',0.5);
+bar(ax4a,1,nanmean(TControl.netContributionNorm2_TM_P),'FaceColor',colors(1,:),'BarWidth',0.5);
 errorbar(ax4a,1,nanmean(TControl.netContributionNorm2_TM_P),nanstd(TControl.netContributionNorm2_TM_P)./sqrt(length(TControl.netContributionNorm2_TM_P)),...
     'Color','k','LineWidth',2)
-bar(ax4a,2,nanmean(TCatch.netContributionNorm2_TM_P),'FaceColor',[0.67 0.85 0.30],'BarWidth',0.5);
+bar(ax4a,2,nanmean(TCatch.netContributionNorm2_TM_P),'FaceColor',colors(2,:),'BarWidth',0.5);
 errorbar(ax4a,2,nanmean(TCatch.netContributionNorm2_TM_P),nanstd(TCatch.netContributionNorm2_TM_P)./sqrt(length(TCatch.netContributionNorm2_TM_P)),...
+    'Color','k','LineWidth',2)
+bar(ax4a,3,nanmean(TCatchControl.netContributionNorm2_TM_P),'FaceColor',colors(3,:),'BarWidth',0.5);
+errorbar(ax4a,3,nanmean(TCatchControl.netContributionNorm2_TM_P),nanstd(TCatchControl.netContributionNorm2_TM_P)./sqrt(length(TCatchControl.netContributionNorm2_TM_P)),...
     'Color','k','LineWidth',2)
 plot(ax4a,[1 2],[0.22 0.22],'Color','k','LineWidth',2)
 %text(ax4a,0.7,0.26,'stepAsym','FontSize',12,'FontName','Arial');
