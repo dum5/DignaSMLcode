@@ -27,8 +27,8 @@ set(dt2,'Color','k','LineWidth',2)
 hs=patch(ax,dt2.XData,dt2.YData,[1 1 1]);
 hatchfill2(hs)
 
-ylabel(ax,'\betaE')
-xlabel(ax,'\betaA')
+ylabel(ax,'\beta_n_o_-_a_d_a_p_t')
+xlabel(ax,'\beta_a_d_a_p_t')
 
 xv=mean(get(ax,'XLim'));
 yv=mean(get(ax,'YLim'));

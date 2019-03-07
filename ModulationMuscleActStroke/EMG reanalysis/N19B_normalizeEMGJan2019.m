@@ -20,15 +20,10 @@ l1=groups{2}.getLabelsThatMatch('SAR');
 l3=regexprep(l1,'SAR','HIP');
 groups{2}=groups{2}.renameParams(l1,l3);
 
-%normalize parameters for P0008 
-baseEp=getBaseEpoch; %defines baseEp
-mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
-nMusc=length(mOrder);
-type='s';
-labelPrefix=fliplr([strcat('f',mOrder) strcat('s',mOrder)]); %To display
-labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
-groups{2}.adaptData{8}=groups{2}.adaptData{8}.normalizeToBaselineEpoch(labelPrefixLong,baseEp);
-    
+
+baseEp=defineEpochs({'Base'},{'TM base'}',[-40],[0],[1],'nanmedian');
+
+
 for j=[1,2]% strokes and controls
     %recompute parameters is needed because normalized params are not
     %present in 30 Hz Filtered Data
@@ -51,7 +46,7 @@ for j=[1,2]% strokes and controls
     %Running median filter: (?)
     
     %Get consistent names for conditions:
-    replacementConditionNames
+   % replacementConditionNames
    
     
     %Check: commonConditions needs to include all of the newNames ?
@@ -75,8 +70,8 @@ end
     
     jklkllkj
 %%
-% patients=groups{1};
-% controls=groups{2};
+patients=groups{2};
+controls=groups{1};
 % GYAA=groups{4};
 % GYRC=groups{5};
 %patientsUp=groups{3};

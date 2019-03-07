@@ -1,64 +1,64 @@
-% clear all
-% close all
-% clc
-% 
-% %In this version the following has been updated
-% % - Patient selection has changed according to what we agreed on in Sept 2018
-% % - Regressions are performed on normalized vectors, since BM on the non-normalized data depends on
-% %   magnitude in the stroke group (rho=-0.55, p=0.046).
-% % - We use the first 5 strides to characterize feedback-generated activity
-% % - The data table for individual subjects will be generated with all 16
-% %   subjects, such that different selections are possible in subsequent
-% %   analyses (set allSubFlag to 1)
-% % - Analyses on group median data are performed with allSubFlag at 0,
-% %   subject selection depends on speedMatchFlag
-% 
-% 
-% [loadName,matDataDir]=uigetfile('*.mat');
-% loadName=[matDataDir,loadName];
-% load(loadName)
-% 
-% speedMatchFlag=0;
-% allSubFlag=0;%use this flag to generate the table that includes all subjects
-% %this needs to happen separately, since indices will be messed up ohterwise
-% 
-% groupMedianFlag=1; %do not change
-% nstrides=5;% do not change
-% summethod='nanmedian';% do not change
-% 
-% SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
-% 
-% pIdx=1:length(strokesNames);
-% cIdx=1:length(controlsNames);
-% 
-% %define groups
-% groups{1}=controls.getSubGroup(controlsNames);
-% groups{2}=patients.getSubGroup(strokesNames);
-% 
-% %% Get normalized parameters:
-% %Define parameters we care about:
-% mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
-% %mOrder={'TA','SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF'};
-% nMusc=length(mOrder);
-% type='s';
-% labelPrefix=fliplr([strcat('f',mOrder) strcat('s',mOrder)]); %To display
-% labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
-% 
-% %Renaming normalized parameters, for convenience:
-% for k=1:length(groups)
-%     ll=groups{k}.adaptData{1}.data.getLabelsThatMatch('^Norm');
-%     l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
-%     groups{k}=groups{k}.renameParams(ll,l2);
-% end
-% newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
-% 
-% eE=1;
-% eL=1;
+clear all
+close all
+clc
+
+%In this version the following has been updated
+% - Patient selection has changed according to what we agreed on in Sept 2018
+% - Regressions are performed on normalized vectors, since BM on the non-normalized data depends on
+%   magnitude in the stroke group (rho=-0.55, p=0.046).
+% - We use the first 5 strides to characterize feedback-generated activity
+% - The data table for individual subjects will be generated with all 16
+%   subjects, such that different selections are possible in subsequent
+%   analyses (set allSubFlag to 1)
+% - Analyses on group median data are performed with allSubFlag at 0,
+%   subject selection depends on speedMatchFlag
+
+
+[loadName,matDataDir]=uigetfile('*.mat');
+loadName=[matDataDir,loadName];
+load(loadName)
+
+speedMatchFlag=0;
+allSubFlag=0;%use this flag to generate the table that includes all subjects
+%this needs to happen separately, since indices will be messed up ohterwise
+
+groupMedianFlag=1; %do not change
+nstrides=5;% do not change
+summethod='nanmedian';% do not change
+
+SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
+
+pIdx=1:length(strokesNames);
+cIdx=1:length(controlsNames);
+
+%define groups
+groups{1}=controls.getSubGroup(controlsNames);
+groups{2}=patients.getSubGroup(strokesNames);
+
+%% Get normalized parameters:
+%Define parameters we care about:
+mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
+%mOrder={'TA','SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF'};
+nMusc=length(mOrder);
+type='s';
+labelPrefix=fliplr([strcat('f',mOrder) strcat('s',mOrder)]); %To display
+labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
+
+%Renaming normalized parameters, for convenience:
+for k=1:length(groups)
+    ll=groups{k}.adaptData{1}.data.getLabelsThatMatch('^Norm');
+    l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
+    groups{k}=groups{k}.renameParams(ll,l2);
+end
+newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
+
+eE=1;
+eL=1;
 
 %eA-B
 ep=defineEpochs({'eA'},{'Adaptation'}',[nstrides],[eE],[eL],summethod);
 baseEp=defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],summethod);
-
+invertFlag=1;
 % %eP-lA
 %ep=defineEpochs({'eP'},{'Washout'}',[nstrides],[eE],[eL],summethod);
 %baseEp=defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],summethod);
@@ -72,9 +72,14 @@ set(f1,'Color',[1 1 1]','Units','inches','Position',[0 0 4 3]);
 ax2 = axes(f1,'Position',[0.6   0.06   0.32  0.8],'FontSize',6);%patients eA-B
 ax4 = axes(f1,'Position',[0.1   0.06   0.32  0.8],'FontSize',6);%controls eA-B
 
-
+if invertFlag==1
+    [f1,fb,ax4,ax2,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax4,ax2,pd1,ep,baseEp,newLabelPrefix,groups,0.1,0.1,'invNanmedian');
+else    
 [f1,fb,ax4,ax2,pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax4,ax2,pd1,ep,baseEp,newLabelPrefix,groups,0.1,0.1,'nanmedian');
+end
 %[f1,fb,ax3,ax1,pd2,pvalc2,pvals2,pvalb2,hc2,hs2,hb2,dataEc2,dataEs2,dataBinaryc2,dataBinarys2]=plotBGcompV2(f1,fb,ax3,ax1,pd1,ep(4,:),baseEp,newLabelPrefix,groups,0.1,0.1,'nanmedian');
+
+
 
 close(fb)
 

@@ -218,6 +218,8 @@ plot(ax1,[6.22 7.75]./12,[-0.2 -0.2],'Color','k','LineWidth',3,'Clipping','off')
 plot(ax1,[8.25 11.75]./12,[-0.2 -0.2],'Color','k','LineWidth',3,'Clipping','off')
 
 %scatter plot
+sadflksjdf
+
 plot(ax5,fmFull,BdataFull.lAs(:,2),'.k','MarkerSize',10)
 title(ax5,'structure \DeltaEMG_S_S')
 xlabel(ax5,'Fugl Meyer')
