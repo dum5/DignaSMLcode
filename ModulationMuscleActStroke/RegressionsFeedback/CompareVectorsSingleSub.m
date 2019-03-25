@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;%use this flag to generate the table that includes all subjects
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -218,7 +218,7 @@ xlabel('\beta_A')
 
 if speedMatchFlag==0;
     BdataFull=Bdata;
-    save([matDataDir,'vectorSimFull'],'BdataFull','fmSelect');
+    save([matDataDir,'vectorSimFull'],'sSpeeds','BdataFull','fmSelect');
 elseif speedMatchFlag==1
     BdataSpM=Bdata;
     save([matDataDir,'vectorSimSpM.mat'],'BdataSpM','fmSelect');

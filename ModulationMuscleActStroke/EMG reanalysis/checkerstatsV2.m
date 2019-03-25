@@ -64,7 +64,7 @@ if strcmp(posthoc,'none')
     alphaAdj=alpha;
 elseif strcmp(posthoc,'benhoch')
     ptemp=p(:);
-    [htemp,alphaAdj,i1] = BenjaminiHochberg(ptemp,alpha);
+    [htemp,alphaAdj,i1] = BenjaminiHochbergNew(ptemp,alpha,'true');
     h=reshape(htemp,size(p));    
 elseif strcmp(posthoc,'bonferroni')
     h=zeros(size(p));

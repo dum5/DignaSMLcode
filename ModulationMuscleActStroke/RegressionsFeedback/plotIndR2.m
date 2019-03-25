@@ -1,6 +1,10 @@
 clear all
 close all
 
+load IndRegressions15
+IndRegressions15=IndRegressions;
+clear IndRegressions
+
 load IndRegressions
 figure
 subplot(2,3,1);hold on;title('R^2 long exposure')
@@ -32,6 +36,19 @@ subplot(2,2,4)
 a=plotCor(gca,IndRegressions.short_pBA(sInds),abs(IndRegressions.sBA(sInds)),IndRegressions.short_pBA(cInds),abs(IndRegressions.sBA(cInds)));
 title('\beta_A_D_A_P Short');
 
+figure
+subplot(2,2,1)
+a=plotCor(gca,IndRegressions.pLong(sInds),abs(IndRegressions.longR2(sInds)),IndRegressions.pLong(cInds),abs(IndRegressions.longR2(cInds)));
+title('long_5strides');xlabel('model p'),ylabel('R^2');
+subplot(2,2,2)
+a=plotCor(gca,IndRegressions.pShort(sInds),abs(IndRegressions.shortR2(sInds)),IndRegressions.pShort(cInds),abs(IndRegressions.shortR2(cInds)));
+title('short');xlabel('model p'),ylabel('R^2');
+subplot(2,2,3)
+a=plotCor(gca,IndRegressions15.pLong(sInds),abs(IndRegressions15.longR2(sInds)),IndRegressions15.pLong(cInds),abs(IndRegressions15.longR2(cInds)));
+title('long_15strides');xlabel('model p'),ylabel('R^2');
+subplot(2,2,4)
+a=plotCor(gca,IndRegressions15.pShort(sInds),abs(IndRegressions15.shortR2(sInds)),IndRegressions15.pShort(cInds),abs(IndRegressions15.shortR2(cInds)));
+title('short');xlabel('model p'),ylabel('R^2');
 
 %name
 function [aa]=plotCosines(Data);

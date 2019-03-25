@@ -20,5 +20,5 @@ aa=CompareElipses(CmodelFit4,SmodelFit4,ax2);aa=CompareElipses(CmodelFit2,Smodel
 title(ax1,'FULL GROUP')
 title(ax2,'SPEED MATCHED')
 
-set(ax1,'XLim',[-0.05 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[0 1],'YTick',[0 0.25 0.5 0.75 1])
-set(ax2,'XLim',[-0.05 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[0 1],'YTick',[0 0.25 0.5 0.75 1])
+set(ax1,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.05 1],'YTick',[0 0.25 0.5 0.75 1])
+set(ax2,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.05 1],'YTick',[0 0.25 0.5 0.75 1])

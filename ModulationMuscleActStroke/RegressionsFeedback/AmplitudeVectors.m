@@ -18,7 +18,7 @@ clc
 loadName=[matDataDir,loadName];
 load(loadName)
 
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;%Needed to run SubjectSelection script
 %this needs to happen separately, since indices will be messed up ohterwise
 
@@ -75,7 +75,8 @@ SdataEMG=SdataEMG-SBB; %Removing base
 labels2=labels(:);
 Index = find(contains(labels2,'SOL'));%find all Soleus muscle data in the labels
 ptIdx=find(contains(strokesNames,'P0005'));
-SdataEMG(Index,:,ptIdx)=0;%I checked this and it indeed removes all the large peaks from the subject data, regardles of which subs are selected
+SdataEMG(Index,:,ptIdx)=NaN;%I checked this and it indeed removes all the large peaks from the subject data, regardles of which subs are selected
+SdataEMG(Index,:,ptIdx)=nanmedian(SdataEMG(Index,:,:),3);
 
 %Flipping EMG:
 CdataEMG=reshape(flipEMGdata(reshape(CdataEMG,size(labels,1),size(labels,2),size(CdataEMG,2),size(CdataEMG,3)),1,2),numel(labels),size(CdataEMG,2),size(CdataEMG,3));
