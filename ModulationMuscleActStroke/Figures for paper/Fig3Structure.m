@@ -16,7 +16,7 @@ clc
 
 %[loadName,matDataDir]=uigetfile('*.mat');
 %loadName=[matDataDir,loadName];
-loadName='groupDataPT8_30N.mat';
+loadName='groupDataFinal.mat';
 matDataDir='D:\Documents\OnedrivePitt\University of Pittsburgh\Torres, Gelsy - Projects\Modulation of muscle activity in stroke\GroupData\';
 load(loadName)
 
@@ -154,8 +154,8 @@ t5=text(ax4,-0.1,6+15,2,'KNEE','Rotation',90,'FontSize',8,'FontWeight','Bold');
 t6=text(ax4,-0.1,12+15,2,'HIP','Rotation',90,'FontSize',8,'FontWeight','Bold');
 plot(ax4,[-0.17 -0.17],[0 14.9],'LineWidth',3,'Color',[0.466 0.674 0.188],'Clipping','off')
 plot(ax4,[-0.17 -0.17],[15.1 30],'LineWidth',3,'Color',[0.85,0.325,0.098],'Clipping','off')
-t7=text(ax4,-0.27,1,2,'DOM/ NON-PAR','Rotation',90,'Color',[0.466 0.674 0.188],'FontSize',8,'FontWeight','Bold');
-t8=text(ax4,-0.27,16,2,'NON-DOM/ PAR','Rotation',90,'Color',[0.85 0.325 0.098],'FontSize',8,'FontWeight','Bold');
+t7=text(ax4,-0.27,1,2,'FAST/ DOM/ NON-PAR','Rotation',90,'Color',[0.466 0.674 0.188],'FontSize',8,'FontWeight','Bold');
+t8=text(ax4,-0.27,16,2,'SLOW/ NON-DOM/ PAR','Rotation',90,'Color',[0.85 0.325 0.098],'FontSize',8,'FontWeight','Bold');
 plot(ax4,[0.2 0.4],[-4 -4],'LineWidth',3,'Color',[0.5 0.5 0.5],'Clipping','off')
 plot(ax4,[0.2 0.4],[-6 -6],'LineWidth',3,'Color','k','Clipping','off')
 t10=text(ax4,0.5,-4,2,'FLEXORS','FontSize',8);
@@ -171,11 +171,11 @@ plot(ax2,[8.25 11.75]./12,[-0.2 -0.2],'Color','k','LineWidth',3,'Clipping','off'
 %scatter plot
 hold(ax5)
 plot(ax5,fmFull,BdataFull.lAs(:,2),'.k','MarkerSize',10)
-title(ax5,'structure \DeltaEMG_S_S')
+%title(ax5,'structure \DeltaEMG_S_S')
 xlabel(ax5,'Fugl Meyer')
-ylabel(ax5,'\DeltaEMG_S_S PAR')
+ylabel(ax5,'SIMILARITY \DeltaEMG_S_S PAR')
 [rho,pval]=corr(fmFull,BdataFull.lAs(:,2),'Type','Spearman');
-%ls=lsline(ax5);set(ls,'Color','k','LineWidth',2)
+ls=lsline(ax5);set(ls,'Color','k','LineWidth',2)
 Idx=find(sSpeeds>0.7);
 plot(ax5,fmFull(Idx),BdataFull.lAs(Idx,2),'.k','Color',[0.5 0.5 0.5],'MarkerSize',10)
 ll=findobj(ax5,'Type','Line');
@@ -187,12 +187,13 @@ set(ax5,'Box','off')
 %bar plots
 [aa] = plotCosines(ax6,BdataFull.lAs,BdataFull.lAf,0);
 
-title(ax6,'\DeltaEMG_S_S')
+%title(ax6,'\DeltaEMG_S_S')
 
-ylabel(ax6,'\DeltaEMG_S_S')
-labels = {'NON-DOM PAR','DOM NON-PAR'};
-labels = cellfun(@(x) strrep(x,' ','\newline'), labels,'UniformOutput',false);
-set(ax6,'XTick',[1.5 4],'XTickLabel',labels)
+ylabel(ax6,'SIMILARITY \DeltaEMG_S_S')
+%labels = {'NON-DOM PAR','DOM NON-PAR'};
+labels = {'NON-DOM','PAR','DOM','NON-PAR'};
+labels = cellfun(@(x) strrep(x,'-','\newline'), labels,'UniformOutput',false);
+set(ax6,'XTick',[1 2 3.5 4.5],'XTickLabel',labels)
 
 ll=findobj(ax6,'Type','Bar');
 legend(ax6,ll(end:-1:1),{'CONTROL','STROKE'},'box','off');
@@ -201,12 +202,23 @@ set(f1,'Renderer','painters');
     function [aa]=plotCosines(ax,DataAll,DataSpM,xLabelFlag);
     hold(ax)
     aa=[];
-    hc=bar(ax,[1 3.5],[nanmedian(DataAll(:,1)) nanmedian(DataSpM(:,1))],'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',1,'BarWidth',0.3);
-    hs=bar(ax,[2 4.5],[nanmedian(DataAll(:,2)) nanmedian(DataSpM(:,2))],'Facecolor',[1 1 1 ],'EdgeColor',[0 0 0],'LineWidth',1,'BarWidth',0.3);
-    hatchfill2(hs);
-
-    errorbar(ax,[1 3.5],[nanmedian(DataAll(:,1)) nanmedian(DataSpM(:,1))],[0 0],[iqr(DataAll(:,1)) iqr(DataSpM(:,1))],'Color',[0 0 0],'LineWidth',1,'LineStyle','none');
-    errorbar(ax,[2 4.5],[nanmedian(DataAll(:,2)) nanmedian(DataSpM(:,2))],[0 0],[iqr(DataAll(:,2)) iqr(DataSpM(:,2))],'Color',[0 0 0],'LineWidth',1,'LineStyle','none');
+    hc1=bar(ax,[1],[nanmedian(DataAll(:,1))],'Facecolor',[1 1 1 ],'EdgeColor',[0.85 0.325 0.098],'LineWidth',1,'BarWidth',0.6);
+    hc2=bar(ax,[3.5],[nanmedian(DataSpM(:,1))],'Facecolor',[1 1 1 ],'EdgeColor',[0.466 0.674 0.188],'LineWidth',1,'BarWidth',0.6);
+    
+    hs1=bar(ax,[2],[nanmedian(DataAll(:,2))],'Facecolor',[1 1 1 ],'EdgeColor',[0.85 0.325 0.098],'LineWidth',1,'BarWidth',0.6);
+    hs2=bar(ax,[4.5],[nanmedian(DataSpM(:,2))],'Facecolor',[1 1 1 ],'EdgeColor',[0.466 0.674 0.188],'LineWidth',1,'BarWidth',0.6);
+    
+    hatchfill2(hs1);
+    hatchfill2(hs2);
+    
+    plot(ax,0.9,DataAll(:,1),'ok','Color',[0.85 0.325 0.098])
+    plot(ax,3.4,DataSpM(:,1),'ok','Color',[0.466 0.674 0.188])
+    plot(ax,1.9,DataAll(:,2),'ok','Color',[0.85 0.325 0.098])
+    plot(ax,4.4,DataSpM(:,2),'ok','Color',[0.466 0.674 0.188])
+    
+    errorbar(ax,[1.1 2.2],[nanmedian(DataAll)],[0 0],[iqr(DataAll)],'Color',[0.85 0.325 0.098],'LineWidth',1,'LineStyle','none');
+    errorbar(ax,[3.6 4.6],[nanmedian(DataSpM)],[0 0],[iqr(DataSpM)],'Color',[0.466 0.674 0.188],'LineWidth',1,'LineStyle','none');
+    
     
     if xLabelFlag==1
         set(ax,'XLim',[0.5 5],'XTick',[1.5 4],'XTickLabel',{'All','Sp. Match'},'FontSize',8)

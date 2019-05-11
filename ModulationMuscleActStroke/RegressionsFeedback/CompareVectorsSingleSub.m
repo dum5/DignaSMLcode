@@ -182,7 +182,7 @@ for s=1:length(names2)
     clear temp
 end
 
-load([matDataDir,'/IndRegressions'])
+load([matDataDir,'/IndividualRegressions'])
 
 IndRegressions.BA_BE=IndRegressions.BA-IndRegressions.BE;
 

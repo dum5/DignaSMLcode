@@ -21,22 +21,21 @@ aa=CompareElipses(Cmodel1aFast,Smodel1aFast,col2,ax3);aa=CompareElipses(Cmodel1b
 clear Cmodel1aSlow Smodel1aSlow Cmodel1bSlow Smodel1bSlow Cmodel1aFast Smodel1aFast Cmodel1bFast Smodel1bFast
 
 
-load('FinalRegressionsSpeedMatch')
+load('FinalRegressionsAsymmetryMatch')
 hold(ax2)
-%aa=CompareElipses(Cmodel1aSlow,Smodel1aSlow,col2,ax2);
-aa=CompareElipses(Cmodel1bSlow,Smodel1bSlow,col1,ax2);
+aa=CompareElipses(Cmodel1aSlow,Smodel1aSlow,col2,ax2);aa=CompareElipses(Cmodel1bSlow,Smodel1bSlow,col1,ax2);
 hold(ax4)
 aa=CompareElipses(Cmodel1aFast,Smodel1aFast,col2,ax4);aa=CompareElipses(Cmodel1bFast,Smodel1bFast,col1,ax4);
 
 ylabel(ax2,'');ylabel(ax4,'');xlabel(ax1,'');xlabel(ax2,'');
 
 title(ax1,'FULL GROUP')
-title(ax2,'SPEED MATCHED')
+title(ax2,'ASYM MATCHED')
 
-set(ax1,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.05 1],'YTick',[0 0.25 0.5 0.75 1],'XTickLabel','')
-set(ax2,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.05 1],'YTick',[0 0.25 0.5 0.75 1],'XTickLabel','','YTickLabel','')
-set(ax3,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.05 1],'YTick',[0 0.25 0.5 0.75 1])
-set(ax4,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.05 1],'YTick',[0 0.25 0.5 0.75 1],'YTickLabel','')
+set(ax1,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.1 1],'YTick',[0 0.25 0.5 0.75 1],'XTickLabel','')
+set(ax2,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.1 1],'YTick',[0 0.25 0.5 0.75 1],'XTickLabel','','YTickLabel','')
+set(ax3,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.1 1],'YTick',[0 0.25 0.5 0.75 1])
+set(ax4,'XLim',[0 1],'XTick',[0 0.25 0.5 0.75 1],'YLim',[-0.1 1],'YTick',[0 0.25 0.5 0.75 1],'YTickLabel','')
 
 text(ax1,-0.27,0.2,'SLOW/PARETIC','Rotation',90,'Color',[0.85 0.325 0.098])
 text(ax3,-0.27,0.1,'FAST/NON-PARETIC','Rotation',90,'Color',[0.466 0.674 0.188])

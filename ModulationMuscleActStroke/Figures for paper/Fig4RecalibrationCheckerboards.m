@@ -54,14 +54,14 @@ newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 
 eE=1;
 eL=1;
-
-%eA-B
-ep=defineEpochs({'eA'},{'Adaptation'}',[nstrides],[eE],[eL],summethod);
-baseEp=defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],summethod);
-invertFlag=1;
-% %eP-lA
-%ep=defineEpochs({'eP'},{'Washout'}',[nstrides],[eE],[eL],summethod);
-%baseEp=defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],summethod);
+% 
+% %eA-B
+% ep=defineEpochs({'eA'},{'Adaptation'}',[nstrides],[eE],[eL],summethod);
+% baseEp=defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],summethod);
+invertFlag=0;
+%eP-lA
+ep=defineEpochs({'eP'},{'Washout'}',[nstrides],[eE],[eL],summethod);
+baseEp=defineEpochs({'lA'},{'Adaptation'}',[-40],[eE],[eL],summethod);
 
 
 %Generate figures

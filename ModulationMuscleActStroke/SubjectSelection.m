@@ -16,7 +16,7 @@ if allSubFlag
     
 else
     
-    if speedMatchFlag
+    if speedMatchFlag==1
         
         strokesNames=strcat('P00',{'01','02','05','08','09','10','13','14','15','16'}); %Patients > 0.70m/s; N=10; mean speed 0.8784; sd= 0.1235 
         controlsNames=strcat('C00',{'02','03','04','05','06','07','09','10','12','16'}); %Controls < 1.1 m/s;N=10; mean speed=0.9650, sd= 0.1307
@@ -24,7 +24,7 @@ else
         %controls slower than 1.1 m/s, except for C0001, because of bad data           
         % ttest for between-group comparison of speed=0.1450
         
-    else
+    elseif speedMatchFlag==0
         controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; 
         % Control 1 is removed because of bad data and control 7 is removed
         % to match group size
@@ -33,6 +33,16 @@ else
         %stroke 3 is removed because of bad data and stroke 7 is removed,
         %because of of atypical clinical presentation (i.e. controlateral
         %atrophy     
+    elseif speedMatchFlag==2%matched for EMG symmetry
+        
+        controlsNames={'C0003','C0012','C0014','C0009','C0011','C0006','C0010','C0015','C0004','C0002'};
+        strokesNames={ 'P0014','P0012','P0011','P0006','P0013','P0016','P0015','P0005','P0009','P0010'};
+  
+        %strokesNames=strcat('P00',{'15','16','13','06','11','12','14'});
+        %controlsNames=strcat('C00',{'03','12','14','09','11','06','10'});
+    elseif speedMatchFlag==3;%matched for kin symmetry
+        strokesNames=strcat('P00',{'15','01','13','14','05','06','08'});
+         controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; 
         
         
     end

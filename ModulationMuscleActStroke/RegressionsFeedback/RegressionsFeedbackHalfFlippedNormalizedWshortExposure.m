@@ -57,7 +57,7 @@ newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 eE=1;
 eL=1;
 
-ep=defineEpochs({'BASE','eA','lA','eP','eB','lS'},{'TM base','Adaptation','Adaptation','Washout','TM base','short exposure'},[-40 nstrides -40 nstrides nstrides -8],[eE eE eE eE eE eE],[eL eL eL eL eL eL],summethod);
+ep=defineEpochs({'BASE','eA','lA','eP','eB','lS'},{'TM base','Adaptation','Adaptation','Washout','TM base','short split'},[-40 nstrides -40 nstrides nstrides -8],[eE eE eE eE eE eE],[eL eL eL eL eL eL],summethod);
 baseEp=defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],summethod);
 
 %extract data for stroke and controls separately
@@ -75,9 +75,10 @@ SdataEMG=SdataEMG-SBB; %Removing base
 labels2=labels(:);
 Index = find(contains(labels2,'sSOL'));%find all Soleus muscle data in the labels
 ptIdx=find(contains(strokesNames,'P0005'));
+if ~isempty(ptIdx)
 SdataEMG(Index,:,ptIdx)=NaN;%I checked this and it indeed removes all the large peaks from the subject data, regardles of which subs are selected
 SdataEMG(Index,:,ptIdx)=nanmedian(SdataEMG(Index,:,:),3);
-
+end
 %Flipping EMG:
 CdataEMG=reshape(flipEMGdata(reshape(CdataEMG,size(labels,1),size(labels,2),size(CdataEMG,2),size(CdataEMG,3)),1,2),numel(labels),size(CdataEMG,2),size(CdataEMG,3));
 SdataEMG=reshape(flipEMGdata(reshape(SdataEMG,size(labels,1),size(labels,2),size(SdataEMG,2),size(SdataEMG,3)),1,2),numel(labels),size(SdataEMG,2),size(SdataEMG,3));
@@ -114,16 +115,16 @@ rob='off';
         ttC=table(-nanmedian(eA_C(:,cIdx),2), nanmedian(eAT_C(:,cIdx),2), -nanmedian(lA_C(:,cIdx),2), nanmedian(eP_lA_C(:,cIdx),2),nanmedian(eB_lS_C(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA','eB_lS'});
         
         %stroke with themselves as a reference
-        ttS=table(-nanmedian(eA_S(:,cIdx),2), nanmedian(eAT_S(:,cIdx),2), -nanmedian(lA_S(:,cIdx),2), nanmedian(eP_lA_S(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+        ttS=table(-nanmedian(eA_S(:,pIdx),2), nanmedian(eAT_S(:,pIdx),2), -nanmedian(lA_S(:,pIdx),2), nanmedian(eP_lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
        
         %stroke with control reference for eAT
-        ttSHalfFlipped=table(-nanmedian(eA_S(:,cIdx),2), nanmedian(eAT_C(:,cIdx),2), -nanmedian(lA_S(:,cIdx),2), nanmedian(eP_lA_S(:,cIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
+        ttSHalfFlipped=table(-nanmedian(eA_S(:,pIdx),2), nanmedian(eAT_C(:,cIdx),2), -nanmedian(lA_S(:,pIdx),2), nanmedian(eP_lA_S(:,pIdx),2),'VariableNames',{'eA','eAT','lA','eP_lA'});
         
         
         %this is to account for the fact that pt 11 did not perform the
         %short exposure
         shIdx=find(~isnan(lS_S(1,:)));
-        ttSShort=table(-nanmedian(eA_S(:,shIdx),2), nanmedian(eAT_S(:,cIdx),2), -nanmedian(lA_S(:,shIdx),2), nanmedian(eB_lS_S(:,shIdx),2),'VariableNames',{'eA','eAT','lA','eB_lS'});
+        ttSShort=table(-nanmedian(eA_S(:,shIdx),2), nanmedian(eAT_S(:,shIdx),2), -nanmedian(lA_S(:,shIdx),2), nanmedian(eB_lS_S(:,shIdx),2),'VariableNames',{'eA','eAT','lA','eB_lS'});
         
         ttSHalfFlippedShort=table(-nanmedian(eA_S(:,shIdx),2), nanmedian(eAT_C(:,cIdx),2), -nanmedian(lA_S(:,shIdx),2), nanmedian(eB_lS_S(:,shIdx),2),'VariableNames',{'eA','eAT','lA','eB_lS'});
         
@@ -192,6 +193,21 @@ rob='off';
     Smodel1aFastFl=fitlm(ttSHalfFlippedFastShort,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);%short exposure
     Smodel1bFastFl=fitlm(ttSHalfFlippedFast,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);%long exposure 
     
+    %%Stroke and control no normalized (onw ref)
+     %Control models
+    Cmodel2aSlow=fitlm(ttCSlow,'eB_lS~eA+eAT-1','RobustOpts',rob);%short exposure
+    Cmodel2bSlow=fitlm(ttCSlow,'eP_lA~eA+eAT-1','RobustOpts',rob);%long exposure 
+    
+    Cmodel2aFast=fitlm(ttCFast,'eB_lS~eA+eAT-1','RobustOpts',rob);%short exposure
+    Cmodel2bFast=fitlm(ttCFast,'eP_lA~eA+eAT-1','RobustOpts',rob);%long exposure 
+    
+    %Stroke with own ref
+    Smodel2aSlow=fitlm(ttSShortSlow,'eB_lS~eA+eAT-1','RobustOpts',rob);%short exposure
+    Smodel2bSlow=fitlm(ttSSlow,'eP_lA~eA+eAT-1','RobustOpts',rob);%long exposure 
+    
+    Smodel2aFast=fitlm(ttSShortFast,'eB_lS~eA+eAT-1','RobustOpts',rob);%short exposure
+    Smodel2bFast=fitlm(ttSFast,'eP_lA~eA+eAT-1','RobustOpts',rob);%long exposure 
+    
     
 %     CmodelFit4=fitlm(ttCSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
 %     SmodelFit4=fitlm(ttSHalfFlippedSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
@@ -209,33 +225,50 @@ rob='off';
     subplot(2,2,1);hold on;
     aa=CompareElipses(Cmodel1aSlow,Smodel1aSlow);aa=CompareElipses(Cmodel1bSlow,Smodel1bSlow);
     set(gca,'XLim',[0 1],'YLim',[0 1]);%slow leg each group with own ref
-    title('Slow Own Ref')
+    title('Slow Own Ref Normalized')
     grid on
     
     subplot(2,2,2);hold on;
-    aa=CompareElipses(Cmodel1aSlow,Smodel1aSlowFl);aa=CompareElipses(Cmodel1bSlow,Smodel1bSlowFl);
+    aa=CompareElipses(Cmodel2aSlow,Smodel2aSlow);aa=CompareElipses(Cmodel2bSlow,Smodel2bSlow);
     set(gca,'XLim',[0 1],'YLim',[0 1]);
-    title('Slow Control eAT')
+    title('Slow Own Ref Not Normalized')
     grid on
     
     subplot(2,2,3);hold on;
     aa=CompareElipses(Cmodel1aFast,Smodel1aFast);aa=CompareElipses(Cmodel1bFast,Smodel1bFast);
     set(gca,'XLim',[0 1],'YLim',[0 1]);%slow leg each group with own ref
-    title('Fast Own Ref')
+    title('Fast Own Ref Normalized')
     grid on
     
     subplot(2,2,4);hold on;
-    aa=CompareElipses(Cmodel1aFast,Smodel1aFastFl);aa=CompareElipses(Cmodel1bFast,Smodel1bFastFl);
+    aa=CompareElipses(Cmodel2aFast,Smodel2aFast);aa=CompareElipses(Cmodel2bFast,Smodel2bFast);
     set(gca,'XLim',[0 1],'YLim',[0 1]);
-    title('Fast Control eAT')
+    title('Fast Own Ref Not Normalized')
     grid on
     
-     
+    figure
+    subplot (2,2,1)
+    hold on
+    bar([1,5],[norm(ttCSlow.eA), norm(ttCFast.eA)],'FaceColor',[1 1 1],'BarWidth',0.2)
+    bar([2,6],[norm(ttCSlow.eAT), norm(ttCFast.eAT)],'FaceColor',[0.5 0.5 0.5],'BarWidth',0.2)
+    bar([3,7],[norm(ttCSlow.eP_lA), norm(ttCFast.eP_lA)],'FaceColor',[0 0 0],'BarWidth',0.2)
+    set(gca,'XTick',[2 6],'XTickLabel',{'Slow','Fast'},'XLim',[0.5 7.5])
+    title('Amplitude Controls')
+    
+    subplot (2,2,2)
+    hold on
+    bar([1,5],[norm(ttSSlow.eA), norm(ttSFast.eA)],'FaceColor',[1 1 1],'BarWidth',0.2)
+    bar([2,6],[norm(ttSSlow.eAT), norm(ttSFast.eAT)],'FaceColor',[0.5 0.5 0.5],'BarWidth',0.2)
+    bar([3,7],[norm(ttSSlow.eP_lA), norm(ttSFast.eP_lA)],'FaceColor',[0 0 0],'BarWidth',0.2)
+    legend('\DeltaEMG_o_n_(_+_)','\DeltaEMG_o_n_(_-_)','\DeltaEMG_o_f_f_(_+_)')
+    set(gca,'XTick',[2 6],'XTickLabel',{'Slow','Fast'},'XLim',[0.5 7.5])
+    title('Amplitude Stroke')
     
     nsub=length(controlsNames);
     emptycol=NaN(2*nsub,1);
     emptycol2=cell(size(emptycol));
-    IndRegressions=table(emptycol2,emptycol2,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,'VariableNames',{'group','sub','BE','BA','FM','sBE','sBA','longR2','shortR2','pBE','pBA','short_pBE','short_pBA','longCI','shortCI','pLong','pShort','vel'});
+    IndRegressions=table(emptycol2,emptycol2,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,emptycol,...
+        'VariableNames',{'group','sub','FM','sBElong','sBAlong','sBEshort','sBAshort','s_longR2','s_shortR2','fBElong','fBAlong','fBEshort','fBAshort','f_shortR2','f_longR2','s_pLong','s_pShort','f_pLong','f_pShort','s_CIlong','s_CIshort','f_CIlong','f_CIshort','vel','age'});
     load bioData ;
     %% Individual models::
     rob='off'; %These models can't be fit robustly (doesn't converge)
@@ -245,100 +278,178 @@ rob='off';
 %     SlearnAll4=NaN(16,2);
 %     Cr2All2=NaN(16,1);
 %     Sr2All2=NaN(16,1);
-  
+  CosOnOffSlow=emptycol;
+  CosOnOffFast=emptycol;
+  CosSFeA=emptycol;
+  CosSFeP_lA=emptycol;
    % 
     for sj=1:nsub
         IndRegressions.group(sj)={'Control'};
         sjcode = cNames(sj);
         IndRegressions.sub(sj)=sjcode;
-        dt=table;
-        dt.eA=-eA_C(sIds,sj);
-        dt.eAT=ttC.eAT(sIds);%I use the same reference for controls as for the stroke
-        %dt.eAT=eAT_C(sIds,sj);
-        dt.eP_lA=eP_C(sIds,sj)-lA_C(sIds,sj);
-        dt.eB_lS=eB_lS_C(sIds,sj);
-        dt.eAnorm=dt.eA./norm(dt.eA);
-        dt.eATnorm=dt.eAT./norm(dt.eAT);
-        dt.eP_lAnorm=dt.eP_lA./norm(dt.eP_lA);
-        dt.eB_lSnorm=dt.eB_lS./norm(dt.eB_lS);
+        tempCode=cell2mat(sjcode);
+        IndRegressions.vel(sj)=velsC(str2num(tempCode(end-2:end)));
+        IndRegressions.age(sj)=groups{1}.adaptData{sj}.getSubjectAgeAtExperimentDate/12;
         
-        tmod=fitlm(dt,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        %table for slow leg
+        dtSlow=table;
+        dtSlow.eA=-eA_C(sIds,sj);
+        dtSlow.eAT=eAT_C(sIds,sj);
+        dtSlow.eP_lA=eP_C(sIds,sj)-lA_C(sIds,sj);
+        dtSlow.eB_lS=eB_lS_C(sIds,sj);
+        dtSlow = fcnNormTable(dtSlow);
+        
+        
+        
+        %models for slow leg
+        %long exposure
+        tmod=fitlm(dtSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
         IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
         IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
-        IndRegressions.BE(sj)=tmod.Coefficients.Estimate(IdxBS);
-        IndRegressions.BA(sj)=tmod.Coefficients.Estimate(IdxBM);
-        R2=uncenteredRsquared(tmod);IndRegressions.longR2(sj)=R2.uncentered;
-        IndRegressions.pBE(sj)=tmod.Coefficients.pValue(IdxBS);
-        IndRegressions.pBA(sj)=tmod.Coefficients.pValue(IdxBM);
+        IndRegressions.sBElong(sj)=tmod.Coefficients.Estimate(IdxBS);
+        IndRegressions.sBAlong(sj)=tmod.Coefficients.Estimate(IdxBM);
+        R2=uncenteredRsquared(tmod);IndRegressions.s_longR2(sj)=R2.uncentered;
         longCI=tmod.coefCI;
-        IndRegressions.longCI(sj)=diff(longCI(1,:))/2;
-        [IndRegressions.pLong(sj),dummy]=coefTest(tmod);
+        IndRegressions.s_CIlong(sj)=diff(longCI(1,:))/2;
+        [IndRegressions.s_pLong(sj),dummy]=coefTest(tmod);
     
-        
-        tmod2=fitlm(dt,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        %short exposure
+        tmod2=fitlm(dtSlow,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);
         IdxBM2=find(strcmp(tmod2.PredictorNames,'eATnorm'),1,'first');
         IdxBS2=find(strcmp(tmod2.PredictorNames,'eAnorm'),1,'first');
-        IndRegressions.sBE(sj)=tmod2.Coefficients.Estimate(IdxBS2);
-        IndRegressions.sBA(sj)=tmod2.Coefficients.Estimate(IdxBM2);
-        R2=uncenteredRsquared(tmod2);IndRegressions.shortR2(sj)=R2.uncentered;
-        IndRegressions.short_pBE(sj)=tmod2.Coefficients.pValue(IdxBS);
-        IndRegressions.short_pBA(sj)=tmod2.Coefficients.pValue(IdxBM);
+        IndRegressions.sBEshort(sj)=tmod2.Coefficients.Estimate(IdxBS2);
+        IndRegressions.sBAshort(sj)=tmod2.Coefficients.Estimate(IdxBM2);
+        R2=uncenteredRsquared(tmod2);IndRegressions.s_shortR2(sj)=R2.uncentered;
         shortCI=tmod2.coefCI;
-        IndRegressions.shortCI(sj)=diff(shortCI(1,:))/2;
-         [IndRegressions.pShort(sj),dummy]=coefTest(tmod2);
-    
+        IndRegressions.s_CIshort(sj)=diff(shortCI(1,:))/2;
+        [IndRegressions.s_pShort(sj),dummy]=coefTest(tmod2);
         
-        clear dt c sjcode tmod IdxBM IdxBS tmod2 IdxBM2 IdxBS2 
+        clear tmod tmod2 R2 IdxBM IdxBS IdxBM2 IdxBS2 longCI shortCI
+        
+        %table for fast leg
+        dtFast=table;
+        dtFast.eA=-eA_C(fIds,sj);
+        dtFast.eAT=eAT_C(fIds,sj);
+        dtFast.eP_lA=eP_C(fIds,sj)-lA_C(fIds,sj);
+        dtFast.eB_lS=eB_lS_C(fIds,sj);
+        dtFast = fcnNormTable(dtFast);
+        
+        %models for fast leg
+        %long exposure
+        tmod=fitlm(dtFast,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
+        IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.fBElong(sj)=tmod.Coefficients.Estimate(IdxBS);
+        IndRegressions.fBAlong(sj)=tmod.Coefficients.Estimate(IdxBM);
+        R2=uncenteredRsquared(tmod);IndRegressions.f_longR2(sj)=R2.uncentered;
+        longCI=tmod.coefCI;
+        IndRegressions.f_CIlong(sj)=diff(longCI(1,:))/2;
+        [IndRegressions.f_pLong(sj),dummy]=coefTest(tmod);
+    
+        %short exposure
+        tmod2=fitlm(dtFast,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM2=find(strcmp(tmod2.PredictorNames,'eATnorm'),1,'first');
+        IdxBS2=find(strcmp(tmod2.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.fBEshort(sj)=tmod2.Coefficients.Estimate(IdxBS2);
+        IndRegressions.fBAshort(sj)=tmod2.Coefficients.Estimate(IdxBM2);
+        R2=uncenteredRsquared(tmod2);IndRegressions.f_shortR2(sj)=R2.uncentered;
+        shortCI=tmod2.coefCI;
+        IndRegressions.f_CIshort(sj)=diff(shortCI(1,:))/2;
+        [IndRegressions.f_pShort(sj),dummy]=coefTest(tmod2);
+        
+        CosOnOffSlow(sj,1)=cosine(-dtSlow.eA,dtSlow.eP_lA); 
+        CosOnOffFast(sj,1)=cosine(-dtFast.eA,dtFast.eP_lA);
+        CosSFeA(sj,1)=cosine(-dtSlow.eA,-dtFast.eA);
+        CosSFeP_lA(sj,1)=cosine(dtSlow.eP_lA,dtFast.eP_lA);
+        clear dtFast dtSlow c sjcode tmod IdxBM IdxBS tmod2 IdxBM2 IdxBS2 
     end
     
     for sj=1:nsub
         IndRegressions.group(sj+nsub)={'Stroke'};
         sjcode = sNames(sj);
         IndRegressions.sub(sj+nsub)=sjcode;
-        dt=table;
-        dt.eA=-eA_S(sIds,sj);
-        dt.eAT=ttC.eAT(sIds);%ref of controls
-        dt.eP_lA=eP_S(sIds,sj)-lA_S(sIds,sj);
-        dt.eB_lS=eB_lS_S(sIds,sj);
-        dt.eAnorm=dt.eA./norm(dt.eA);
-        dt.eATnorm=dt.eAT./norm(dt.eAT);
-        dt.eP_lAnorm=dt.eP_lA./norm(dt.eP_lA);
-        dt.eB_lSnorm=dt.eB_lS./norm(dt.eB_lS);
-        
-        tmod=fitlm(dt,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
-        IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
-        IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
-        IndRegressions.BE(sj+nsub)=tmod.Coefficients.Estimate(IdxBS);
-        IndRegressions.BA(sj+nsub)=tmod.Coefficients.Estimate(IdxBM);
         tempCode=cell2mat(sjcode);
         IndRegressions.FM(sj+nsub)=FM(str2num(tempCode(end-2:end)));
         IndRegressions.vel(sj+nsub)=velsS(str2num(tempCode(end-2:end)));
-        R2=uncenteredRsquared(tmod);IndRegressions.longR2(sj+nsub)=R2.uncentered;
-        IndRegressions.pBE(sj+nsub)=tmod.Coefficients.pValue(IdxBS);
-        IndRegressions.pBA(sj+nsub)=tmod.Coefficients.pValue(IdxBM);
+        IndRegressions.age(sj+nsub)=groups{2}.adaptData{sj}.getSubjectAgeAtExperimentDate/12;
+        
+        
+        %table for slow leg
+        dtSlow=table;
+        dtSlow.eA=-eA_S(sIds,sj);
+        dtSlow.eAT=eAT_S(sIds,sj);
+        dtSlow.eP_lA=eP_S(sIds,sj)-lA_S(sIds,sj);
+        dtSlow.eB_lS=eB_lS_S(sIds,sj);
+        dtSlow = fcnNormTable(dtSlow);
+        
+        %models for slow leg
+        %long exposure
+        tmod=fitlm(dtSlow,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
+        IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.sBElong(sj+nsub)=tmod.Coefficients.Estimate(IdxBS);
+        IndRegressions.sBAlong(sj+nsub)=tmod.Coefficients.Estimate(IdxBM);
+        R2=uncenteredRsquared(tmod);IndRegressions.s_longR2(sj+nsub)=R2.uncentered;
         longCI=tmod.coefCI;
-        IndRegressions.longCI(sj+nsub)=diff(longCI(1,:))/2;
-        [IndRegressions.pLong(sj+nsub),dummy]=coefTest(tmod);
-        
-        
-        tmod2=fitlm(dt,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IndRegressions.s_CIlong(sj+nsub)=diff(longCI(1,:))/2;
+        [IndRegressions.s_pLong(sj+nsub),dummy]=coefTest(tmod);
+    
+        %short exposure
+        tmod2=fitlm(dtSlow,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);
         IdxBM2=find(strcmp(tmod2.PredictorNames,'eATnorm'),1,'first');
         IdxBS2=find(strcmp(tmod2.PredictorNames,'eAnorm'),1,'first');
-        IndRegressions.sBE(sj+nsub)=tmod2.Coefficients.Estimate(IdxBS2);
-        IndRegressions.sBA(sj+nsub)=tmod2.Coefficients.Estimate(IdxBM2);
-        R2=uncenteredRsquared(tmod2);IndRegressions.shortR2(sj+nsub)=R2.uncentered;
-        IndRegressions.short_pBE(sj+nsub)=tmod2.Coefficients.pValue(IdxBS);
-        IndRegressions.short_pBA(sj+nsub)=tmod2.Coefficients.pValue(IdxBM);
+        IndRegressions.sBEshort(sj+nsub)=tmod2.Coefficients.Estimate(IdxBS2);
+        IndRegressions.sBAshort(sj+nsub)=tmod2.Coefficients.Estimate(IdxBM2);
+        R2=uncenteredRsquared(tmod2);IndRegressions.s_shortR2(sj+nsub)=R2.uncentered;
         shortCI=tmod2.coefCI;
-        IndRegressions.shortCI(sj+nsub)=diff(shortCI(1,:))/2;
-        try
-         [IndRegressions.pShort(sj+nsub),dummy]=coefTest(tmod2);
+        IndRegressions.s_CIshort(sj+nsub)=diff(shortCI(1,:))/2;
+        try 
+            [IndRegressions.s_pShort(sj+nsub),dummy]=coefTest(tmod2);
         catch
-            IndRegressions.pShort(sj+nsub)=NaN;
+           IndRegressions.s_pShort(sj+nsub)=NaN; 
         end
+        clear tmod tmod2 R2 IdxBM IdxBS IdxBM2 IdxBS2 longCI shortCI
         
-        clear dt c sjcode tmod IdxBM IdxBS tmod2 IdxBM2 IdxBS2 
+        %table for fast leg
+        dtFast=table;
+        dtFast.eA=-eA_S(fIds,sj);
+        dtFast.eAT=eAT_S(fIds,sj);
+        dtFast.eP_lA=eP_S(fIds,sj)-lA_S(fIds,sj);
+        dtFast.eB_lS=eB_lS_S(fIds,sj);
+        dtFast = fcnNormTable(dtFast);
         
+        %models for fast leg
+        %long exposure
+        tmod=fitlm(dtFast,'eP_lAnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM=find(strcmp(tmod.PredictorNames,'eATnorm'),1,'first');
+        IdxBS=find(strcmp(tmod.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.fBElong(sj+nsub)=tmod.Coefficients.Estimate(IdxBS);
+        IndRegressions.fBAlong(sj+nsub)=tmod.Coefficients.Estimate(IdxBM);
+        R2=uncenteredRsquared(tmod);IndRegressions.f_longR2(sj+nsub)=R2.uncentered;
+        longCI=tmod.coefCI;
+        IndRegressions.f_CIlong(sj+nsub)=diff(longCI(1,:))/2;
+        [IndRegressions.f_pLong(sj+nsub),dummy]=coefTest(tmod);
+    
+        %short exposure
+        tmod2=fitlm(dtFast,'eB_lSnorm~eAnorm+eATnorm-1','RobustOpts',rob);
+        IdxBM2=find(strcmp(tmod2.PredictorNames,'eATnorm'),1,'first');
+        IdxBS2=find(strcmp(tmod2.PredictorNames,'eAnorm'),1,'first');
+        IndRegressions.fBEshort(sj+nsub)=tmod2.Coefficients.Estimate(IdxBS2);
+        IndRegressions.fBAshort(sj+nsub)=tmod2.Coefficients.Estimate(IdxBM2);
+        R2=uncenteredRsquared(tmod2);IndRegressions.f_shortR2(sj+nsub)=R2.uncentered;
+        shortCI=tmod2.coefCI;
+        IndRegressions.f_CIshort(sj+nsub)=diff(shortCI(1,:))/2;
+        try 
+            [IndRegressions.f_pShort(sj+nsub),dummy]=coefTest(tmod2);
+        catch
+            IndRegressions.f_pShort(sj+nsub)=NaN;
+        end
+        CosOnOffSlow(sj+nsub,1)=cosine(-dtSlow.eA,dtSlow.eP_lA); 
+        CosOnOffFast(sj+nsub,1)=cosine(-dtFast.eA,dtFast.eP_lA);
+        CosSFeA(sj+nsub,1)=cosine(-dtSlow.eA,-dtFast.eA);
+        CosSFeP_lA(sj+nsub,1)=cosine(dtSlow.eP_lA,dtFast.eP_lA);
+        clear dtFast dtSlow c sjcode tmod IdxBM IdxBS tmod2 IdxBM2 IdxBS2         
+       
     end
     
     %normalize each variable in a table

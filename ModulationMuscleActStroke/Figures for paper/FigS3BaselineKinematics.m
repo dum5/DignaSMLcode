@@ -46,9 +46,9 @@ ccd=[0.6 0.3 0.5;0.95 0.7 0.13;0.5 0.8 0.2;0.3 0.75 0.93];
 eE=1;
 eL=1;
 nstrides=-40;
-[reps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmean');
-[meps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmean');
-[seps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanstd');
+%[reps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmedian');
+[meps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'nanmedian');
+[seps] = defineEpochs({'Base'},{'TM base'}',[nstrides],[eE],[eL],'iqr');
 
 paramList={'spatialContribution','stepTimeContribution','velocityContribution','netContribution'};
 suffix='PNorm';
@@ -119,24 +119,26 @@ hold(ax1)
 for p=1:length(paramList)
     bar(ax1,xval(:,p),[squeeze(patientData(p,1,:));nanmean(controlData(p,1,:))],'FaceColor',ccd(p,:),'BarWidth',0.15)
     errorbar(ax1,xval(:,p),[squeeze(patientData(p,1,:));nanmean(controlData(p,1,:))],...
-        [squeeze(varPatientData(p,1,:))./sqrt(abs(nstrides));nanstd(controlData(p,1,:))./sqrt(length(controls2.adaptData))],'LineWidth',2,'LineStyle','none','Color','k')
+        [squeeze(varPatientData(p,1,:));2*nanstd(controlData(p,1,:))],'LineWidth',2,'LineStyle','none','Color','k')
     %add significance
     for pt=1:length(patients2.adaptData)
         if patientData(p,1,pt) > upperbound(p,1) || patientData(p,1,pt) < lowerbound(p,1)
             plot(ax1,xval(pt,p),-0.25,'*k','Color',ccd(p,:),'MarkerSize',8)
+        end
+        if p==2
+          text(ax1,xval(pt,2),0.3,num2str(FM(pt)))
         end
     end
     
 end
 set(ax1,'XTick',mean(xval,2),'XTickLabel',xlab,'XLim',[0 max(max(xval))+min(min(xval))],'YLim',[-0.3 0.6],'YTick',[-0.3 0 0.3 0.6])
 h=ylabel(ax1,'ASYMMETRY');set(h,'FontSize',14)
+h=title(ax1,'INDIVIDUAL SUBJECT KINEMATIC BEHAVIOR');set(h,'FontSize',16)
+plot(ax1,[0 76],[0.04 0.04],'--k','Color',[0.5 0.5 0.5])
+plot(ax1,[0 76],[-0.04 -0.04],'--k','Color',[0.5 0.5 0.5])
 ll=findobj(ax1,'Type','Bar');
 h=legend(ll(fliplr(1:length(ll))),paramList2);set(h,'Position',[0.064 0.78 0.52 0.074])
 set(h,'Box','off','FontSize',14,'Orientation','horizontal')
-h=title(ax1,'INDIVIDUAL SUBJECT KINEMATIC BEHAVIOR');set(h,'FontSize',16)
-
-
-
 
 
 %scatterplot

@@ -6,40 +6,65 @@ clc
 %loadName=[matDataDir,loadName]; 
 %load(loadName)
 
-strokesNames={'P0001','P0002','P0003','P0004','P0005','P0006','P0008','P0009','P0010','P0011','P0012','P0013','P0014','P0015','P0016'};%P0007 was removed because of contralateral atrophy
-controlsNames={'C0001','C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; %C0000 is removed because it is not a control for anyone, C0007 is removed because it was control for P0007
 
-useLateAdaptAsBaseline=false;
+[loadName,matDataDir]=uigetfile('*.mat');
+loadName=[matDataDir,loadName];
+load(loadName)
+
+speedMatchFlag=0;
+allSubFlag=0;%Needed to run SubjectSelection script
+%this needs to happen separately, since indices will be messed up ohterwise
+
+groupMedianFlag=1; %do not change
+nstrides=5;% do not change for early epochs
+summethod='nanmedian';% do not change
+
+SubjectSelection% subjectSelection has moved to different script to avoid mistakes accross scripts
+
+pIdx=1:length(strokesNames);
+cIdx=1:length(controlsNames);
 
 %define groups
 groups{1}=controls.getSubGroup(controlsNames);
 groups{2}=patients.getSubGroup(strokesNames);
+sNames=strokesNames;
+cNames=controlsNames;
+
 %% Get normalized parameters:
 %Define parameters we care about:
 mOrder={'TA', 'PER', 'SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF', 'HIP', 'ADM', 'TFL', 'GLU'};
-
-eE=1;
-eL=1;
-ep=defineEpochs({'BASE','eA','lA','eP','lP'},{'TM base','Adaptation','Adaptation','Washout','Washout'},[-40 15 -40 15 -40],[eE eE eE eE eE],[eL eL eL eL eL],'nanmean');
-%refEp=defineEpochs({'Base'},{'TM Base'}',[15],[eE],[eL],'nanmean');
-refEp=defineEpochs({'BASE'},{'TM base'}',[-40],[eE],[eL],'nanmean');
-
+%mOrder={'TA','SOL', 'LG', 'MG', 'BF', 'SEMB', 'SEMT', 'VM', 'VL', 'RF'};
 nMusc=length(mOrder);
 type='s';
 labelPrefix=fliplr([strcat('f',mOrder) strcat('s',mOrder)]); %To display
 labelPrefixLong= strcat(labelPrefix,['_' type]); %Actual names
 
+%Renaming normalized parameters, for convenience:
+for k=1:length(groups)
+    ll=groups{k}.adaptData{1}.data.getLabelsThatMatch('^Norm');
+    l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
+    groups{k}=groups{k}.renameParams(ll,l2);
+end
+newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
 
+eE=1;
+eL=1;
 
-for i = 11%1:n_subjects
-    adaptDataSubject = groups{2}.adaptData{1, i}; 
+ep=defineEpochs({'BASE','eA','lA','eP','eB','lS'},{'TM base','Adaptation','Adaptation','Washout','TM base','short split'},[-40 nstrides -40 nstrides nstrides -8],[eE eE eE eE eE eE],[eL eL eL eL eL eL],summethod);
+refEp=defineEpochs({'Base'},{'TM base'}',[-40],[eE],[eL],summethod);
+
+%extract data for stroke and controls separately
+padWithNaNFlag=false;
+
+for i = 10%1:n_subjects
+    adaptDataSubject = groups{2}.adaptData{i}; 
     
-    %
-    
-    ll=adaptDataSubject.data.getLabelsThatMatch('^Norm');
-     l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
-     adaptDataSubject=adaptDataSubject.renameParams(ll,l2);
-     newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
+%     %
+%     
+%     ll=adaptDataSubject.data.getLabelsThatMatch('^Norm');
+%      l2=regexprep(regexprep(ll,'^Norm',''),'_s','s');
+%      adaptDataSubject=adaptDataSubject.renameParams(ll,l2);
+%      newLabelPrefix=fliplr(strcat(labelPrefix,'s'));
     
 
     fh=figure('Units','Normalized','OuterPosition',[0 0 1 1]);
