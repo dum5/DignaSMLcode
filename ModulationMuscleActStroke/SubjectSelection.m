@@ -35,11 +35,11 @@ else
         %atrophy     
     elseif speedMatchFlag==2%matched for EMG symmetry
         
-        controlsNames={'C0003','C0012','C0014','C0009','C0011','C0006','C0010','C0015','C0004','C0002'};
-        strokesNames={ 'P0014','P0012','P0011','P0006','P0013','P0016','P0015','P0005','P0009','P0010'};
+        %controlsNames={'C0003','C0012','C0014','C0009','C0011','C0006','C0010','C0015','C0004','C0002'};
+        %strokesNames={ 'P0014','P0012','P0011','P0006','P0013','P0016','P0015','P0005','P0009','P0010'};
   
-        %strokesNames=strcat('P00',{'15','16','13','06','11','12','14'});
-        %controlsNames=strcat('C00',{'03','12','14','09','11','06','10'});
+        strokesNames=strcat('P00',{'15','16','13','06','11','12','14'});
+        controlsNames=strcat('C00',{'03','12','14','09','11','06','10'});
     elseif speedMatchFlag==3;%matched for kin symmetry
         strokesNames=strcat('P00',{'15','01','13','14','05','06','08'});
          controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; 

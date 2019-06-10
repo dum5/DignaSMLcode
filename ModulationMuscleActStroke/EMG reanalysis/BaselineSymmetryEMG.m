@@ -109,8 +109,8 @@ title('n=14')
 [dummy2,SIdx]=sort(strokesim,'descend');
 
 
-controlSelect=controlsNames(CIdx(1:10));
-strokeSelect=strokesNames(SIdx(1:10));
+controlSelect=controlsNames(CIdx(1:7));
+strokeSelect=strokesNames(SIdx(1:7));
 
 
 subplot(2,2,2)

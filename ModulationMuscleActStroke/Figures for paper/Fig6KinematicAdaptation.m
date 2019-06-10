@@ -7,12 +7,13 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %settings
-speedMatchFlag=1;
+speedMatchFlag=0;
 allSubFlag=0;
 binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};
 faceCols=[1 1 1;0 0 0];
-patchCols=[0.4 0.4 0.4;1 1 1];
+%patchCols=[0.4 0.4 0.4;1 1 1];
+patchCols=[0.6 0.6 0.6; 0.3 0.3 0.3];
 edgeCols=[0.7 0.7 0.7;0 0 0 ];
 
 %epoch settings
@@ -146,8 +147,12 @@ for i=1:M
             end
            %plot here directly, ohterwise patches mess up
             %plot(ph(i,1),Inds,nanmean(dt2,2),'ok','MarkerSize',2,'MarkerFaceColor',faceCols(g,:),'MarkerEdgeColor',faceCols(g,:))
-            plot(ph(i,1),Inds,nanmean(dt2,2),'-k','Color',faceCols(g,:),'LineWidth',1)
-            hs=patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],patchCols(g,:),'FaceAlpha',0.7,'EdgeColor','k');
+            if g==1
+                plot(ph(i,1),Inds,nanmean(dt2,2),'-k','Color',[0.2 0.2 0.2],'LineWidth',1)
+            else
+                plot(ph(i,1),Inds,nanmean(dt2,2),'-.k','Color',[0.2 0.2 0.2],'LineWidth',1)
+            end
+            hs=patch(ph(i,1),[Inds fliplr(Inds)],[nanmean(dt2,2)+(nanstd(dt2')'./sqrt(size(dt2,2))); flipud(nanmean(dt2,2)-(nanstd(dt2')'./sqrt(size(dt2,2))))],patchCols(g,:),'FaceAlpha',0.7,'EdgeColor','none');
 %             if g==2
 %                 hatchfill2(hs)
 %             end
@@ -158,12 +163,14 @@ for i=1:M
             uistack(pa(n),'bottom')            
         end
        
+        
 
         
     end
 end
 
-
+ ll=findobj(ph(1,1),'Type','Line');
+ legend(ll([5 1]),{'Controls','Stroke'},'AutoUpdate','off')
 
 %get epoch data and generate data for plot
 for i=1:length(groups)
@@ -175,7 +182,10 @@ for i=1:length(groups)
         contrasts{i}.(['eP_B_',labels{p}])=squeeze(groups{i}.getEpochData(eps(4,:),labels{p})-groups{i}.getEpochData(eps(1,:),labels{p}));
     end    
 end
-contrastnames={'eA_B','lA_B','eP_lA','eP_B'};
+%contrastnames={'eA_B','lA_B','eP_lA','eP_B'};
+contrastnames={'eA_B','lA_B','eP_B','eP_lA'};
+
+
 
 spatialDataControls=NaN(length(groups{1}.adaptData),4);
 spatialDataStroke=NaN(length(groups{2}.adaptData),4);
@@ -258,9 +268,11 @@ hatchfill2(hs)
 errorbar(ph(4,2),xval(:,2),nanmean(netDataStroke),nanstd(netDataStroke)./sqrt(ns),'Color','k','LineWidth',1,'LineStyle','none')
 %plot(ph(4,2),xval(1,:),[-0.3 -0.3],'-k','LineWidth',2)
 
+xlabels={'early Adap','late Adap','early Post Adap','early PostAdap- lateAdap'};
+xlabels = cellfun(@(x) strrep(x,' ','\newline'), xlabels,'UniformOutput',false);
 %set titles and labels
 set(ph(:,2),'XTick',nanmean(xval,2),'XTickLabel',{''},'XLim',[0.5 11.5])
-set(ph(4,2),'XTickLabel',{'\DeltaKIN_U_P','\DeltaKIN_S_S','\DeltaKIN_P','\DeltaKIN_A_F_T_E_R'})
+set(ph(4,2),'XTickLabel',xlabels)
 set(ph(:,1),'XTick',[20 365 700],'XTickLabel',{''},'XLim',[1 804])
 set(ph(4,1),'XTickLabel',{'BASE','ADAPTATION','POST-ADAPTATION'})
 

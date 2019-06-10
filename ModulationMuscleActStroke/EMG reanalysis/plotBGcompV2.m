@@ -54,7 +54,7 @@ get(pc);hold on
 for i=1:size(hc,1)
     for k=1:size(hc,2)
         if hc(i,k)==1  && abs(dataEcmed(i,k))>mindif %since statistical testing was done againts zero, amplitude testing happens here
-            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',10,'Color','k')
+            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',6,'Color','k')
            
         end
     end
@@ -80,7 +80,7 @@ get(ps);hold on
 for i=1:size(hs,1)
     for k=1:size(hs,2)
         if hs(i,k)==1  && abs(dataEsmed(i,k))>mindif      %since statistical testing was done againts zero, amplitude testing happens here 
-            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',10,'Color','k')
+            plot3((k-0.5)/12,i-0.5,1,'.','MarkerSize',6,'Color','k')
            
         end
     end
