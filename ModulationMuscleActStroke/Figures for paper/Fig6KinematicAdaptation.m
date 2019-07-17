@@ -7,7 +7,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %settings
-speedMatchFlag=0;
+speedMatchFlag=1;
 allSubFlag=0;
 binWidth=10;
 labels={'spatialContributionNorm2','stepTimeContributionNorm2','velocityContributionNorm2','netContributionNorm2'};

@@ -77,7 +77,8 @@ ax(4) = axes(f1,'Position',[0.4   0.03   0.2  0.45]);
 ax(5) = axes(f1,'Position',[0.7   0.52   0.2  0.45]);
 ax(6) = axes(f1,'Position',[0.7   0.03  0.2  0.45]);
 
-
+%[f1,fb,ax(1),ax(2),pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax(1),ax(2),pd1,ep,baseEp,newLabelPrefix,groups,0.1,0.1,'nanmedian');
+ 
 
 [f1,fb,ax(1),ax(2),pd1,pvalc1,pvals1,pvalb1,hc1,hs1,hb1,dataEc1,dataEs1,dataBinaryc1,dataBinarys1]=plotBGcompV2(f1,fb,ax(1),ax(2),pd1,ep,baseEp,newLabelPrefix,groups,0.1,0.1,'invNanmedian');
     
