@@ -33,9 +33,9 @@ end
 
 [file,path]=uigetfile('*.mat','choose file for distraction groups');
 load([path,file]);
-groupsnames=[groupsnames;fieldnames(studyData)];
-for m=i+1:i+2
-    groups{m}=eval(['studyData.',groupsnames{m}]);
+groupsnames=[groupsnames;{'GradualCatch'}];
+for m=i+1%:i+2
+    groups{m}=ControlCatchForces;
     %groups{i}.groupID=groupsnames{i};This is not allowed for
     %groupAdaptationData
     groups{m}=groups{m}.removeBadStrides;    

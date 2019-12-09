@@ -44,6 +44,14 @@ else
         strokesNames=strcat('P00',{'15','01','13','14','05','06','08'});
          controlsNames={'C0002','C0003','C0004','C0005','C0006','C0008','C0009','C0010','C0011','C0012','C0013','C0014','C0015','C0016'}; 
         
-        
+        elseif speedMatchFlag==4%play around with number of symmetric/asymmetric subjects
+            n=10;
+            dtc={'03', '12', '14', '09', '11', '06', '10', '15', '04', '02', '08', '13', '05', '16'};%from least to most symmetric
+            dtp={'14','12','11','06','13','16','15','05','09','10','04','01','02','08'};%from most to least symmetric
+            dtc=dtc(1:n);
+            dtp=dtp(1:n);
+            strokesNames=strcat('P00',dtp);
+            controlsNames=strcat('C00',dtc);
+            
     end
 end
